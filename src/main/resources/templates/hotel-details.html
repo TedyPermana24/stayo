@@ -6,26 +6,71 @@
     <title th:text="${hotel.name} + ' - Stayo'">Hotel Details - Stayo</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gradient-to-br from-gray-50 to-blue-50">
     <!-- Header/Navigation -->
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-6 py-3">
+    <header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <div>
-                    <a href="/" class="text-2xl font-bold text-blue-600">Stayo</a>
+                    <a href="/" class="text-3xl font-bold text-gradient flex items-center">
+                        <i class="fas fa-bed mr-2"></i>
+                        Stayo
+                    </a>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="/" class="text-gray-800 hover:text-blue-600">Home</a>
-                    <a href="/hotels" class="text-gray-800 hover:text-blue-600">Hotels</a>
+                <div class="flex items-center space-x-6">
+                    <a href="/" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Home</a>
+                    <a href="/hotels" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Hotels</a>
                     <th:block th:if="${session.user != null}">
-                        <a href="/bookings" class="text-gray-800 hover:text-blue-600">My Bookings</a>
-                        <a href="/profile" class="text-gray-800 hover:text-blue-600">Profile</a>
-                        <a href="/signout" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Sign Out</a>
+                        <a href="/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">My Bookings</a>
+                        <a href="/profile" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Profile</a>
+                        <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Sign Out</a>
                     </th:block>
                     <th:block th:unless="${session.user != null}">
-                        <a href="/signin" class="text-gray-800 hover:text-blue-600">Sign In</a>
-                        <a href="/register" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Register</a>
+                        <a href="/signin" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Sign In</a>
+                        <a href="/register" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Register</a>
                     </th:block>
                 </div>
             </div>
@@ -33,7 +78,7 @@
     </header>
 
     <!-- Hotel Details -->
-    <section class="py-12">
+    <section class="pt-28 pb-12">
         <div class="container mx-auto px-6">
             <!-- Alert Messages -->
             <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4" role="alert">
@@ -45,10 +90,10 @@
             </div>
             
             <!-- Hotel Header -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-8">
                 <div class="relative h-96">
                     <img th:src="${hotel.imageUrl}" th:alt="${hotel.name}" class="w-full h-full object-cover">
-                    <div class="absolute inset-0 bg-black opacity-30"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                     <div class="absolute bottom-0 left-0 p-8">
                         <h1 class="text-4xl font-bold text-white mb-2" th:text="${hotel.name}">Hotel Name</h1>
                         <div class="flex text-yellow-400 mb-2">
@@ -85,26 +130,35 @@
             </div>
             
             <!-- Booking Form -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-8">
                 <div class="p-8">
-                    <h2 class="text-2xl font-bold mb-6">Book Your Stay</h2>
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">Book Your Stay</h2>
                     
                     <form action="/bookings/create" method="post" class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <input type="hidden" name="hotelId" th:value="${hotel.id}">
                         
                         <div>
-                            <label for="check-in" class="block text-gray-700 mb-2">Check-in Date</label>
-                            <input type="date" id="check-in" name="checkIn" th:value="${checkIn}" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <label for="check-in" class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-calendar-alt mr-2 text-purple-600"></i>Check-in Date
+                            </label>
+                            <input type="date" id="check-in" name="checkIn" th:value="${checkIn}" required 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                         </div>
                         
                         <div>
-                            <label for="check-out" class="block text-gray-700 mb-2">Check-out Date</label>
-                            <input type="date" id="check-out" name="checkOut" th:value="${checkOut}" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <label for="check-out" class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-calendar-check mr-2 text-purple-600"></i>Check-out Date
+                            </label>
+                            <input type="date" id="check-out" name="checkOut" th:value="${checkOut}" required 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                         </div>
                         
                         <div>
-                            <label for="numberOfGuests" class="block text-gray-700 mb-2">Number of Guests</label>
-                            <select id="numberOfGuests" name="numberOfGuests" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <label for="numberOfGuests" class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-users mr-2 text-purple-600"></i>Number of Guests
+                            </label>
+                            <select id="numberOfGuests" name="numberOfGuests" 
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                                 <option value="1" th:selected="${guests == 1}">1 Guest</option>
                                 <option value="2" th:selected="${guests == 2 || guests == null}">2 Guests</option>
                                 <option value="3" th:selected="${guests == 3}">3 Guests</option>
@@ -114,8 +168,11 @@
                         </div>
                         
                         <div>
-                            <label for="roomId" class="block text-gray-700 mb-2">Select Room</label>
-                            <select id="roomId" name="roomId" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                            <label for="roomId" class="block text-gray-700 font-semibold mb-2">
+                                <i class="fas fa-bed mr-2 text-purple-600"></i>Select Room
+                            </label>
+                            <select id="roomId" name="roomId" required 
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                                 <option value="">-- Select a room --</option>
                                 <th:block th:if="${availableRooms != null}">
                                     <option th:each="room : ${availableRooms}" th:value="${room.id}" th:text="${room.type + ' - $' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
@@ -127,23 +184,23 @@
                         </div>
                         
                         <div class="md:col-span-2">
-                            <button th:if="${session.user != null}" type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition">Book Now</button>
-                            <a th:unless="${session.user != null}" href="/signin" class="block w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition text-center">Sign In to Book</a>
+                            <button th:if="${session.user != null}" type="submit" class="w-full btn-gradient text-white py-3 rounded-xl font-semibold transition">Book Now</button>
+                            <a th:unless="${session.user != null}" href="/signin" class="block w-full btn-gradient text-white py-3 rounded-xl font-semibold transition text-center">Sign In to Book</a>
                         </div>
                     </form>
                 </div>
             </div>
             
             <!-- Available Rooms -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-8">
                 <div class="p-8">
-                    <h2 class="text-2xl font-bold mb-6">Available Rooms</h2>
+                    <h2 class="text-3xl font-bold mb-6 text-gradient">Available Rooms</h2>
                     
                     <div class="space-y-6">
-                        <div th:each="room : ${rooms}" class="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+                        <div th:each="room : ${rooms}" class="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0 hover-lift p-4 rounded-2xl">
                             <div class="flex flex-col md:flex-row">
                                 <div class="md:w-1/3 mb-4 md:mb-0 md:mr-6">
-                                    <img th:src="${room.imageUrl}" th:alt="${room.type}" class="w-full h-48 object-cover rounded-lg">
+                                    <img th:src="${room.imageUrl}" th:alt="${room.type}" class="w-full h-48 object-cover rounded-xl">
                                 </div>
                                 <div class="md:w-2/3">
                                     <h3 class="text-xl font-bold mb-2" th:text="${room.type}">Room Type</h3>
@@ -160,8 +217,8 @@
                                         </span>
                                     </div>
                                     <div class="flex justify-between items-center">
-                                        <p class="text-gray-800 font-bold text-xl">$<span th:text="${room.pricePerNight}">Price</span> <span class="text-sm font-normal">per night</span></p>
-                                        <button th:attr="onclick='selectRoom(\'' + ${room.id} + '\')'" class="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition">Select</button>
+                                        <p class="text-purple-600 font-bold text-xl">$<span th:text="${room.pricePerNight}">Price</span> <span class="text-sm text-gray-500">per night</span></p>
+                                        <button th:attr="onclick='selectRoom(\'' + ${room.id} + '\')'" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Select</button>
                                     </div>
                                 </div>
                             </div>
@@ -171,10 +228,10 @@
             </div>
             
             <!-- Reviews -->
-            <div class="bg-white rounded-lg shadow-md overflow-hidden mb-8">
+            <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-8">
                 <div class="p-8">
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-bold">Guest Reviews</h2>
+                        <h2 class="text-3xl font-bold text-gradient">Guest Reviews</h2>
                         <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
                             <i class="fas fa-star mr-1"></i> <span th:text="${#numbers.formatDecimal(hotel.averageRating, 1, 1)}">9.2</span>/10 (<span th:text="${#lists.size(reviews)}">42</span> reviews)
                         </div>
@@ -182,13 +239,13 @@
                     
                     <!-- Write a Review -->
                     <div th:if="${session.user != null}" class="border-b border-gray-200 pb-6 mb-6">
-                        <h3 class="text-lg font-bold mb-4">Write a Review</h3>
+                        <h3 class="text-xl font-bold mb-4">Write a Review</h3>
                         <form action="/reviews/create" method="post">
                             <input type="hidden" name="hotelId" th:value="${hotel.id}">
                             
                             <div class="mb-4">
-                                <label for="rating" class="block text-gray-700 mb-2">Rating</label>
-                                <div class="flex space-x-2">
+                                <label for="rating" class="block text-gray-700 font-semibold mb-2">Rating</label>
+                                <div class="flex space-x-4">
                                     <div class="flex items-center">
                                         <input type="radio" id="rating-1" name="rating" value="1" class="mr-1">
                                         <label for="rating-1">1</label>
@@ -213,11 +270,12 @@
                             </div>
                             
                             <div class="mb-4">
-                                <label for="comment" class="block text-gray-700 mb-2">Your Review</label>
-                                <textarea id="comment" name="comment" rows="4" required class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                                <label for="comment" class="block text-gray-700 font-semibold mb-2">Your Review</label>
+                                <textarea id="comment" name="comment" rows="4" required 
+                                          class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300"></textarea>
                             </div>
                             
-                            <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded-md font-semibold hover:bg-blue-700 transition">Submit Review</button>
+                            <button type="submit" class="btn-gradient text-white px-6 py-3 rounded-full font-medium">Submit Review</button>
                         </form>
                     </div>
                     
@@ -230,10 +288,10 @@
                     
                     <!-- Review List -->
                     <div th:unless="${#lists.isEmpty(reviews)}" class="space-y-6">
-                        <div th:each="review : ${reviews}" class="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0">
+                        <div th:each="review : ${reviews}" class="border-b border-gray-200 pb-6 last:border-b-0 last:pb-0 hover-lift p-4 rounded-2xl">
                             <div class="flex justify-between items-start mb-2">
                                 <div class="flex items-center">
-                                    <div class="bg-blue-600 text-white w-10 h-10 rounded-full flex items-center justify-center mr-3">
+                                    <div class="gradient-bg text-white w-12 h-12 rounded-full flex items-center justify-center mr-3">
                                         <span th:text="${#strings.substring(review.user.firstName, 0, 1) + #strings.substring(review.user.lastName, 0, 1)}">JD</span>
                                     </div>
                                     <div>
@@ -259,7 +317,72 @@
         </div>
     </section>
 
-    <!-- Footer section is already complete -->
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-bed text-3xl text-purple-400 mr-3"></i>
+                        <h3 class="text-3xl font-bold">Stayo</h3>
+                    </div>
+                    <p class="mb-6 text-gray-300 leading-relaxed">Find your perfect hotel at the best prices. Guaranteed satisfaction with every booking.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/" class="text-gray-300 hover:text-purple-400 transition duration-300">Home</a></li>
+                        <li><a href="/hotels" class="text-gray-300 hover:text-purple-400 transition duration-300">Hotels</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">About Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-6">Support</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Help Center</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">FAQs</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-6">Contact Us</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start text-gray-300">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-purple-400"></i>
+                            <span>123 Hotel Street, City, Country</span>
+                        </li>
+                        <li class="flex items-start text-gray-300">
+                            <i class="fas fa-phone-alt mt-1 mr-3 text-purple-400"></i>
+                            <span>+1 (555) 123-4567</span>
+                        </li>
+                        <li class="flex items-start text-gray-300">
+                            <i class="fas fa-envelope mt-1 mr-3 text-purple-400"></i>
+                            <span>info@stayo.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2023 Stayo. All rights reserved. Made with ❤️ for travelers worldwide.</p>
+            </div>
+        </div>
+    </footer>
     
     <!-- JavaScript for room selection -->
     <script>

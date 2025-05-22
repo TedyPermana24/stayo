@@ -6,26 +6,71 @@
     <title>Stayo - Find Your Perfect Stay</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
+<body class="bg-gradient-to-br from-gray-50 to-blue-50">
     <!-- Header/Navigation -->
-    <header class="bg-white shadow-md">
-        <div class="container mx-auto px-6 py-3">
+    <header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <div>
-                    <a href="/" class="text-2xl font-bold text-blue-600">Stayo</a>
+                    <a href="/" class="text-3xl font-bold text-gradient flex items-center">
+                        <i class="fas fa-bed mr-2"></i>
+                        Stayo
+                    </a>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="/" class="text-gray-800 hover:text-blue-600">Home</a>
-                    <a href="/hotels" class="text-gray-800 hover:text-blue-600">Hotels</a>
+                <div class="flex items-center space-x-6">
+                    <a href="/" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Home</a>
+                    <a href="/hotels" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Hotels</a>
                     <th:block th:if="${session.user != null}">
-                        <a href="/bookings" class="text-gray-800 hover:text-blue-600">My Bookings</a>
-                        <a href="/profile" class="text-gray-800 hover:text-blue-600">Profile</a>
-                        <a href="/signout" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Sign Out</a>
+                        <a href="/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">My Bookings</a>
+                        <a href="/profile" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Profile</a>
+                        <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Sign Out</a>
                     </th:block>
                     <th:block th:unless="${session.user != null}">
-                        <a href="/signin" class="text-gray-800 hover:text-blue-600">Sign In</a>
-                        <a href="/register" class="bg-blue-600 text-white px-4 py-2 rounded-md hover:bg-blue-700">Register</a>
+                        <a href="/signin" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Sign In</a>
+                        <a href="/register" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Register</a>
                     </th:block>
                 </div>
             </div>
@@ -33,36 +78,55 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="relative">
-        <div class="h-96 bg-cover bg-center" style="background-image: url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');">
-            <div class="absolute inset-0 bg-black opacity-50"></div>
+    <section class="relative pt-20">
+        <div class="h-screen bg-cover bg-center bg-fixed" style="background-image: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');">
             <div class="container mx-auto px-6 h-full flex items-center relative z-10">
-                <div class="max-w-lg">
-                    <h1 class="text-4xl font-bold text-white mb-4">Find Your Perfect Stay</h1>
-                    <p class="text-xl text-white mb-8">Discover amazing hotels at the best prices</p>
+                <div class="max-w-2xl">
+                    <h1 class="text-6xl font-bold text-white mb-6 leading-tight">Find Your Perfect Stay</h1>
+                    <p class="text-2xl text-white mb-12 opacity-90">Discover amazing hotels at unbeatable prices around the world</p>
+                    <div class="flex space-x-4">
+                        <button class="bg-white text-purple-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition duration-300 hover-lift">
+                            Explore Now
+                        </button>
+                        <button class="border-2 border-white text-white px-8 py-4 rounded-full font-bold text-lg hover:bg-white hover:text-purple-600 transition duration-300">
+                            Watch Video
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
         
         <!-- Search Form -->
         <div class="container mx-auto px-6 relative">
-            <div class="bg-white rounded-lg shadow-lg p-6 -mt-16">
-                <form action="/search" method="get" class="grid grid-cols-1 md:grid-cols-4 gap-4">
-                    <div>
-                        <label for="location" class="block text-gray-700 mb-2">Location</label>
-                        <input type="text" id="location" name="location" placeholder="Where are you going?" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="glass-effect rounded-3xl card-shadow p-8 -mt-24 mx-4">
+                <form action="/search" method="get" class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                    <div class="space-y-2">
+                        <label for="location" class="block text-gray-700 font-semibold">
+                            <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>Destination
+                        </label>
+                        <input type="text" id="location" name="location" placeholder="Where are you going?" 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                     </div>
-                    <div>
-                        <label for="check-in" class="block text-gray-700 mb-2">Check-in</label>
-                        <input type="date" id="check-in" name="checkIn" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div class="space-y-2">
+                        <label for="check-in" class="block text-gray-700 font-semibold">
+                            <i class="fas fa-calendar-alt mr-2 text-purple-600"></i>Check-in
+                        </label>
+                        <input type="date" id="check-in" name="checkIn" 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                     </div>
-                    <div>
-                        <label for="check-out" class="block text-gray-700 mb-2">Check-out</label>
-                        <input type="date" id="check-out" name="checkOut" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div class="space-y-2">
+                        <label for="check-out" class="block text-gray-700 font-semibold">
+                            <i class="fas fa-calendar-check mr-2 text-purple-600"></i>Check-out
+                        </label>
+                        <input type="date" id="check-out" name="checkOut" 
+                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                     </div>
-                    <div>
-                        <label for="guests" class="block text-gray-700 mb-2">Guests</label>
-                        <select id="guests" name="guests" class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <div class="space-y-2">
+                        <label for="guests" class="block text-gray-700 font-semibold">
+                            <i class="fas fa-users mr-2 text-purple-600"></i>Guests
+                        </label>
+                        <select id="guests" name="guests" 
+                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                             <option value="1">1 Guest</option>
                             <option value="2" selected>2 Guests</option>
                             <option value="3">3 Guests</option>
@@ -70,8 +134,10 @@
                             <option value="5">5+ Guests</option>
                         </select>
                     </div>
-                    <div class="md:col-span-4">
-                        <button type="submit" class="w-full bg-blue-600 text-white py-3 rounded-md font-semibold hover:bg-blue-700 transition">Search</button>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full btn-gradient text-white py-4 rounded-xl font-bold text-lg">
+                            <i class="fas fa-search mr-2"></i>Search Hotels
+                        </button>
                     </div>
                 </form>
             </div>
@@ -79,29 +145,45 @@
     </section>
 
     <!-- Featured Hotels -->
-    <section class="py-12">
+    <section class="py-20">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold mb-8">Featured Hotels</h2>
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-gray-800 mb-4">Featured Hotels</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Handpicked luxury accommodations for an unforgettable experience</p>
+            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Hotel Cards -->
                 <th:block th:each="hotel : ${featuredHotels}">
-                    <div class="bg-white rounded-lg shadow-md overflow-hidden">
-                        <img th:src="${hotel.imageUrl}" th:alt="${hotel.name}" class="w-full h-48 object-cover">
+                    <div class="bg-white rounded-3xl card-shadow overflow-hidden hover-lift">
+                        <div class="relative">
+                            <img th:src="${hotel.imageUrl}" th:alt="${hotel.name}" class="w-full h-64 object-cover">
+                            <div class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-lg">
+                                <i class="fas fa-heart text-gray-400 hover:text-red-500 cursor-pointer transition duration-300"></i>
+                            </div>
+                            <div class="absolute bottom-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                                Featured
+                            </div>
+                        </div>
                         <div class="p-6">
-                            <h3 class="text-xl font-bold mb-2" th:text="${hotel.name}">Hotel Name</h3>
-                            <div class="flex text-yellow-400 mb-2">
+                            <h3 class="text-2xl font-bold mb-3 text-gray-800" th:text="${hotel.name}">Hotel Name</h3>
+                            <div class="flex text-yellow-400 mb-3">
                                 <th:block th:each="i : ${#numbers.sequence(1, hotel.stars)}">
                                     <i class="fas fa-star"></i>
                                 </th:block>
                             </div>
-                            <p class="text-gray-600 mb-4"><i class="fas fa-map-marker-alt mr-2"></i><span th:text="${hotel.location}">Location</span></p>
-                            <div class="flex justify-between items-end">
+                            <p class="text-gray-600 mb-4 flex items-center">
+                                <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
+                                <span th:text="${hotel.location}">Location</span>
+                            </p>
+                            <div class="flex justify-between items-center">
                                 <div>
-                                    <!-- Replace this line in your index.html -->
-                                    <p class="text-gray-800 font-bold text-xl">$<span th:text="${hotel.lowestPrice}">Price</span></p>
+                                    <p class="text-gray-500 text-sm">Starting from</p>
+                                    <p class="text-purple-600 font-bold text-2xl">$<span th:text="${hotel.lowestPrice}">Price</span><span class="text-sm text-gray-500">/night</span></p>
                                 </div>
-                                <a th:href="@{/hotels/{id}(id=${hotel.id})}" class="text-blue-600 hover:underline">View Details</a>
+                                <a th:href="@{/hotels/{id}(id=${hotel.id})}" class="btn-gradient text-white px-6 py-3 rounded-full font-medium">
+                                    View Details
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -111,51 +193,74 @@
     </section>
 
     <!-- Popular Destinations -->
-    <section class="py-12 bg-gray-50">
+    <section class="py-20 bg-white">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold mb-8">Popular Destinations</h2>
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-gray-800 mb-4">Popular Destinations</h2>
+                <p class="text-xl text-gray-600 max-w-2xl mx-auto">Explore the world's most amazing destinations</p>
+            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <!-- Destination 1 -->
-                <div class="relative rounded-lg overflow-hidden h-64 group">
-                    <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1738&q=80" alt="Bali" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                    <div class="absolute inset-0 bg-black opacity-40 group-hover:opacity-30 transition"></div>
-                    <div class="absolute bottom-0 left-0 p-6">
-                        <h3 class="text-xl font-bold text-white">Bali</h3>
-                        <p class="text-white">1,245 properties</p>
+                <div class="relative rounded-3xl overflow-hidden h-80 group hover-lift">
+                    <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1738&q=80" 
+                         alt="Bali" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-6 text-white">
+                        <h3 class="text-2xl font-bold mb-2">Bali</h3>
+                        <p class="text-lg opacity-90">1,245 properties</p>
+                        <div class="flex items-center mt-2">
+                            <i class="fas fa-star text-yellow-400 mr-1"></i>
+                            <span class="text-sm">4.8 Rating</span>
+                        </div>
                     </div>
                     <a href="/search?location=Bali" class="absolute inset-0"></a>
                 </div>
                 
                 <!-- Destination 2 -->
-                <div class="relative rounded-lg overflow-hidden h-64 group">
-                    <img src="https://images.unsplash.com/photo-1555899434-94d1368aa7af?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Jakarta" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                    <div class="absolute inset-0 bg-black opacity-40 group-hover:opacity-30 transition"></div>
-                    <div class="absolute bottom-0 left-0 p-6">
-                        <h3 class="text-xl font-bold text-white">Jakarta</h3>
-                        <p class="text-white">879 properties</p>
+                <div class="relative rounded-3xl overflow-hidden h-80 group hover-lift">
+                    <img src="https://images.unsplash.com/photo-1555899434-94d1368aa7af?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                         alt="Jakarta" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-6 text-white">
+                        <h3 class="text-2xl font-bold mb-2">Jakarta</h3>
+                        <p class="text-lg opacity-90">879 properties</p>
+                        <div class="flex items-center mt-2">
+                            <i class="fas fa-star text-yellow-400 mr-1"></i>
+                            <span class="text-sm">4.7 Rating</span>
+                        </div>
                     </div>
                     <a href="/search?location=Jakarta" class="absolute inset-0"></a>
                 </div>
                 
                 <!-- Destination 3 -->
-                <div class="relative rounded-lg overflow-hidden h-64 group">
-                    <img src="https://images.unsplash.com/photo-1583608564476-c6dfb5d8e8ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" alt="Yogyakarta" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                    <div class="absolute inset-0 bg-black opacity-40 group-hover:opacity-30 transition"></div>
-                    <div class="absolute bottom-0 left-0 p-6">
-                        <h3 class="text-xl font-bold text-white">Yogyakarta</h3>
-                        <p class="text-white">645 properties</p>
+                <div class="relative rounded-3xl overflow-hidden h-80 group hover-lift">
+                    <img src="https://images.unsplash.com/photo-1583608564476-c6dfb5d8e8ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                         alt="Yogyakarta" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-6 text-white">
+                        <h3 class="text-2xl font-bold mb-2">Yogyakarta</h3>
+                        <p class="text-lg opacity-90">645 properties</p>
+                        <div class="flex items-center mt-2">
+                            <i class="fas fa-star text-yellow-400 mr-1"></i>
+                            <span class="text-sm">4.9 Rating</span>
+                        </div>
                     </div>
                     <a href="/search?location=Yogyakarta" class="absolute inset-0"></a>
                 </div>
                 
                 <!-- Destination 4 -->
-                <div class="relative rounded-lg overflow-hidden h-64 group">
-                    <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f11?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1164&q=80" alt="Bandung" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                    <div class="absolute inset-0 bg-black opacity-40 group-hover:opacity-30 transition"></div>
-                    <div class="absolute bottom-0 left-0 p-6">
-                        <h3 class="text-xl font-bold text-white">Bandung</h3>
-                        <p class="text-white">532 properties</p>
+                <div class="relative rounded-3xl overflow-hidden h-80 group hover-lift">
+                    <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f11?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1164&q=80" 
+                         alt="Bandung" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-6 text-white">
+                        <h3 class="text-2xl font-bold mb-2">Bandung</h3>
+                        <p class="text-lg opacity-90">532 properties</p>
+                        <div class="flex items-center mt-2">
+                            <i class="fas fa-star text-yellow-400 mr-1"></i>
+                            <span class="text-sm">4.6 Rating</span>
+                        </div>
                     </div>
                     <a href="/search?location=Bandung" class="absolute inset-0"></a>
                 </div>
@@ -164,93 +269,124 @@
     </section>
 
     <!-- Why Choose Us -->
-    <section class="py-12">
+    <section class="py-20 gradient-bg">
         <div class="container mx-auto px-6">
-            <h2 class="text-3xl font-bold mb-8 text-center">Why Choose Stayo</h2>
+            <div class="text-center mb-16">
+                <h2 class="text-5xl font-bold text-white mb-4">Why Choose Stayo</h2>
+                <p class="text-xl text-white opacity-90 max-w-2xl mx-auto">Experience the difference with our premium services</p>
+            </div>
             
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
                 <!-- Feature 1 -->
-                <div class="text-center">
-                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-search text-blue-600 text-2xl"></i>
+                <div class="text-center group">
+                    <div class="bg-white w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition duration-300 shadow-lg">
+                        <i class="fas fa-dollar-sign text-purple-600 text-3xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Best Price Guarantee</h3>
-                    <p class="text-gray-600">Find a lower price? We'll match it and give you an additional 10% off.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Best Price Guarantee</h3>
+                    <p class="text-white opacity-90 text-lg leading-relaxed">Find a lower price? We'll match it and give you an additional 10% off your booking.</p>
                 </div>
                 
                 <!-- Feature 2 -->
-                <div class="text-center">
-                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-hotel text-blue-600 text-2xl"></i>
+                <div class="text-center group">
+                    <div class="bg-white w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition duration-300 shadow-lg">
+                        <i class="fas fa-shield-alt text-purple-600 text-3xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">Verified Properties</h3>
-                    <p class="text-gray-600">All properties are personally verified by our team for quality assurance.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-white">Verified Properties</h3>
+                    <p class="text-white opacity-90 text-lg leading-relaxed">All properties are personally verified by our expert team for quality assurance.</p>
                 </div>
                 
                 <!-- Feature 3 -->
-                <div class="text-center">
-                    <div class="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-headset text-blue-600 text-2xl"></i>
+                <div class="text-center group">
+                    <div class="bg-white w-20 h-20 rounded-3xl flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition duration-300 shadow-lg">
+                        <i class="fas fa-headset text-purple-600 text-3xl"></i>
                     </div>
-                    <h3 class="text-xl font-bold mb-2">24/7 Support</h3>
-                    <p class="text-gray-600">Our customer support team is available round the clock to assist you.</p>
+                    <h3 class="text-2xl font-bold mb-4 text-white">24/7 Support</h3>
+                    <p class="text-white opacity-90 text-lg leading-relaxed">Our dedicated customer support team is available round the clock to assist you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="py-20 bg-gray-50">
+        <div class="container mx-auto px-6">
+            <div class="max-w-4xl mx-auto text-center">
+                <h2 class="text-4xl font-bold text-gray-800 mb-4">Stay Updated</h2>
+                <p class="text-xl text-gray-600 mb-8">Subscribe to get special offers, travel tips, and exclusive deals</p>
+                <div class="flex flex-col md:flex-row max-w-lg mx-auto gap-4">
+                    <input type="email" placeholder="Enter your email address" 
+                           class="flex-1 px-6 py-4 border-2 border-gray-200 rounded-full focus:outline-none focus:border-purple-500 transition duration-300">
+                    <button class="btn-gradient text-white px-8 py-4 rounded-full font-bold whitespace-nowrap">
+                        Subscribe Now
+                    </button>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="bg-gray-800 text-white py-12">
+    <footer class="bg-gray-900 text-white py-16">
         <div class="container mx-auto px-6">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
                 <div>
-                    <h3 class="text-2xl font-bold mb-4">Stayo</h3>
-                    <p class="mb-4">Find your perfect hotel at the best prices. Guaranteed.</p>
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-bed text-3xl text-purple-400 mr-3"></i>
+                        <h3 class="text-3xl font-bold">Stayo</h3>
+                    </div>
+                    <p class="mb-6 text-gray-300 leading-relaxed">Find your perfect hotel at the best prices. Guaranteed satisfaction with every booking.</p>
                     <div class="flex space-x-4">
-                        <a href="#" class="text-white hover:text-blue-400"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="text-white hover:text-blue-400"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white hover:text-blue-400"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white hover:text-blue-400"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
                     </div>
                 </div>
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
-                    <ul class="space-y-2">
-                        <li><a href="/" class="text-gray-300 hover:text-white transition">Home</a></li>
-                        <li><a href="/hotels" class="text-gray-300 hover:text-white transition">Hotels</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">About Us</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Contact</a></li>
+                    <h4 class="text-xl font-semibold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/" class="text-gray-300 hover:text-purple-400 transition duration-300">Home</a></li>
+                        <li><a href="/hotels" class="text-gray-300 hover:text-purple-400 transition duration-300">Hotels</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">About Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Contact</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Support</h4>
-                    <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Help Center</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">FAQs</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Privacy Policy</a></li>
-                        <li><a href="#" class="text-gray-300 hover:text-white transition">Terms of Service</a></li>
+                    <h4 class="text-xl font-semibold mb-6">Support</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Help Center</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">FAQs</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Terms of Service</a></li>
                     </ul>
                 </div>
                 <div>
-                    <h4 class="text-lg font-semibold mb-4">Contact Us</h4>
-                    <ul class="space-y-2">
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt mt-1 mr-2"></i>
+                    <h4 class="text-xl font-semibold mb-6">Contact Us</h4>
+                    <ul class="space-y-4">
+                        <li class="flex items-start text-gray-300">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-purple-400"></i>
                             <span>123 Hotel Street, City, Country</span>
                         </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-phone-alt mt-1 mr-2"></i>
+                        <li class="flex items-start text-gray-300">
+                            <i class="fas fa-phone-alt mt-1 mr-3 text-purple-400"></i>
                             <span>+1 (555) 123-4567</span>
                         </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-envelope mt-1 mr-2"></i>
+                        <li class="flex items-start text-gray-300">
+                            <i class="fas fa-envelope mt-1 mr-3 text-purple-400"></i>
                             <span>info@stayo.com</span>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-700 mt-10 pt-6 text-center">
-                <p>&copy; 2023 Stayo. All rights reserved.</p>
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2023 Stayo. All rights reserved. Made with ❤️ for travelers worldwide.</p>
             </div>
         </div>
     </footer>
