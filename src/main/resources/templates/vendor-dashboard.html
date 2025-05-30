@@ -76,8 +76,46 @@
                 </div>
             </div>
 
+            <!-- Additional Statistics Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                            <i class="fas fa-bed text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-700">Total Rooms</h3>
+                            <p class="text-3xl font-bold text-yellow-600" th:text="${totalRooms}">0</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-red-100 text-red-600">
+                            <i class="fas fa-percentage text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-700">Occupancy Rate</h3>
+                            <p class="text-3xl font-bold text-red-600" th:text="${#numbers.formatDecimal(occupancyRate, 1, 1)} + '%'">0.0%</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-xl card-shadow p-6">
+                    <div class="flex items-center">
+                        <div class="p-3 rounded-full bg-indigo-100 text-indigo-600">
+                            <i class="fas fa-star text-2xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-semibold text-gray-700">Average Rating</h3>
+                            <p class="text-3xl font-bold text-indigo-600" th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">0.0</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Hotels List -->
-            <!-- Update bagian hotels list dengan tombol CRUD yang lebih lengkap -->
             <div class="bg-white rounded-xl card-shadow overflow-hidden">
                 <div class="p-6 border-b border-gray-200">
                     <div class="flex justify-between items-center">
@@ -101,7 +139,10 @@
                     <div th:each="hotel : ${hotels}" class="p-6 hover:bg-gray-50 transition">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center">
-                                <img th:src="${hotel.imageUrl}" th:alt="${hotel.name}" class="w-16 h-16 rounded-lg object-cover mr-4">
+                                <img th:if="${hotel.imageUrl}" th:src="@{'/images/hotels/' + ${hotel.imageUrl}}" th:alt="${hotel.name}" class="w-16 h-16 rounded-lg object-cover mr-4">
+                                <div th:unless="${hotel.imageUrl}" class="w-16 h-16 rounded-lg bg-gray-200 flex items-center justify-center mr-4">
+                                    <i class="fas fa-hotel text-gray-400 text-2xl"></i>
+                                </div>
                                 <div>
                                     <h3 class="text-lg font-semibold text-gray-800" th:text="${hotel.name}">Hotel Name</h3>
                                     <p class="text-gray-600"><i class="fas fa-map-marker-alt mr-1"></i><span th:text="${hotel.location}">Location</span></p>
@@ -115,17 +156,21 @@
                                     </div>
                                 </div>
                             </div>
+                            <!-- Dalam bagian action buttons untuk setiap hotel -->
                             <div class="flex space-x-2">
                                 <a th:href="@{/vendor/hotels/view/{id}(id=${hotel.id})}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
                                     <i class="fas fa-eye mr-1"></i> View
                                 </a>
-                                <a th:href="@{/vendor/hotels/edit/{id}(id=${hotel.id})}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
-                                    <i class="fas fa-edit mr-1"></i> Edit
+                                <a th:href="@{/vendor/hotels/{id}/rooms(id=${hotel.id})}" class="bg-purple-500 text-white px-3 py-1 rounded hover:bg-purple-600 transition">
+                                    <i class="fas fa-door-open mr-1"></i> Rooms
                                 </a>
-                                <a th:href="@{/vendor/hotels/delete/{id}(id=${hotel.id})}" 
-                                   onclick="return confirm('Are you sure you want to delete this hotel?')" 
+                                <a th:href="@{/vendor/hotels/edit/{id}(id=${hotel.id})}" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 transition">
+                                    <i class="fas fa-edit mr-1"></i> Edit Hotel
+                                </a>
+                                <a th:href="@{/vendor/hotels/close/{id}(id=${hotel.id})}" 
+                                   onclick="return confirm('Are you sure you want to permanently close this hotel? This action cannot be undone.')" 
                                    class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
-                                    <i class="fas fa-trash mr-1"></i> Delete
+                                    <i class="fas fa-door-closed mr-1"></i> Close Hotel
                                 </a>
                             </div>
                         </div>

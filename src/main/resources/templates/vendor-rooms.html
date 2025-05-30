@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Rooms - Stayo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-door-open text-3xl text-purple-600 mr-3"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">Manage Rooms</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a th:href="@{/vendor/hotels/view/{id}(id=${hotel.id})}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Hotel
+                    </a>
+                    <a href="/vendor/dashboard" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                        <i class="fas fa-tachometer-alt mr-1"></i> Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-12">
+        <div class="container mx-auto px-6">
+            <!-- Hotel Information -->
+            <div class="bg-white rounded-xl card-shadow overflow-hidden mb-8">
+                <div class="p-6 border-b border-gray-200">
+                    <div class="flex justify-between items-center">
+                        <div class="flex items-center">
+                            <img th:if="${hotel.imageUrl}" th:src="@{'/images/hotels/' + ${hotel.imageUrl}}" th:alt="${hotel.name}" class="w-16 h-16 rounded-lg object-cover mr-4">
+                            <div>
+                                <h2 class="text-2xl font-bold text-gray-800" th:text="${hotel.name}">Hotel Name</h2>
+                                <p class="text-gray-600"><i class="fas fa-map-marker-alt mr-1"></i><span th:text="${hotel.location}">Location</span></p>
+                            </div>
+                        </div>
+                        <a th:href="@{/vendor/hotels/{id}/rooms/add(id=${hotel.id})}" class="gradient-bg text-white px-4 py-2 rounded-lg hover:opacity-90 transition">
+                            <i class="fas fa-plus mr-1"></i> Add New Room
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Alert Messages -->
+            <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
+                <span th:text="${success}">Success message</span>
+            </div>
+            
+            <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
+                <span th:text="${error}">Error message</span>
+            </div>
+
+            <!-- Rooms List -->
+            <div class="bg-white rounded-xl card-shadow overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800">Rooms</h2>
+                </div>
+                
+                <div th:if="${#lists.isEmpty(rooms)}" class="p-8 text-center">
+                    <i class="fas fa-door-closed text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">No Rooms Yet</h3>
+                    <p class="text-gray-500 mb-4">Start by adding rooms to this hotel.</p>
+                    <a th:href="@{/vendor/hotels/{id}/rooms/add(id=${hotel.id})}" class="gradient-bg text-white px-6 py-3 rounded-lg hover:opacity-90 transition">
+                        <i class="fas fa-plus mr-2"></i> Add Your First Room
+                    </a>
+                </div>
+                
+                <div th:unless="${#lists.isEmpty(rooms)}" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 p-6">
+                    <div th:each="room : ${rooms}" class="bg-white rounded-lg shadow-md overflow-hidden border border-gray-200 hover:shadow-lg transition">
+                        <div class="relative h-48">
+                            <img th:if="${room.imageUrl}" th:src="@{'/images/hotels/' + ${room.imageUrl}}" th:alt="${room.type}" class="w-full h-full object-cover">
+                            <img th:unless="${room.imageUrl}" src="/images/room-placeholder.jpg" alt="Room" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-4">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-2" th:text="${room.type}">Room Type</h3>
+                            <p class="text-gray-600 mb-2" th:text="${room.description}">Room description</p>
+                            <div class="flex justify-between items-center mb-2">
+                                <span class="text-gray-600"><i class="fas fa-user mr-1"></i> <span th:text="${room.capacity}">2</span> Guests</span>
+                                <span class="text-xl font-bold text-green-600">$<span th:text="${#numbers.formatDecimal(room.pricePerNight, 1, 2)}">0.00</span>/night</span>
+                            </div>
+                            <div class="flex justify-between mt-4">
+                                <a th:href="@{/vendor/hotels/{hotelId}/rooms/edit/{roomId}(hotelId=${hotel.id},roomId=${room.id})}" class="bg-blue-500 text-white px-3 py-1 rounded hover:bg-blue-600 transition">
+                                    <i class="fas fa-edit mr-1"></i> Edit
+                                </a>
+                                <a th:href="@{/vendor/hotels/{hotelId}/rooms/delete/{roomId}(hotelId=${hotel.id},roomId=${room.id})}" 
+                                   onclick="return confirm('Are you sure you want to delete this room?')" 
+                                   class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition">
+                                    <i class="fas fa-trash mr-1"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
