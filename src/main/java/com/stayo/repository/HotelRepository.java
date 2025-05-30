@@ -13,4 +13,6 @@ public interface HotelRepository extends JpaRepository<Hotel, Long> {
     
     @Query("SELECT h FROM Hotel h WHERE h.name LIKE %?1% OR h.location LIKE %?1%")
     List<Hotel> searchHotels(String keyword);
+    
+    List<Hotel> findByVendorId(Long vendorId);
 }

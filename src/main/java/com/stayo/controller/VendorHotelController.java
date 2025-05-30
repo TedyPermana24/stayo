@@ -176,7 +176,6 @@ public class VendorHotelController {
     }
 
     @PostMapping("/hotels/edit/{id}")
-
     public String updateHotel(@PathVariable Long id,
             @ModelAttribute Hotel hotel,
             HttpSession session,
