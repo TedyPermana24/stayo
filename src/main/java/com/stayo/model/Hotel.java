@@ -104,23 +104,24 @@ public class Hotel {
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
     }
-    
+
     /**
      * Gets the lowest price among all rooms in this hotel.
+     * 
      * @return The lowest room price, or 0 if no rooms are available
      */
     public BigDecimal getLowestPrice() {
         if (rooms == null || rooms.isEmpty()) {
             return BigDecimal.ZERO;
         }
-        
+
         BigDecimal minPrice = null;
         for (Room room : rooms) {
             if (minPrice == null || room.getPricePerNight().compareTo(minPrice) < 0) {
                 minPrice = room.getPricePerNight();
             }
         }
-        
+
         return minPrice != null ? minPrice : BigDecimal.ZERO;
     }
 }
