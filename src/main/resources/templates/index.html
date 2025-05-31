@@ -47,11 +47,67 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
+        @keyframes pop {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); }
+            100% { transform: scale(1); }
+        }
+        .animate-pop {
+            animation: pop 0.3s;
+        }
+        
+        /* Sticky Search Form Styles */
+        .search-form-container {
+            transition: 
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .search-form-sticky {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 50;
+            /* transform: scale(1.03) translateY(0);  <-- Hapus animasi transform */
+            margin: 0;
+            border-radius: 0;
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.18), 0 4px 20px rgba(0,0,0,0.10);
+            background: rgba(255,255,255,0.98);
+            opacity: 0.98;
+            /* animation: stickyFadeIn 0.4s; <-- Hapus animasi keyframes */
+        }
+
+        @keyframes stickyFadeIn {
+            from { opacity: 0; }
+            to   { opacity: 0.98; }
+        }
+
+        .search-form-sticky .glass-effect {
+            border-radius: 0;
+            margin-top: 0 !important;
+            background: rgba(255,255,255,0.98);
+            box-shadow: none;
+        }
+
+        .search-form-original {
+            position: relative;
+            z-index: 10;
+            /* transform: scale(1) translateY(0); <-- Hapus animasi transform */
+            opacity: 1;
+            transition: 
+                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        /* ...existing code... */
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-blue-50">
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 overflow-x-hidden">
     <!-- Header/Navigation -->
-    <header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
+    <header class="glass-effect w-full shadow-lg relative z-50">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <div>
@@ -78,8 +134,8 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="relative pt-20">
-        <div class="h-screen bg-cover bg-center bg-fixed" style="background-image: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');">
+    <section class="relative ">
+        <div class="bg-cover bg-center bg-fixed relative z-0" style="height:83vh; background-image: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');">
             <div class="container mx-auto px-6 h-full flex items-center relative z-10">
                 <div class="max-w-2xl">
                     <h1 class="text-6xl font-bold text-white mb-6 leading-tight">Find Your Perfect Stay</h1>
@@ -97,49 +153,51 @@
         </div>
         
         <!-- Search Form -->
-        <div class="container mx-auto px-6 relative">
-            <div class="glass-effect rounded-3xl card-shadow p-8 -mt-24 mx-4">
-                <form action="/search" method="get" class="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                    <div class="space-y-2">
-                        <label for="location" class="block text-gray-700 font-semibold">
-                            <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>Destination
-                        </label>
-                        <input type="text" id="location" name="location" placeholder="Where are you going?" 
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="check-in" class="block text-gray-700 font-semibold">
-                            <i class="fas fa-calendar-alt mr-2 text-purple-600"></i>Check-in
-                        </label>
-                        <input type="date" id="check-in" name="checkIn" 
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="check-out" class="block text-gray-700 font-semibold">
-                            <i class="fas fa-calendar-check mr-2 text-purple-600"></i>Check-out
-                        </label>
-                        <input type="date" id="check-out" name="checkOut" 
-                               class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
-                    </div>
-                    <div class="space-y-2">
-                        <label for="guests" class="block text-gray-700 font-semibold">
-                            <i class="fas fa-users mr-2 text-purple-600"></i>Guests
-                        </label>
-                        <select id="guests" name="guests" 
-                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
-                            <option value="1">1 Guest</option>
-                            <option value="2" selected>2 Guests</option>
-                            <option value="3">3 Guests</option>
-                            <option value="4">4 Guests</option>
-                            <option value="5">5+ Guests</option>
-                        </select>
-                    </div>
-                    <div class="flex items-end">
-                        <button type="submit" class="w-full btn-gradient text-white py-4 rounded-xl font-bold text-lg">
-                            <i class="fas fa-search mr-2"></i>Search Hotels
-                        </button>
-                    </div>
-                </form>
+        <div class="container mx-auto px-6 relative z-10">
+            <div id="searchForm" class="search-form-container search-form-original">
+                <div class="glass-effect rounded-3xl card-shadow p-8 -mt-20 mx-4">
+                    <form action="/search" method="get" class="grid grid-cols-1 lg:grid-cols-5 gap-6">
+                        <div class="space-y-2">
+                            <label for="location" class="block text-gray-700 font-semibold">
+                                <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>Destination
+                            </label>
+                            <input type="text" id="location" name="location" placeholder="Where are you going?" 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="check-in" class="block text-gray-700 font-semibold">
+                                <i class="fas fa-calendar-alt mr-2 text-purple-600"></i>Check-in
+                            </label>
+                            <input type="date" id="check-in" name="checkIn" 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="check-out" class="block text-gray-700 font-semibold">
+                                <i class="fas fa-calendar-check mr-2 text-purple-600"></i>Check-out
+                            </label>
+                            <input type="date" id="check-out" name="checkOut" 
+                                   class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
+                        </div>
+                        <div class="space-y-2">
+                            <label for="guests" class="block text-gray-700 font-semibold">
+                                <i class="fas fa-users mr-2 text-purple-600"></i>Guests
+                            </label>
+                            <select id="guests" name="guests" 
+                                    class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
+                                <option value="1">1 Guest</option>
+                                <option value="2" selected>2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4 Guests</option>
+                                <option value="5">5+ Guests</option>
+                            </select>
+                        </div>
+                        <div class="flex items-end">
+                            <button type="submit" class="w-full btn-gradient text-white py-4 rounded-xl font-bold text-lg">
+                                <i class="fas fa-search mr-2"></i>Search Hotels
+                            </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </section>
@@ -158,8 +216,10 @@
                     <div class="bg-white rounded-3xl card-shadow overflow-hidden hover-lift">
                         <div class="relative">
                             <img th:src="${hotel.imageUrl}" th:alt="${hotel.name}" class="w-full h-64 object-cover">
-                            <div class="absolute top-4 right-4 bg-white rounded-full p-2 shadow-lg">
-                                <i class="fas fa-heart text-gray-400 hover:text-red-500 cursor-pointer transition duration-300"></i>
+                            <div class="absolute top-4 right-4 bg-gradient-to-br from-purple-600 to-indigo-500 rounded-full p-2 shadow-lg flex items-center justify-center" style="height: 2.5rem; width: 2.5rem;">
+                                <i class="fas fa-heart text-white hover:text-yellow-300 cursor-pointer transition duration-300"
+                                   style="font-size: 1.25rem;"
+                                   onclick="this.classList.toggle('text-yellow-300'); this.classList.toggle('text-white'); this.classList.add('animate-pop'); setTimeout(() => this.classList.remove('animate-pop'), 300);"></i>
                             </div>
                             <div class="absolute bottom-4 left-4 bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
                                 Featured
@@ -390,5 +450,69 @@
             </div>
         </div>
     </footer>
+
+    <script>
+        // Sticky Search Form Script
+        let searchForm = document.getElementById('searchForm');
+        let searchFormOriginalContent = searchForm.innerHTML;
+        let isSticky = false;
+        let searchFormRect = searchForm.getBoundingClientRect();
+        let searchFormOffsetTop = searchFormRect.top + window.pageYOffset;
+
+        // Create a placeholder to maintain layout when form becomes sticky
+        let placeholder = document.createElement('div');
+        placeholder.style.height = searchFormRect.height + 'px';
+        placeholder.style.visibility = 'hidden';
+
+        function handleScroll() {
+            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+            
+            // Check if we should make the form sticky
+            if (scrollTop >= searchFormOffsetTop && !isSticky) {
+                // Make sticky
+                isSticky = true;
+                searchForm.classList.remove('search-form-original');
+                searchForm.classList.add('search-form-sticky');
+                
+                // Insert placeholder to maintain layout
+                searchForm.parentNode.insertBefore(placeholder, searchForm);
+                
+            } else if (scrollTop < searchFormOffsetTop && isSticky) {
+                // Remove sticky
+                isSticky = false;
+                searchForm.classList.remove('search-form-sticky');
+                searchForm.classList.add('search-form-original');
+                
+                // Remove placeholder
+                if (placeholder.parentNode) {
+                    placeholder.parentNode.removeChild(placeholder);
+                }
+            }
+        }
+
+        // Throttle scroll events for better performance
+        let ticking = false;
+        function requestTick() {
+            if (!ticking) {
+                requestAnimationFrame(handleScroll);
+                ticking = true;
+                setTimeout(() => { ticking = false; }, 16); // ~60fps
+            }
+        }
+
+        window.addEventListener('scroll', requestTick);
+        
+        // Recalculate positions on window resize
+        window.addEventListener('resize', function() {
+            if (!isSticky) {
+                searchFormRect = searchForm.getBoundingClientRect();
+                searchFormOffsetTop = searchFormRect.top + window.pageYOffset;
+                placeholder.style.height = searchFormRect.height + 'px';
+            }
+        });
+
+        // Set initial placeholder height
+        placeholder.style.height = searchForm.offsetHeight + 'px';
+    </script>
 </body>
 </html>
