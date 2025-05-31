@@ -33,6 +33,10 @@ public class HotelService {
         return hotelRepository.findByLocationContainingIgnoreCase(location);
     }
     
+    public List<Hotel> getHotelsByVendorId(Long vendorId) {
+        return hotelRepository.findByVendorId(vendorId);
+    }
+    
     public Hotel saveHotel(Hotel hotel) {
         return hotelRepository.save(hotel);
     }

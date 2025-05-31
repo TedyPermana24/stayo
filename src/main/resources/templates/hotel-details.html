@@ -92,7 +92,7 @@
             <!-- Hotel Header -->
             <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-8">
                 <div class="relative h-96">
-                    <img th:src="${hotel.imageUrl}" th:alt="${hotel.name}" class="w-full h-full object-cover">
+                    <img th:if="${hotel.imageUrl}" th:src="@{'/images/hotels/' + ${hotel.imageUrl}}" th:alt="${hotel.name}" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                     <div class="absolute bottom-0 left-0 p-8">
                         <h1 class="text-4xl font-bold text-white mb-2" th:text="${hotel.name}">Hotel Name</h1>
@@ -108,7 +108,7 @@
                 <div class="p-8">
                     <div class="flex flex-wrap gap-4 mb-6">
                         <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
-                            <i class="fas fa-star mr-1"></i> <span th:text="${#numbers.formatDecimal(hotel.averageRating, 1, 1)}">9.2</span>/10 Rating
+                            <i class="fas fa-star mr-1"></i> <span th:text="${#numbers.formatDecimal(hotel.averageRating, 1, 1)}"> </span>/5 Rating
                         </div>
                         <div class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                             <i class="fas fa-wifi mr-1"></i> Free WiFi
@@ -175,10 +175,10 @@
                                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                                 <option value="">-- Select a room --</option>
                                 <th:block th:if="${availableRooms != null}">
-                                    <option th:each="room : ${availableRooms}" th:value="${room.id}" th:text="${room.type + ' - $' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
+                                    <option th:each="room : ${availableRooms}" th:value="${room.id}" th:text="${room.type + ' - Rp. ' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
                                 </th:block>
                                 <th:block th:unless="${availableRooms != null}">
-                                    <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.type + ' - $' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
+                                    <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.type + ' - Rp. ' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
                                 </th:block>
                             </select>
                         </div>
@@ -217,7 +217,7 @@
                                         </span>
                                     </div>
                                     <div class="flex justify-between items-center">
-                                        <p class="text-purple-600 font-bold text-xl">$<span th:text="${room.pricePerNight}">Price</span> <span class="text-sm text-gray-500">per night</span></p>
+                                        <p class="text-purple-600 font-bold text-xl">Rp. <span th:text="${room.pricePerNight}">Price</span> <span class="text-sm text-gray-500">per night</span></p>
                                         <button th:attr="onclick='selectRoom(\'' + ${room.id} + '\')'" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Select</button>
                                     </div>
                                 </div>

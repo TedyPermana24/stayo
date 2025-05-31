@@ -20,7 +20,7 @@ public class Hotel {
 
     private String description;
 
-    private int stars;
+    private Integer stars;
 
     private String imageUrl;
 
@@ -30,7 +30,7 @@ public class Hotel {
     @OneToMany(mappedBy = "hotel", cascade = CascadeType.ALL)
     private List<Review> reviews;
 
-    private double averageRating;
+    private Double averageRating;
 
     // Getters and Setters
     public Long getId() {
@@ -65,11 +65,11 @@ public class Hotel {
         this.description = description;
     }
 
-    public int getStars() {
+    public Integer getStars() {
         return stars;
     }
 
-    public void setStars(int stars) {
+    public void setStars(Integer stars) {
         this.stars = stars;
     }
 
@@ -97,30 +97,44 @@ public class Hotel {
         this.reviews = reviews;
     }
 
-    public double getAverageRating() {
+    public Double getAverageRating() {
         return averageRating;
     }
 
     public void setAverageRating(double averageRating) {
         this.averageRating = averageRating;
     }
-    
+
     /**
      * Gets the lowest price among all rooms in this hotel.
+     * 
      * @return The lowest room price, or 0 if no rooms are available
      */
     public BigDecimal getLowestPrice() {
         if (rooms == null || rooms.isEmpty()) {
             return BigDecimal.ZERO;
         }
-        
+
         BigDecimal minPrice = null;
         for (Room room : rooms) {
             if (minPrice == null || room.getPricePerNight().compareTo(minPrice) < 0) {
                 minPrice = room.getPricePerNight();
             }
         }
-        
+
         return minPrice != null ? minPrice : BigDecimal.ZERO;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "vendor_id")
+    private VendorHotel vendor;
+
+    // Add getter and setter
+    public VendorHotel getVendor() {
+        return vendor;
+    }
+
+    public void setVendor(VendorHotel vendor) {
+        this.vendor = vendor;
     }
 }

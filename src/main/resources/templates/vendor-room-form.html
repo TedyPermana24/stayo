@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${room.id != null ? 'Edit Room' : 'Add Room'}">Room Form - Stayo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-door-open text-3xl text-purple-600 mr-3"></i>
+                    <h1 class="text-2xl font-bold text-gray-800" th:text="${room.id != null ? 'Edit Room' : 'Add New Room'}">Room Form</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a th:href="@{/vendor/hotels/{id}/rooms(id=${hotel.id})}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Rooms
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-12">
+        <div class="container mx-auto px-6">
+            <div class="max-w-2xl mx-auto">
+                <!-- Alert Messages -->
+                <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
+                    <span th:text="${success}">Success message</span>
+                </div>
+                
+                <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
+                    <span th:text="${error}">Error message</span>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-8">
+                        <form th:action="@{${room.id != null} ? '/vendor/hotels/' + ${hotel.id} + '/rooms/edit/' + ${room.id} : '/vendor/hotels/' + ${hotel.id} + '/rooms/add'}" method="POST" th:object="${room}" enctype="multipart/form-data">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Room Type</label>
+                                    <input type="text" id="type" name="type" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                           placeholder="e.g. Standard, Deluxe, Suite" th:field="*{type}">
+                                </div>
+                                
+                                <div>
+                                    <label for="capacity" class="block text-sm font-medium text-gray-700 mb-2">Capacity (Guests)</label>
+                                    <input type="number" id="capacity" name="capacity" required min="1" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                           placeholder="Number of guests" th:field="*{capacity}">
+                                </div>
+                                
+                                <div>
+                                    <label for="pricePerNight" class="block text-sm font-medium text-gray-700 mb-2">Price Per Night (Rp)</label>
+                                    <input type="number" id="pricePerNight" name="pricePerNight" required step="0.01" min="0" 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                           placeholder="Price per night" th:field="*{pricePerNight}">
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">Room Image</label>
+                                    <input type="file" id="imageFile" name="imageFile" accept="image/*"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <div th:if="${room.imageUrl != null}" class="mt-2">
+                                        <p class="text-sm text-gray-600">Current image:</p>
+                                        <img th:src="@{'/images/hotels/' + ${room.imageUrl}}" alt="Room Image" class="mt-2 h-32 object-cover rounded">
+                                        <input type="hidden" name="imageUrl" th:value="${room.imageUrl}">
+                                    </div>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                    <textarea id="description" name="description" rows="4" 
+                                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                              placeholder="Room description" th:field="*{description}"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end space-x-4 mt-8">
+                                <a th:href="@{/vendor/hotels/{id}/rooms(id=${hotel.id})}" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="px-6 py-3 btn-gradient text-white rounded-lg hover:opacity-90 transition">
+                                    <i class="fas fa-save mr-2"></i>
+                                    <span th:text="${room.id != null ? 'Update Room' : 'Add Room'}">Save Room</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>
