@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${hotel.id != null ? 'Edit Hotel' : 'Add Hotel'}">Hotel Form - Stayo</title>
+    <title>Edit Hotel - Stayo</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -22,7 +22,7 @@
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center">
                     <i class="fas fa-building text-3xl text-purple-600 mr-3"></i>
-                    <h1 class="text-2xl font-bold text-gray-800" th:text="${hotel.id != null ? 'Edit Hotel' : 'Add New Hotel'}">Hotel Form</h1>
+                    <h1 class="text-2xl font-bold text-gray-800">Edit Hotel</h1>
                 </div>
                 <div class="flex items-center space-x-4">
                     <a href="/vendor/dashboard" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
@@ -48,7 +48,7 @@
                 
                 <div class="bg-white rounded-xl shadow-lg overflow-hidden">
                     <div class="p-8">
-                        <form th:action="@{${hotel.id != null} ? '/vendor/hotels/edit/' + ${hotel.id} : '/vendor/hotels/add'}" method="POST" th:object="${hotel}" enctype="multipart/form-data">
+                        <form th:action="@{'/vendor/hotels/edit/' + ${hotel.id}}" method="POST" th:object="${hotel}" enctype="multipart/form-data">
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                                 <div class="md:col-span-2">
                                     <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Hotel Name</label>
@@ -94,7 +94,7 @@
                                 </a>
                                 <button type="submit" class="px-6 py-3 btn-gradient text-white rounded-lg hover:opacity-90 transition">
                                     <i class="fas fa-save mr-2"></i>
-                                    <span th:text="${hotel.id != null ? 'Update Hotel' : 'Add Hotel'}">Save Hotel</span>
+                                    Update Hotel
                                 </button>
                             </div>
                         </form>

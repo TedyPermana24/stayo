@@ -239,7 +239,7 @@
                             <div class="flex justify-between items-center">
                                 <div>
                                     <p class="text-gray-500 text-sm">Starting from</p>
-                                    <p class="text-purple-600 font-bold text-2xl">$<span th:text="${hotel.lowestPrice}">Price</span><span class="text-sm text-gray-500">/night</span></p>
+                                    <p class="text-purple-600 font-bold text-2xl">Rp. <span th:text="${hotel.lowestPrice}">Price</span><span class="text-sm text-gray-500">/night</span></p>
                                 </div>
                                 <a th:href="@{/hotels/{id}(id=${hotel.id})}" class="btn-gradient text-white px-6 py-3 rounded-full font-medium">
                                     View Details

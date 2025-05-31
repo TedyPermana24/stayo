@@ -1,7 +1,17 @@
 package com.stayo.model;
 
-import jakarta.persistence.*;
 import java.util.List;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
@@ -22,6 +32,10 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role = Role.USER; // Default role
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Booking> bookings;
@@ -67,11 +81,30 @@ public class User {
         this.password = password;
     }
 
-    public List<Booking> getBookings() {
-        return bookings;
+    // Getter and Setter for role
+    public Role getRole() {
+        return role;
     }
-
-    public void setBookings(List<Booking> bookings) {
-        this.bookings = bookings;
+    
+    public void setRole(Role role) {
+        this.role = role;
+    }
+    
+    // Helper methods
+    public boolean isAdmin() {
+        return this.role == Role.ADMIN;
+    }
+    
+    public boolean isVendor() {
+        return this.role == Role.VENDOR;
+    }
+    
+    public boolean isUser() {
+        return this.role == Role.USER;
+    }
+    
+    // Role enum
+    public enum Role {
+        USER, ADMIN, VENDOR
     }
 }
