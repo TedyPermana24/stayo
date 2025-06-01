@@ -85,13 +85,21 @@
         <div class="bg-white rounded-3xl card-shadow overflow-hidden">
             <!-- Profile header -->
             <div class="p-8 border-b border-gray-200 flex items-center gradient-bg text-white">
-                <div class="w-20 h-20 rounded-full overflow-hidden mr-6 border-4 border-white shadow-lg">
-                    <img src="/images/default-profile.jpg" alt="Profile Picture" class="w-full h-full object-cover">
+                <div class="relative w-20 h-20 rounded-full overflow-hidden mr-6 border-4 border-white shadow-lg">
+                    <img th:src="${profilePicture != null ? profilePicture : 'https://via.placeholder.com/150x150/667eea/ffffff?text=User'}" alt="Profile Picture" class="w-full h-full object-cover" id="profile-image">
+                    <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer" onclick="document.getElementById('profile-picture-input').click()">
+                        <i class="fas fa-camera text-white text-lg"></i>
+                    </div>
                 </div>
                 <div>
                     <h1 class="text-2xl font-bold" th:text="${firstName + ' ' + lastName}">John Doe</h1>
                     <p class="text-white opacity-90" th:text="${email}">john.doe@example.com</p>
                 </div>
+                
+                <!-- Hidden file input for profile picture -->
+                <form id="profile-picture-form" th:action="@{/profile/update-profile-picture}" method="post" enctype="multipart/form-data" class="hidden">
+                    <input type="file" id="profile-picture-input" name="profilePicture" accept="image/*" onchange="uploadProfilePicture()">
+                </form>
             </div>
             
             <!-- Profile tabs -->
@@ -308,6 +316,24 @@
                 });
             });
         });
+        
+        // Profile picture upload functionality
+        function uploadProfilePicture() {
+            const form = document.getElementById('profile-picture-form');
+            const fileInput = document.getElementById('profile-picture-input');
+            
+            if (fileInput.files && fileInput.files[0]) {
+                // Preview image before upload
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    document.getElementById('profile-image').src = e.target.result;
+                };
+                reader.readAsDataURL(fileInput.files[0]);
+                
+                // Submit form
+                form.submit();
+            }
+        }
     </script>
 </body>
 </html>
