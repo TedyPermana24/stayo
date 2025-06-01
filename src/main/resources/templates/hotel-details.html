@@ -110,17 +110,36 @@
                         <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
                             <i class="fas fa-star mr-1"></i> <span th:text="${#numbers.formatDecimal(hotel.averageRating, 1, 1)}">9.2</span>/10 Rating
                         </div>
-                        <div class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                        <!-- Tampilkan fitur hanya jika tersedia -->
+                        <div th:if="${hotel.hasWifi}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                             <i class="fas fa-wifi mr-1"></i> Free WiFi
                         </div>
-                        <div class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                        <div th:if="${hotel.hasBreakfast}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                             <i class="fas fa-utensils mr-1"></i> Breakfast included
                         </div>
-                        <div class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                        <div th:if="${hotel.hasSwimmingPool}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                             <i class="fas fa-swimming-pool mr-1"></i> Swimming pool
                         </div>
-                        <div class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                        <div th:if="${hotel.hasParking}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                             <i class="fas fa-parking mr-1"></i> Free parking
+                        </div>
+                        <div th:if="${hotel.hasRestaurant}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-utensils mr-1"></i> Restaurant
+                        </div>
+                        <div th:if="${hotel.hasRoomService}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-concierge-bell mr-1"></i> Room Service
+                        </div>
+                        <div th:if="${hotel.hasFitnessCenter}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-dumbbell mr-1"></i> Fitness Center
+                        </div>
+                        <div th:if="${hotel.hasSpa}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-spa mr-1"></i> Spa
+                        </div>
+                        <div th:if="${hotel.isPetFriendly}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-paw mr-1"></i> Pet Friendly
+                        </div>
+                        <div th:if="${hotel.hasAirConditioning}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-snowflake mr-1"></i> Air Conditioning
                         </div>
                     </div>
                     
@@ -209,11 +228,36 @@
                                         <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                                             <i class="fas fa-user-friends mr-1"></i> <span th:text="${room.capacity}">2</span> guests
                                         </span>
-                                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                        <!-- Dynamic room amenities -->
+                                        <span th:if="${room.hasKingBed}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                                             <i class="fas fa-bed mr-1"></i> King bed
                                         </span>
-                                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                        <span th:if="${room.hasQueenBed}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-bed mr-1"></i> Queen bed
+                                        </span>
+                                        <span th:if="${room.hasTwinBeds}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-bed mr-1"></i> Twin beds
+                                        </span>
+                                        <span th:if="${room.hasPrivateBathroom}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                                             <i class="fas fa-bath mr-1"></i> Private bathroom
+                                        </span>
+                                        <span th:if="${room.hasTV}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-tv mr-1"></i> TV
+                                        </span>
+                                        <span th:if="${room.hasMinibar}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-glass-martini-alt mr-1"></i> Minibar
+                                        </span>
+                                        <span th:if="${room.hasBalcony}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-door-open mr-1"></i> Balcony
+                                        </span>
+                                        <span th:if="${room.hasAirConditioning}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-snowflake mr-1"></i> Air conditioning
+                                        </span>
+                                        <span th:if="${room.hasWifi}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-wifi mr-1"></i> Free WiFi
+                                        </span>
+                                        <span th:if="${room.hasSafetyDeposit}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-lock mr-1"></i> Safety deposit
                                         </span>
                                     </div>
                                     <div class="flex justify-between items-center">

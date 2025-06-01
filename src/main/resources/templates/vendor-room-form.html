@@ -82,7 +82,53 @@
                                     </div>
                                 </div>
                                 
-                                <div class="md:col-span-2">
+                                <div class="md:col-span-2 mt-6">
+                                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Room Amenities</h3>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasPrivateBathroom" name="hasPrivateBathroom" th:field="*{hasPrivateBathroom}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasPrivateBathroom" class="ml-2 block text-sm text-gray-700">Private Bathroom</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasKingBed" name="hasKingBed" th:field="*{hasKingBed}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasKingBed" class="ml-2 block text-sm text-gray-700">King Bed</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasQueenBed" name="hasQueenBed" th:field="*{hasQueenBed}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasQueenBed" class="ml-2 block text-sm text-gray-700">Queen Bed</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasTwinBeds" name="hasTwinBeds" th:field="*{hasTwinBeds}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasTwinBeds" class="ml-2 block text-sm text-gray-700">Twin Beds</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasTV" name="hasTV" th:field="*{hasTV}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasTV" class="ml-2 block text-sm text-gray-700">TV</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasMinibar" name="hasMinibar" th:field="*{hasMinibar}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasMinibar" class="ml-2 block text-sm text-gray-700">Minibar</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasBalcony" name="hasBalcony" th:field="*{hasBalcony}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasBalcony" class="ml-2 block text-sm text-gray-700">Balcony</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasAirConditioning" name="hasAirConditioning" th:field="*{hasAirConditioning}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasAirConditioning" class="ml-2 block text-sm text-gray-700">Air Conditioning</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasWifi" name="hasWifi" th:field="*{hasWifi}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasWifi" class="ml-2 block text-sm text-gray-700">WiFi</label>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasSafetyDeposit" name="hasSafetyDeposit" th:field="*{hasSafetyDeposit}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasSafetyDeposit" class="ml-2 block text-sm text-gray-700">Safety Deposit Box</label>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
                                     <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
                                     <textarea id="description" name="description" rows="4" 
                                               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"

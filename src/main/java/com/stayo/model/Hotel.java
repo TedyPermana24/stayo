@@ -137,4 +137,97 @@ public class Hotel {
     public void setVendor(VendorHotel vendor) {
         this.vendor = vendor;
     }
+
+    // Hotel amenities/features
+    private boolean hasWifi;
+    private boolean hasBreakfast;
+    private boolean hasSwimmingPool;
+    private boolean hasParking;
+    private boolean hasRestaurant;
+    private boolean hasRoomService;
+    private boolean hasFitnessCenter;
+    private boolean hasSpa;
+    private boolean isPetFriendly;
+    private boolean hasAirConditioning;
+    
+    // Getters and Setters for amenities
+    public boolean isHasWifi() {
+        return hasWifi;
+    }
+
+    public void setHasWifi(boolean hasWifi) {
+        this.hasWifi = hasWifi;
+    }
+
+    public boolean isHasBreakfast() {
+        return hasBreakfast;
+    }
+
+    public void setHasBreakfast(boolean hasBreakfast) {
+        this.hasBreakfast = hasBreakfast;
+    }
+
+    public boolean isHasSwimmingPool() {
+        return hasSwimmingPool;
+    }
+
+    public void setHasSwimmingPool(boolean hasSwimmingPool) {
+        this.hasSwimmingPool = hasSwimmingPool;
+    }
+
+    public boolean isHasParking() {
+        return hasParking;
+    }
+
+    public void setHasParking(boolean hasParking) {
+        this.hasParking = hasParking;
+    }
+
+    public boolean isHasRestaurant() {
+        return hasRestaurant;
+    }
+
+    public void setHasRestaurant(boolean hasRestaurant) {
+        this.hasRestaurant = hasRestaurant;
+    }
+
+    public boolean isHasRoomService() {
+        return hasRoomService;
+    }
+
+    public void setHasRoomService(boolean hasRoomService) {
+        this.hasRoomService = hasRoomService;
+    }
+
+    public boolean isHasFitnessCenter() {
+        return hasFitnessCenter;
+    }
+
+    public void setHasFitnessCenter(boolean hasFitnessCenter) {
+        this.hasFitnessCenter = hasFitnessCenter;
+    }
+
+    public boolean isHasSpa() {
+        return hasSpa;
+    }
+
+    public void setHasSpa(boolean hasSpa) {
+        this.hasSpa = hasSpa;
+    }
+
+    public boolean isPetFriendly() {
+        return isPetFriendly;
+    }
+
+    public void setPetFriendly(boolean petFriendly) {
+        isPetFriendly = petFriendly;
+    }
+
+    public boolean isHasAirConditioning() {
+        return hasAirConditioning;
+    }
+
+    public void setHasAirConditioning(boolean hasAirConditioning) {
+        this.hasAirConditioning = hasAirConditioning;
+    }
 }

@@ -7,6 +7,7 @@ import com.stayo.model.*;
 import com.stayo.service.BookingService;
 import com.stayo.service.HotelService;
 import com.stayo.service.RoomService;
+import com.stayo.service.UserService;
 import com.stayo.service.VendorHotelService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,9 @@ public class VendorHotelController {
     // Define the upload directory
     private final String UPLOAD_DIR = "src/main/resources/static/images/hotels/";
 
+    @Autowired
+    private UserService userService;
+
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("vendorForm", new VendorRegistrationForm());
@@ -50,38 +54,21 @@ public class VendorHotelController {
 
     @PostMapping("/register")
     public String registerVendor(@ModelAttribute VendorRegistrationForm vendorForm,
-            @RequestParam("imageFile") MultipartFile imageFile,
             RedirectAttributes redirectAttributes) {
         try {
-            // Register vendor first
+            // Register user with VENDOR role
+            User user = vendorForm.getUser();
+            user.setRole(Role.VENDOR);
+            user = userService.registerUser(user);
+
+            // Register vendor profile
             VendorHotel vendor = vendorForm.getVendor();
+            vendor.setUser(user);
             vendor = vendorHotelService.registerVendor(vendor);
 
-            // Then create hotel
-            Hotel hotel = vendorForm.getHotel();
-            hotel.setVendor(vendor);
-            hotel.setStars(5); // Default value
-            hotel.setAverageRating(0.0); // Default value
-
-            // Handle file upload if a file was selected
-            if (!imageFile.isEmpty()) {
-                String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
-                Path uploadPath = Paths.get(UPLOAD_DIR);
-
-                // Create directory if it doesn't exist
-                if (!Files.exists(uploadPath)) {
-                    Files.createDirectories(uploadPath);
-                }
-
-                // Save the file
-                Path filePath = uploadPath.resolve(fileName);
-                Files.copy(imageFile.getInputStream(), filePath);
-
-                // Set the image URL to the file name
-                hotel.setImageUrl(fileName);
-            }
-
-            hotelService.saveHotel(hotel);
+            // Set bidirectional relationship
+            user.setVendorProfile(vendor);
+            userService.updateUser(user);
 
             redirectAttributes.addFlashAttribute("success",
                     "Registration successful! Your application is under review.");
@@ -102,15 +89,31 @@ public class VendorHotelController {
             @RequestParam String password,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
-        Optional<VendorHotel> vendorOpt = vendorHotelService.authenticateVendor(email, password);
-        if (vendorOpt.isPresent()) {
-            session.setAttribute("vendor", vendorOpt.get());
-            return "redirect:/vendor/dashboard";
+        // First authenticate as a user
+        if (userService.authenticate(email, password)) {
+            User user = userService.findByEmail(email).get();
+
+            // Check if user has VENDOR role
+            if (user.getRole() == Role.VENDOR) {
+                // Get vendor profile
+                VendorHotel vendor = user.getVendorProfile();
+
+                // Check if vendor is approved
+                if (vendor != null && vendor.getStatus() == VendorStatus.APPROVED) {
+                    session.setAttribute("vendor", vendor);
+                    session.setAttribute("user", user);
+                    return "redirect:/vendor/dashboard";
+                } else {
+                    redirectAttributes.addFlashAttribute("error",
+                            "Your vendor account is not approved yet. Please wait for admin approval.");
+                }
+            } else {
+                redirectAttributes.addFlashAttribute("error", "You don't have vendor privileges.");
+            }
         } else {
-            redirectAttributes.addFlashAttribute("error",
-                    "Invalid credentials or account not approved yet");
-            return "redirect:/vendor/signin";
+            redirectAttributes.addFlashAttribute("error", "Invalid credentials.");
         }
+        return "redirect:/vendor/signin";
     }
 
     @GetMapping("/dashboard")
@@ -130,32 +133,33 @@ public class VendorHotelController {
         int totalRooms = 0;
         double totalRating = 0.0;
         int hotelWithRatings = 0;
-        
+
         for (Hotel hotel : hotels) {
             List<Booking> hotelBookings = bookingService.getBookingsByHotelId(hotel.getId());
             totalBookings += hotelBookings.size();
             for (Booking booking : hotelBookings) {
                 totalRevenue += booking.getTotalPrice().doubleValue();
             }
-            
+
             // Count total rooms
             List<Room> hotelRooms = roomService.getRoomsByHotelId(hotel.getId());
             totalRooms += hotelRooms.size();
-            
+
             // Calculate average rating
             if (hotel.getAverageRating() != null && hotel.getAverageRating() > 0) {
                 totalRating += hotel.getAverageRating();
                 hotelWithRatings++;
             }
         }
-        
+
         // Calculate occupancy rate
         double occupancyRate = 0.0;
         if (totalRooms > 0) {
             occupancyRate = (double) totalBookings / totalRooms * 100;
-            if (occupancyRate > 100) occupancyRate = 100.0; // Cap at 100%
+            if (occupancyRate > 100)
+                occupancyRate = 100.0; // Cap at 100%
         }
-        
+
         // Calculate average rating across all hotels
         double averageRating = 0.0;
         if (hotelWithRatings > 0) {
@@ -278,8 +282,8 @@ public class VendorHotelController {
         return "redirect:/vendor/dashboard";
     }
 
-    @GetMapping("/hotels/delete/{id}")
-    public String deleteHotel(@PathVariable Long id,
+    @GetMapping("/hotels/close/{id}")
+    public String closeHotel(@PathVariable Long id,
             HttpSession session,
             RedirectAttributes redirectAttributes) {
         VendorHotel vendor = (VendorHotel) session.getAttribute("vendor");
@@ -294,15 +298,15 @@ public class VendorHotelController {
                 // Check if hotel belongs to this vendor
                 if (hotel.getVendor() != null && hotel.getVendor().getId().equals(vendor.getId())) {
                     hotelService.deleteHotel(id);
-                    redirectAttributes.addFlashAttribute("success", "Hotel deleted successfully!");
+                    redirectAttributes.addFlashAttribute("success", "Hotel closed successfully!");
                 } else {
-                    redirectAttributes.addFlashAttribute("error", "You don't have permission to delete this hotel.");
+                    redirectAttributes.addFlashAttribute("error", "You don't have permission to close this hotel.");
                 }
             } else {
                 redirectAttributes.addFlashAttribute("error", "Hotel not found.");
             }
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("error", "Error deleting hotel: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("error", "Error closing hotel: " + e.getMessage());
         }
 
         return "redirect:/vendor/dashboard";
@@ -325,14 +329,15 @@ public class VendorHotelController {
             if (hotel.getVendor() != null && hotel.getVendor().getId().equals(vendor.getId())) {
                 List<Booking> hotelBookings = bookingService.getBookingsByHotelId(hotel.getId());
                 List<Room> hotelRooms = roomService.getRoomsByHotelId(hotel.getId());
-                
+
                 // Calculate occupancy rate for this hotel
                 double occupancyRate = 0.0;
                 if (hotelRooms.size() > 0) {
                     occupancyRate = (double) hotelBookings.size() / hotelRooms.size() * 100;
-                    if (occupancyRate > 100) occupancyRate = 100.0; // Cap at 100%
+                    if (occupancyRate > 100)
+                        occupancyRate = 100.0; // Cap at 100%
                 }
-                
+
                 // Calculate total revenue for this hotel
                 double totalRevenue = 0.0;
                 for (Booking booking : hotelBookings) {
@@ -618,6 +623,64 @@ public class VendorHotelController {
         }
 
         return "redirect:/vendor/hotels/" + hotelId + "/rooms";
+    }
+
+    @GetMapping("/hotels/add")
+    public String showAddHotelForm(HttpSession session, Model model, RedirectAttributes redirectAttributes) {
+        VendorHotel vendor = (VendorHotel) session.getAttribute("vendor");
+        if (vendor == null) {
+            return "redirect:/vendor/signin";
+        }
+
+        Hotel hotel = new Hotel();
+        hotel.setVendor(vendor);
+        hotel.setStars(0);
+        hotel.setAverageRating(0.0);
+
+        model.addAttribute("hotel", hotel);
+        model.addAttribute("vendor", vendor);
+        return "vendor-hotel-form";
+    }
+
+    @PostMapping("/hotels/add")
+    public String addHotel(@ModelAttribute Hotel hotel,
+            @RequestParam("imageFile") MultipartFile imageFile,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+        VendorHotel vendor = (VendorHotel) session.getAttribute("vendor");
+        if (vendor == null) {
+            return "redirect:/vendor/signin";
+        }
+
+        try {
+            // Set vendor for the hotel
+            hotel.setVendor(vendor);
+
+            // Handle file upload if a file was selected
+            if (!imageFile.isEmpty()) {
+                String fileName = UUID.randomUUID().toString() + "_" + imageFile.getOriginalFilename();
+                Path uploadPath = Paths.get(UPLOAD_DIR);
+
+                // Create directory if it doesn't exist
+                if (!Files.exists(uploadPath)) {
+                    Files.createDirectories(uploadPath);
+                }
+
+                // Save the file
+                Path filePath = uploadPath.resolve(fileName);
+                Files.copy(imageFile.getInputStream(), filePath);
+
+                // Set the image URL to the file name
+                hotel.setImageUrl(fileName);
+            }
+
+            hotelService.saveHotel(hotel);
+            redirectAttributes.addFlashAttribute("success", "Hotel added successfully!");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Error adding hotel: " + e.getMessage());
+        }
+
+        return "redirect:/vendor/dashboard";
     }
 
     @GetMapping("/signout")

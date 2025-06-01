@@ -4,9 +4,9 @@ import com.stayo.model.VendorHotel;
 import com.stayo.model.VendorStatus;
 import com.stayo.repository.VendorHotelRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-// Hapus import BCryptPasswordEncoder
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -15,11 +15,9 @@ public class VendorHotelService {
     @Autowired
     private VendorHotelRepository vendorHotelRepository;
 
-    // Hapus deklarasi passwordEncoder
-
     public VendorHotel registerVendor(VendorHotel vendor) throws Exception {
         // Check if email already exists
-        if (vendorHotelRepository.existsByEmail(vendor.getEmail())) {
+        if (vendorHotelRepository.existsByUserEmail(vendor.getUser().getEmail())) {
             throw new Exception("Email already registered");
         }
 
@@ -28,19 +26,17 @@ public class VendorHotelService {
             throw new Exception("Business license already registered");
         }
 
-        // Tidak perlu enkripsi password
-        // vendor.setPassword(passwordEncoder.encode(vendor.getPassword()));
         vendor.setStatus(VendorStatus.PENDING);
 
         return vendorHotelRepository.save(vendor);
     }
 
     public Optional<VendorHotel> authenticateVendor(String email, String password) {
-        Optional<VendorHotel> vendorOpt = vendorHotelRepository.findByEmail(email);
+        Optional<VendorHotel> vendorOpt = vendorHotelRepository.findByUserEmail(email);
         if (vendorOpt.isPresent()) {
             VendorHotel vendor = vendorOpt.get();
             // Bandingkan password langsung tanpa dekripsi
-            if (password.equals(vendor.getPassword()) &&
+            if (password.equals(vendor.getUser().getPassword()) &&
                     vendor.getStatus() == VendorStatus.APPROVED) {
                 return Optional.of(vendor);
             }
@@ -54,5 +50,10 @@ public class VendorHotelService {
 
     public VendorHotel updateVendor(VendorHotel vendor) {
         return vendorHotelRepository.save(vendor);
+    }
+    
+    // Tambahkan metode getAllVendors
+    public List<VendorHotel> getAllVendors() {
+        return vendorHotelRepository.findAll();
     }
 }

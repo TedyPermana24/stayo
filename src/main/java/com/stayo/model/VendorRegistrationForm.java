@@ -1,15 +1,20 @@
 package com.stayo.model;
 
-import org.springframework.web.multipart.MultipartFile;
-
 public class VendorRegistrationForm {
+    private User user;
     private VendorHotel vendor;
-    private Hotel hotel;
-    private MultipartFile imageFile;
 
     public VendorRegistrationForm() {
+        this.user = new User();
         this.vendor = new VendorHotel();
-        this.hotel = new Hotel();
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public VendorHotel getVendor() {
@@ -18,21 +23,5 @@ public class VendorRegistrationForm {
 
     public void setVendor(VendorHotel vendor) {
         this.vendor = vendor;
-    }
-
-    public Hotel getHotel() {
-        return hotel;
-    }
-
-    public void setHotel(Hotel hotel) {
-        this.hotel = hotel;
-    }
-
-    public MultipartFile getImageFile() {
-        return imageFile;
-    }
-
-    public void setImageFile(MultipartFile imageFile) {
-        this.imageFile = imageFile;
     }
 }

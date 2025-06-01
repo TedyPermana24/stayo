@@ -22,6 +22,12 @@ public class User {
 
     @Column(nullable = false)
     private String password;
+    
+    @Enumerated(EnumType.STRING)
+    private Role role = Role.USER;
+    
+    @OneToOne(mappedBy = "user")
+    private VendorHotel vendorProfile;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     private List<Booking> bookings;
@@ -65,6 +71,22 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public Role getRole() {
+        return role;
+    }
+    
+    public void setRole(Role role) {
+        this.role = role;
+    }
+    
+    public VendorHotel getVendorProfile() {
+        return vendorProfile;
+    }
+    
+    public void setVendorProfile(VendorHotel vendorProfile) {
+        this.vendorProfile = vendorProfile;
     }
 
     public List<Booking> getBookings() {

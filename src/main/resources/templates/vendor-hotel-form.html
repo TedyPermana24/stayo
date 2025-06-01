@@ -88,6 +88,52 @@
                                 </div>
                             </div>
                             
+                            <div class="md:col-span-2 mt-6">
+                                <h3 class="text-lg font-semibold text-gray-700 mb-4">Hotel Amenities</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasWifi" name="hasWifi" th:field="*{hasWifi}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasWifi" class="ml-2 block text-sm text-gray-700">Free WiFi</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasBreakfast" name="hasBreakfast" th:field="*{hasBreakfast}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasBreakfast" class="ml-2 block text-sm text-gray-700">Breakfast Included</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasSwimmingPool" name="hasSwimmingPool" th:field="*{hasSwimmingPool}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasSwimmingPool" class="ml-2 block text-sm text-gray-700">Swimming Pool</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasParking" name="hasParking" th:field="*{hasParking}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasParking" class="ml-2 block text-sm text-gray-700">Free Parking</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasRestaurant" name="hasRestaurant" th:field="*{hasRestaurant}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasRestaurant" class="ml-2 block text-sm text-gray-700">Restaurant</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasRoomService" name="hasRoomService" th:field="*{hasRoomService}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasRoomService" class="ml-2 block text-sm text-gray-700">Room Service</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasFitnessCenter" name="hasFitnessCenter" th:field="*{hasFitnessCenter}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasFitnessCenter" class="ml-2 block text-sm text-gray-700">Fitness Center</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasSpa" name="hasSpa" th:field="*{hasSpa}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasSpa" class="ml-2 block text-sm text-gray-700">Spa</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="isPetFriendly" name="isPetFriendly" th:field="*{petFriendly}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="isPetFriendly" class="ml-2 block text-sm text-gray-700">Pet Friendly</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasAirConditioning" name="hasAirConditioning" th:field="*{hasAirConditioning}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasAirConditioning" class="ml-2 block text-sm text-gray-700">Air Conditioning</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
                             <div class="flex justify-end space-x-4 mt-8">
                                 <a href="/vendor/dashboard" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
                                     Cancel

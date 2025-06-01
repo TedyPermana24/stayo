@@ -43,38 +43,38 @@
                 <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Vendor Information</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
-                        <input id="companyName" name="vendor.companyName" type="text" required 
+                        <label for="firstName" class="block text-sm font-medium text-gray-700">First Name</label>
+                        <input id="firstName" name="user.firstName" type="text" required 
                                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                               placeholder="Your company name">
+                               placeholder="Your first name">
+                    </div>
+                    
+                    <div>
+                        <label for="lastName" class="block text-sm font-medium text-gray-700">Last Name</label>
+                        <input id="lastName" name="user.lastName" type="text" required 
+                               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                               placeholder="Your last name">
                     </div>
                     
                     <div>
                         <label for="email" class="block text-sm font-medium text-gray-700">Email Address</label>
-                        <input id="email" name="vendor.email" type="email" required 
+                        <input id="email" name="user.email" type="email" required 
                                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                placeholder="company@example.com">
                     </div>
                     
                     <div>
                         <label for="password" class="block text-sm font-medium text-gray-700">Password</label>
-                        <input id="password" name="vendor.password" type="password" required 
+                        <input id="password" name="user.password" type="password" required 
                                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                placeholder="Password">
                     </div>
                     
                     <div>
-                        <label for="contactPerson" class="block text-sm font-medium text-gray-700">Contact Person</label>
-                        <input id="contactPerson" name="vendor.contactPerson" type="text" required 
+                        <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
+                        <input id="companyName" name="vendor.companyName" type="text" required 
                                class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                               placeholder="Contact person name">
-                    </div>
-                    
-                    <div>
-                        <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
-                        <input id="phoneNumber" name="vendor.phoneNumber" type="tel" required 
-                               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                               placeholder="+1234567890">
+                               placeholder="Your company name">
                     </div>
                     
                     <div>
@@ -84,43 +84,24 @@
                                placeholder="Business license number">
                     </div>
                     
+                    <div>
+                        <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                        <input id="phoneNumber" name="vendor.phoneNumber" type="tel" required 
+                               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
+                               placeholder="+1234567890">
+                    </div>
+                    
                     <div class="md:col-span-2">
                         <label for="address" class="block text-sm font-medium text-gray-700">Address</label>
                         <textarea id="address" name="vendor.address" rows="3" 
                                   class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
                                   placeholder="Company address"></textarea>
                     </div>
-                </div>
-            </div>
-            
-            <div class="bg-white shadow-md rounded-lg p-6">
-                <h3 class="text-xl font-bold text-gray-800 mb-4 pb-2 border-b">Hotel Information</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="hotelName" class="block text-sm font-medium text-gray-700">Hotel Name</label>
-                        <input id="hotelName" name="hotel.name" type="text" required 
-                               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                               placeholder="Hotel name">
-                    </div>
-                    
-                    <div>
-                        <label for="hotelLocation" class="block text-sm font-medium text-gray-700">Location</label>
-                        <input id="hotelLocation" name="hotel.location" type="text" required 
-                               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                               placeholder="Hotel location">
-                    </div>
                     
                     <div class="md:col-span-2">
-                        <label for="hotelDescription" class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea id="hotelDescription" name="hotel.description" rows="3" 
-                                  class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm"
-                                  placeholder="Hotel description"></textarea>
-                    </div>
-                    
-                    <div class="md:col-span-2">
-                        <label for="imageFile" class="block text-sm font-medium text-gray-700">Hotel Image</label>
-                        <input type="file" id="imageFile" name="imageFile" accept="image/*"
-                               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm">
+                        <label for="imageFile" class="block text-sm font-medium text-gray-700">Business License Image</label>
+                        <input id="imageFile" name="imageFile" type="file" 
+                               class="mt-1 appearance-none relative block w-full px-3 py-2 border border-gray-300 text-gray-900 rounded-md focus:outline-none focus:ring-purple-500 focus:border-purple-500 focus:z-10 sm:text-sm">
                     </div>
                 </div>
             </div>
