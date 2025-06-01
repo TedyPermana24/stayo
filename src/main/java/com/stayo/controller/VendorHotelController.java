@@ -3,6 +3,7 @@ package com.stayo.controller;
 import com.stayo.model.Booking;
 import com.stayo.model.Hotel;
 import com.stayo.model.VendorHotel;
+import com.stayo.model.User.Role; // 
 import com.stayo.model.*;
 import com.stayo.service.BookingService;
 import com.stayo.service.HotelService;
