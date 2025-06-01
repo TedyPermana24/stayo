@@ -56,53 +56,53 @@
             animation: pop 0.3s;
         }
         
-        /* Sticky Search Form Styles */
-        .search-form-container {
-            transition: 
-                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Search Form Styles */
+        .search-form-original {
+            position: relative;
+            z-index: 10;
+            opacity: 1;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .search-form-sticky {
+        
+        /* Sticky Search Form */
+        .sticky-search-form {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             z-index: 50;
-            /* transform: scale(1.03) translateY(0);  <-- Hapus animasi transform */
             margin: 0;
             border-radius: 0;
             box-shadow: 0 8px 32px rgba(102, 126, 234, 0.18), 0 4px 20px rgba(0,0,0,0.10);
             background: rgba(255,255,255,0.98);
-            opacity: 0.98;
-            /* animation: stickyFadeIn 0.4s; <-- Hapus animasi keyframes */
+            backdrop-filter: blur(20px);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-100%);
+            transition: 
+                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                visibility 0.4s cubic-bezier(0.4, 0, 0.2, 1),
+                transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        @keyframes stickyFadeIn {
-            from { opacity: 0; }
-            to   { opacity: 0.98; }
+        
+        .sticky-search-form.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
-
-        .search-form-sticky .glass-effect {
+        
+        .sticky-search-form .glass-effect {
             border-radius: 0;
             margin-top: 0 !important;
             background: rgba(255,255,255,0.98);
+            backdrop-filter: blur(20px);
             box-shadow: none;
         }
 
-        .search-form-original {
-            position: relative;
-            z-index: 10;
-            /* transform: scale(1) translateY(0); <-- Hapus animasi transform */
-            opacity: 1;
-            transition: 
-                box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                background 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-                opacity 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        /* Smooth scroll padding for sticky form */
+        body {
+            scroll-behavior: smooth;
         }
-        
-        /* ...existing code... */
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-blue-50 overflow-x-hidden">
@@ -134,7 +134,7 @@
     </header>
 
     <!-- Hero Section -->
-    <section class="relative ">
+    <section class="relative">
         <div class="bg-cover bg-center bg-fixed relative z-0" style="height:83vh; background-image: linear-gradient(rgba(102, 126, 234, 0.7), rgba(118, 75, 162, 0.7)), url('https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80');">
             <div class="container mx-auto px-6 h-full flex items-center relative z-10">
                 <div class="max-w-2xl">
@@ -152,9 +152,9 @@
             </div>
         </div>
         
-        <!-- Search Form -->
+        <!-- Original Search Form -->
         <div class="container mx-auto px-6 relative z-10">
-            <div id="searchForm" class="search-form-container search-form-original">
+            <div id="searchForm" class="search-form-original">
                 <div class="glass-effect rounded-3xl card-shadow p-8 -mt-20 mx-4">
                     <form action="/search" method="get" class="grid grid-cols-1 lg:grid-cols-5 gap-6">
                         <div class="space-y-2">
@@ -201,6 +201,55 @@
             </div>
         </div>
     </section>
+
+    <!-- Sticky Search Form (Separate Element) -->
+    <div id="stickySearchForm" class="sticky-search-form">
+        <div class="glass-effect p-4">
+            <div class="container mx-auto">
+                <form action="/search" method="get" class="grid grid-cols-1 lg:grid-cols-5 gap-4">
+                    <div class="space-y-1">
+                        <label for="sticky-location" class="block text-gray-700 font-semibold text-sm">
+                            <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>Destination
+                        </label>
+                        <input type="text" id="sticky-location" name="location" placeholder="Where are you going?" 
+                               class="w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="sticky-check-in" class="block text-gray-700 font-semibold text-sm">
+                            <i class="fas fa-calendar-alt mr-2 text-purple-600"></i>Check-in
+                        </label>
+                        <input type="date" id="sticky-check-in" name="checkIn" 
+                               class="w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="sticky-check-out" class="block text-gray-700 font-semibold text-sm">
+                            <i class="fas fa-calendar-check mr-2 text-purple-600"></i>Check-out
+                        </label>
+                        <input type="date" id="sticky-check-out" name="checkOut" 
+                               class="w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
+                    </div>
+                    <div class="space-y-1">
+                        <label for="sticky-guests" class="block text-gray-700 font-semibold text-sm">
+                            <i class="fas fa-users mr-2 text-purple-600"></i>Guests
+                        </label>
+                        <select id="sticky-guests" name="guests" 
+                                class="w-full px-3 py-2 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
+                            <option value="1">1 Guest</option>
+                            <option value="2" selected>2 Guests</option>
+                            <option value="3">3 Guests</option>
+                            <option value="4">4 Guests</option>
+                            <option value="5">5+ Guests</option>
+                        </select>
+                    </div>
+                    <div class="flex items-end">
+                        <button type="submit" class="w-full btn-gradient text-white py-2 rounded-xl font-bold text-lg">
+                            <i class="fas fa-search mr-2"></i>Search
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <!-- Featured Hotels -->
     <section class="py-20">
@@ -453,66 +502,121 @@
 
     <script>
         // Sticky Search Form Script
-        let searchForm = document.getElementById('searchForm');
-        let searchFormOriginalContent = searchForm.innerHTML;
-        let isSticky = false;
-        let searchFormRect = searchForm.getBoundingClientRect();
-        let searchFormOffsetTop = searchFormRect.top + window.pageYOffset;
-
-        // Create a placeholder to maintain layout when form becomes sticky
-        let placeholder = document.createElement('div');
-        placeholder.style.height = searchFormRect.height + 'px';
-        placeholder.style.visibility = 'hidden';
-
-        function handleScroll() {
-            let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-            
-            // Check if we should make the form sticky
-            if (scrollTop >= searchFormOffsetTop && !isSticky) {
-                // Make sticky
-                isSticky = true;
-                searchForm.classList.remove('search-form-original');
-                searchForm.classList.add('search-form-sticky');
-                
-                // Insert placeholder to maintain layout
-                searchForm.parentNode.insertBefore(placeholder, searchForm);
-                
-            } else if (scrollTop < searchFormOffsetTop && isSticky) {
-                // Remove sticky
-                isSticky = false;
-                searchForm.classList.remove('search-form-sticky');
-                searchForm.classList.add('search-form-original');
-                
-                // Remove placeholder
-                if (placeholder.parentNode) {
-                    placeholder.parentNode.removeChild(placeholder);
-                }
-            }
-        }
-
-        // Throttle scroll events for better performance
-        let ticking = false;
-        function requestTick() {
-            if (!ticking) {
-                requestAnimationFrame(handleScroll);
-                ticking = true;
-                setTimeout(() => { ticking = false; }, 16); // ~60fps
-            }
-        }
-
-        window.addEventListener('scroll', requestTick);
+        const searchFormContainer = document.getElementById('searchForm');
+        const stickySearchForm = document.getElementById('stickySearchForm');
         
-        // Recalculate positions on window resize
-        window.addEventListener('resize', function() {
-            if (!isSticky) {
-                searchFormRect = searchForm.getBoundingClientRect();
-                searchFormOffsetTop = searchFormRect.top + window.pageYOffset;
-                placeholder.style.height = searchFormRect.height + 'px';
+        // Sync input values between forms
+        const originalLocationInput = document.getElementById('location');
+        const originalCheckInInput = document.getElementById('check-in');
+        const originalCheckOutInput = document.getElementById('check-out');
+        const originalGuestsInput = document.getElementById('guests');
+        
+        const stickyLocationInput = document.getElementById('sticky-location');
+        const stickyCheckInInput = document.getElementById('sticky-check-in');
+        const stickyCheckOutInput = document.getElementById('sticky-check-out');
+        const stickyGuestsInput = document.getElementById('sticky-guests');
+        
+        // Sync original form values to sticky form
+        function syncFormValues() {
+            stickyLocationInput.value = originalLocationInput.value;
+            stickyCheckInInput.value = originalCheckInInput.value;
+            stickyCheckOutInput.value = originalCheckOutInput.value;
+            stickyGuestsInput.value = originalGuestsInput.value;
+        }
+        
+        // Sync sticky form values to original form
+        function syncStickyToOriginal() {
+            originalLocationInput.value = stickyLocationInput.value;
+            originalCheckInInput.value = stickyCheckInInput.value;
+            originalCheckOutInput.value = stickyCheckOutInput.value;
+            originalGuestsInput.value = stickyGuestsInput.value;
+        }
+        
+        // Add input event listeners to sync forms
+        originalLocationInput.addEventListener('input', syncFormValues);
+        originalCheckInInput.addEventListener('input', syncFormValues);
+        originalCheckOutInput.addEventListener('input', syncFormValues);
+        originalGuestsInput.addEventListener('change', syncFormValues);
+        
+        stickyLocationInput.addEventListener('input', syncStickyToOriginal);
+        stickyCheckInInput.addEventListener('input', syncStickyToOriginal);
+        stickyCheckOutInput.addEventListener('input', syncStickyToOriginal);
+        stickyGuestsInput.addEventListener('change', syncStickyToOriginal);
+        
+        // Handle scroll event
+        window.addEventListener('scroll', function() {
+            const rect = searchFormContainer.getBoundingClientRect();
+            
+            if (rect.top <= 0) {
+                // Show sticky form when original form reaches top of viewport
+                stickySearchForm.classList.add('visible');
+            } else {
+                // Hide sticky form when original form is visible
+                stickySearchForm.classList.remove('visible');
             }
         });
-
-        // Set initial placeholder height
-        placeholder.style.height = searchForm.offsetHeight + 'px';
+        
+        // Initial sync
+        syncFormValues();
     </script>
 </body>
 </html>
+<script>
+    // Sticky Search Form Script
+    const searchFormContainer = document.getElementById('searchForm');
+    const stickySearchForm = document.getElementById('stickySearchForm');
+    
+    // Sync input values between forms
+    const originalLocationInput = document.getElementById('location');
+    const originalCheckInInput = document.getElementById('check-in');
+    const originalCheckOutInput = document.getElementById('check-out');
+    const originalGuestsInput = document.getElementById('guests');
+    
+    const stickyLocationInput = document.getElementById('sticky-location');
+    const stickyCheckInInput = document.getElementById('sticky-check-in');
+    const stickyCheckOutInput = document.getElementById('sticky-check-out');
+    const stickyGuestsInput = document.getElementById('sticky-guests');
+    
+    // Sync original form values to sticky form
+    function syncFormValues() {
+        stickyLocationInput.value = originalLocationInput.value;
+        stickyCheckInInput.value = originalCheckInInput.value;
+        stickyCheckOutInput.value = originalCheckOutInput.value;
+        stickyGuestsInput.value = originalGuestsInput.value;
+    }
+    
+    // Sync sticky form values to original form
+    function syncStickyToOriginal() {
+        originalLocationInput.value = stickyLocationInput.value;
+        originalCheckInInput.value = stickyCheckInInput.value;
+        originalCheckOutInput.value = stickyCheckOutInput.value;
+        originalGuestsInput.value = stickyGuestsInput.value;
+    }
+    
+    // Add input event listeners to sync forms
+    originalLocationInput.addEventListener('input', syncFormValues);
+    originalCheckInInput.addEventListener('input', syncFormValues);
+    originalCheckOutInput.addEventListener('input', syncFormValues);
+    originalGuestsInput.addEventListener('change', syncFormValues);
+    
+    stickyLocationInput.addEventListener('input', syncStickyToOriginal);
+    stickyCheckInInput.addEventListener('input', syncStickyToOriginal);
+    stickyCheckOutInput.addEventListener('input', syncStickyToOriginal);
+    stickyGuestsInput.addEventListener('change', syncStickyToOriginal);
+    
+    // Handle scroll event
+    window.addEventListener('scroll', function() {
+        const rect = searchFormContainer.getBoundingClientRect();
+        
+        if (rect.top <= 0) {
+            // Show sticky form when original form reaches top of viewport
+            stickySearchForm.classList.add('visible');
+        } else {
+            // Hide sticky form when original form is visible
+            stickySearchForm.classList.remove('visible');
+        }
+    });
+    
+    // Initial sync
+    syncFormValues();
+</script>
