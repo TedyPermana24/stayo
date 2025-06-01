@@ -125,9 +125,9 @@
     </section>
 
     <!-- Search Results -->
-    <section class="py-12">
+    <section class="py-12 mb-8">
         <div class="container mx-auto px-6">
-            <h2 class="text-4xl font-bold mb-2 text-gradient">Search Results</h2>
+            <h2 class="text-4xl font-bold mb-8 text-gradient">Search Results</h2>
             <p class="text-gray-600 mb-8" th:if="${location != null && !location.isEmpty()}">
                 Showing hotels in <span class="font-semibold" th:text="${location}">Location</span>
             </p>
@@ -181,7 +181,7 @@
                         <div class="flex justify-between items-end">
                             <div>
                                 <p class="text-gray-600 text-sm">Starting from</p>
-                                <p class="text-purple-600 font-bold text-2xl">$<span th:text="${hotel.lowestPrice}">Price</span><span class="text-sm text-gray-500">/night</span></p>
+                                <p class="text-purple-600 font-bold text-2xl">Rp.<span th:text="${hotel.lowestPrice}">Price</span><span class="text-sm text-gray-500">/night</span></p>
                             </div>
                             <a th:href="@{/hotels/{id}(id=${hotel.id}, checkIn=${checkIn}, checkOut=${checkOut}, guests=${guests})}" 
                                class="btn-gradient text-white px-6 py-3 rounded-full font-medium transition">View Details</a>
@@ -240,11 +240,11 @@
                     <ul class="space-y-4">
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-map-marker-alt mt-1 mr-3 text-purple-400"></i>
-                            <span>123 Hotel Street, City, Country</span>
+                            <span>Jl.Cimindi no.81, Bandung, Indonesia</span>
                         </li>
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-phone-alt mt-1 mr-3 text-purple-400"></i>
-                            <span>+1 (555) 123-4567</span>
+                            <span>+62 (555) 123-4567</span>
                         </li>
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-envelope mt-1 mr-3 text-purple-400"></i>

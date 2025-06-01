@@ -288,7 +288,7 @@
                             <div class="flex justify-between items-center">
                                 <div>
                                     <p class="text-gray-500 text-sm">Starting from</p>
-                                    <p class="text-purple-600 font-bold text-2xl">Rp. <span th:text="${hotel.lowestPrice}">Price</span><span class="text-sm text-gray-500">/night</span></p>
+                                    <p class="text-purple-600 font-bold text-2xl">Rp.<span th:text="${hotel.lowestPrice}">Price</span><span class="text-sm text-gray-500">/night</span></p>
                                 </div>
                                 <a th:href="@{/hotels/{id}(id=${hotel.id})}" class="btn-gradient text-white px-6 py-3 rounded-full font-medium">
                                     View Details
@@ -481,11 +481,11 @@
                     <ul class="space-y-4">
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-map-marker-alt mt-1 mr-3 text-purple-400"></i>
-                            <span>123 Hotel Street, City, Country</span>
+                            <span>Jl.Cimindi no.81, Bandung, Indonesia</span>
                         </li>
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-phone-alt mt-1 mr-3 text-purple-400"></i>
-                            <span>+1 (555) 123-4567</span>
+                            <span>+62 (555) 123-4567</span>
                         </li>
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-envelope mt-1 mr-3 text-purple-400"></i>

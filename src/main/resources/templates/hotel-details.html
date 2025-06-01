@@ -194,10 +194,10 @@
                                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                                 <option value="">-- Select a room --</option>
                                 <th:block th:if="${availableRooms != null}">
-                                    <option th:each="room : ${availableRooms}" th:value="${room.id}" th:text="${room.type + ' - Rp. ' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
+                                    <option th:each="room : ${availableRooms}" th:value="${room.id}" th:text="${room.type + ' - Rp.' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
                                 </th:block>
                                 <th:block th:unless="${availableRooms != null}">
-                                    <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.type + ' - Rp. ' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
+                                    <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.type + ' - Rp.' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
                                 </th:block>
                             </select>
                         </div>
@@ -261,7 +261,7 @@
                                         </span>
                                     </div>
                                     <div class="flex justify-between items-center">
-                                        <p class="text-purple-600 font-bold text-xl">Rp. <span th:text="${room.pricePerNight}">Price</span> <span class="text-sm text-gray-500">per night</span></p>
+                                        <p class="text-purple-600 font-bold text-xl">Rp.<span th:text="${room.pricePerNight}">Price</span> <span class="text-sm text-gray-500">per night</span></p>
                                         <button th:attr="onclick='selectRoom(\'' + ${room.id} + '\')'" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Select</button>
                                     </div>
                                 </div>
@@ -289,29 +289,91 @@
                             
                             <div class="mb-4">
                                 <label for="rating" class="block text-gray-700 font-semibold mb-2">Rating</label>
-                                <div class="flex space-x-4">
+                                <div class="flex space-x-4" id="star-rating">
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-1" name="rating" value="1" class="mr-1">
-                                        <label for="rating-1">1</label>
+                                        <input type="radio" id="rating-1" name="rating" value="1" class="hidden">
+                                        <label for="rating-1" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-2" name="rating" value="2" class="mr-1">
-                                        <label for="rating-2">2</label>
+                                        <input type="radio" id="rating-2" name="rating" value="2" class="hidden">
+                                        <label for="rating-2" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-3" name="rating" value="3" class="mr-1">
-                                        <label for="rating-3">3</label>
+                                        <input type="radio" id="rating-3" name="rating" value="3" class="hidden">
+                                        <label for="rating-3" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-4" name="rating" value="4" class="mr-1">
-                                        <label for="rating-4">4</label>
+                                        <input type="radio" id="rating-4" name="rating" value="4" class="hidden">
+                                        <label for="rating-4" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-5" name="rating" value="5" checked class="mr-1">
-                                        <label for="rating-5">5</label>
+                                        <input type="radio" id="rating-5" name="rating" value="5" checked class="hidden">
+                                        <label for="rating-5" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                 </div>
                             </div>
+
+<script>
+// Script untuk rating bintang
+document.addEventListener('DOMContentLoaded', function() {
+    const starContainer = document.getElementById('star-rating');
+    const stars = starContainer.querySelectorAll('input[type="radio"]');
+    const starLabels = starContainer.querySelectorAll('label');
+    
+    // Fungsi untuk mengupdate tampilan bintang
+    function updateStars(selectedRating) {
+        starLabels.forEach((label, index) => {
+            const star = label.querySelector('i');
+            if (index < selectedRating) {
+                star.classList.remove('far');
+                star.classList.add('fas');
+            } else {
+                star.classList.remove('fas');
+                star.classList.add('far');
+            }
+        });
+    }
+    
+    // Set bintang awal berdasarkan nilai yang dipilih
+    const checkedStar = starContainer.querySelector('input[type="radio"]:checked');
+    if (checkedStar) {
+        updateStars(parseInt(checkedStar.value));
+    }
+    
+    // Event listener untuk setiap bintang
+    stars.forEach(star => {
+        star.addEventListener('change', function() {
+            updateStars(parseInt(this.value));
+        });
+    });
+    
+    // Efek hover
+    starLabels.forEach((label, index) => {
+        label.addEventListener('mouseenter', function() {
+            starLabels.forEach((l, i) => {
+                const star = l.querySelector('i');
+                if (i <= index) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                }
+            });
+        });
+        
+        label.addEventListener('mouseleave', function() {
+            const checkedStar = starContainer.querySelector('input[type="radio"]:checked');
+            if (checkedStar) {
+                updateStars(parseInt(checkedStar.value));
+            } else {
+                starLabels.forEach(l => {
+                    const star = l.querySelector('i');
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                });
+            }
+        });
+    });
+});
+</script>
                             
                             <div class="mb-4">
                                 <label for="comment" class="block text-gray-700 font-semibold mb-2">Your Review</label>
@@ -409,11 +471,11 @@
                     <ul class="space-y-4">
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-map-marker-alt mt-1 mr-3 text-purple-400"></i>
-                            <span>123 Hotel Street, City, Country</span>
+                            <span>Jl.Cimindi no.81, Bandung, Indonesia</span>
                         </li>
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-phone-alt mt-1 mr-3 text-purple-400"></i>
-                            <span>+1 (555) 123-4567</span>
+                            <span>+62 (555) 123-4567</span>
                         </li>
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-envelope mt-1 mr-3 text-purple-400"></i>
