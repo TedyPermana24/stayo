@@ -1,11 +1,13 @@
 package com.stayo.service;
 
-import com.stayo.model.User;
-import com.stayo.repository.UserRepository;
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import com.stayo.model.User;
+import com.stayo.repository.UserRepository;
 
 @Service
 public class UserService {
@@ -39,5 +41,34 @@ public class UserService {
             return user.getPassword().equals(password);
         }
         return false;
+    }
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    public Optional<User> getUserById(Long id) {
+        return userRepository.findById(id);
+    }
+
+    public User createUser(User user) {
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email already exists.");
+        }
+        return userRepository.save(user);
+    }
+
+    public User updateUser(Long id, User updatedUser) {
+        return userRepository.findById(id).map(user -> {
+            user.setFirstName(updatedUser.getFirstName());
+            user.setLastName(updatedUser.getLastName());
+            user.setEmail(updatedUser.getEmail());
+            user.setPassword(updatedUser.getPassword());
+            user.setRole(updatedUser.getRole());
+            return userRepository.save(user);
+        }).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    }
+
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }
