@@ -49,7 +49,7 @@
         }
     </style>
 </head>
-<body class="bg-gradient-to-br from-gray-50 to-blue-50">
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 overflow-x-hidden">
     <!-- Header/Navigation -->
     <header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
         <div class="container mx-auto px-6 py-4">
@@ -92,7 +92,7 @@
             <!-- Hotel Header -->
             <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-8">
                 <div class="relative h-96">
-                    <img th:src="${hotel.imageUrl}" th:alt="${hotel.name}" class="w-full h-full object-cover">
+                    <img th:if="${hotel.imageUrl}" th:src="@{'/images/hotels/' + ${hotel.imageUrl}}" th:alt="${hotel.name}" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                     <div class="absolute bottom-0 left-0 p-8">
                         <h1 class="text-4xl font-bold text-white mb-2" th:text="${hotel.name}">Hotel Name</h1>
@@ -108,19 +108,38 @@
                 <div class="p-8">
                     <div class="flex flex-wrap gap-4 mb-6">
                         <div class="bg-blue-100 text-blue-800 px-4 py-2 rounded-full text-sm font-semibold">
-                            <i class="fas fa-star mr-1"></i> <span th:text="${#numbers.formatDecimal(hotel.averageRating, 1, 1)}">9.2</span>/10 Rating
+                            <i class="fas fa-star mr-1"></i> <span th:text="${#numbers.formatDecimal(hotel.averageRating, 1, 1)}"> </span>/5 Rating
                         </div>
-                        <div class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                        <!-- Tampilkan fitur hanya jika tersedia -->
+                        <div th:if="${hotel.hasWifi}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                             <i class="fas fa-wifi mr-1"></i> Free WiFi
                         </div>
-                        <div class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                        <div th:if="${hotel.hasBreakfast}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                             <i class="fas fa-utensils mr-1"></i> Breakfast included
                         </div>
-                        <div class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                        <div th:if="${hotel.hasSwimmingPool}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                             <i class="fas fa-swimming-pool mr-1"></i> Swimming pool
                         </div>
-                        <div class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                        <div th:if="${hotel.hasParking}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
                             <i class="fas fa-parking mr-1"></i> Free parking
+                        </div>
+                        <div th:if="${hotel.hasRestaurant}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-utensils mr-1"></i> Restaurant
+                        </div>
+                        <div th:if="${hotel.hasRoomService}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-concierge-bell mr-1"></i> Room Service
+                        </div>
+                        <div th:if="${hotel.hasFitnessCenter}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-dumbbell mr-1"></i> Fitness Center
+                        </div>
+                        <div th:if="${hotel.hasSpa}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-spa mr-1"></i> Spa
+                        </div>
+                        <div th:if="${hotel.isPetFriendly}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-paw mr-1"></i> Pet Friendly
+                        </div>
+                        <div th:if="${hotel.hasAirConditioning}" class="bg-gray-100 text-gray-800 px-4 py-2 rounded-full text-sm">
+                            <i class="fas fa-snowflake mr-1"></i> Air Conditioning
                         </div>
                     </div>
                     
@@ -175,10 +194,10 @@
                                     class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                                 <option value="">-- Select a room --</option>
                                 <th:block th:if="${availableRooms != null}">
-                                    <option th:each="room : ${availableRooms}" th:value="${room.id}" th:text="${room.type + ' - $' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
+                                    <option th:each="room : ${availableRooms}" th:value="${room.id}" th:text="${room.type + ' - Rp.' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
                                 </th:block>
                                 <th:block th:unless="${availableRooms != null}">
-                                    <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.type + ' - $' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
+                                    <option th:each="room : ${rooms}" th:value="${room.id}" th:text="${room.type + ' - Rp.' + room.pricePerNight + ' per night'}">Room Type - $Price per night</option>
                                 </th:block>
                             </select>
                         </div>
@@ -209,15 +228,40 @@
                                         <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                                             <i class="fas fa-user-friends mr-1"></i> <span th:text="${room.capacity}">2</span> guests
                                         </span>
-                                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                        <!-- Dynamic room amenities -->
+                                        <span th:if="${room.hasKingBed}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                                             <i class="fas fa-bed mr-1"></i> King bed
                                         </span>
-                                        <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                        <span th:if="${room.hasQueenBed}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-bed mr-1"></i> Queen bed
+                                        </span>
+                                        <span th:if="${room.hasTwinBeds}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-bed mr-1"></i> Twin beds
+                                        </span>
+                                        <span th:if="${room.hasPrivateBathroom}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
                                             <i class="fas fa-bath mr-1"></i> Private bathroom
+                                        </span>
+                                        <span th:if="${room.hasTV}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-tv mr-1"></i> TV
+                                        </span>
+                                        <span th:if="${room.hasMinibar}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-glass-martini-alt mr-1"></i> Minibar
+                                        </span>
+                                        <span th:if="${room.hasBalcony}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-door-open mr-1"></i> Balcony
+                                        </span>
+                                        <span th:if="${room.hasAirConditioning}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-snowflake mr-1"></i> Air conditioning
+                                        </span>
+                                        <span th:if="${room.hasWifi}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-wifi mr-1"></i> Free WiFi
+                                        </span>
+                                        <span th:if="${room.hasSafetyDeposit}" class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">
+                                            <i class="fas fa-lock mr-1"></i> Safety deposit
                                         </span>
                                     </div>
                                     <div class="flex justify-between items-center">
-                                        <p class="text-purple-600 font-bold text-xl">$<span th:text="${room.pricePerNight}">Price</span> <span class="text-sm text-gray-500">per night</span></p>
+                                        <p class="text-purple-600 font-bold text-xl">Rp.<span th:text="${room.pricePerNight}">Price</span> <span class="text-sm text-gray-500">per night</span></p>
                                         <button th:attr="onclick='selectRoom(\'' + ${room.id} + '\')'" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Select</button>
                                     </div>
                                 </div>
@@ -245,29 +289,91 @@
                             
                             <div class="mb-4">
                                 <label for="rating" class="block text-gray-700 font-semibold mb-2">Rating</label>
-                                <div class="flex space-x-4">
+                                <div class="flex space-x-4" id="star-rating">
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-1" name="rating" value="1" class="mr-1">
-                                        <label for="rating-1">1</label>
+                                        <input type="radio" id="rating-1" name="rating" value="1" class="hidden">
+                                        <label for="rating-1" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-2" name="rating" value="2" class="mr-1">
-                                        <label for="rating-2">2</label>
+                                        <input type="radio" id="rating-2" name="rating" value="2" class="hidden">
+                                        <label for="rating-2" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-3" name="rating" value="3" class="mr-1">
-                                        <label for="rating-3">3</label>
+                                        <input type="radio" id="rating-3" name="rating" value="3" class="hidden">
+                                        <label for="rating-3" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-4" name="rating" value="4" class="mr-1">
-                                        <label for="rating-4">4</label>
+                                        <input type="radio" id="rating-4" name="rating" value="4" class="hidden">
+                                        <label for="rating-4" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                     <div class="flex items-center">
-                                        <input type="radio" id="rating-5" name="rating" value="5" checked class="mr-1">
-                                        <label for="rating-5">5</label>
+                                        <input type="radio" id="rating-5" name="rating" value="5" checked class="hidden">
+                                        <label for="rating-5" class="cursor-pointer text-2xl"><i class="far fa-star text-yellow-400 hover:text-yellow-500"></i></label>
                                     </div>
                                 </div>
                             </div>
+
+<script>
+// Script untuk rating bintang
+document.addEventListener('DOMContentLoaded', function() {
+    const starContainer = document.getElementById('star-rating');
+    const stars = starContainer.querySelectorAll('input[type="radio"]');
+    const starLabels = starContainer.querySelectorAll('label');
+    
+    // Fungsi untuk mengupdate tampilan bintang
+    function updateStars(selectedRating) {
+        starLabels.forEach((label, index) => {
+            const star = label.querySelector('i');
+            if (index < selectedRating) {
+                star.classList.remove('far');
+                star.classList.add('fas');
+            } else {
+                star.classList.remove('fas');
+                star.classList.add('far');
+            }
+        });
+    }
+    
+    // Set bintang awal berdasarkan nilai yang dipilih
+    const checkedStar = starContainer.querySelector('input[type="radio"]:checked');
+    if (checkedStar) {
+        updateStars(parseInt(checkedStar.value));
+    }
+    
+    // Event listener untuk setiap bintang
+    stars.forEach(star => {
+        star.addEventListener('change', function() {
+            updateStars(parseInt(this.value));
+        });
+    });
+    
+    // Efek hover
+    starLabels.forEach((label, index) => {
+        label.addEventListener('mouseenter', function() {
+            starLabels.forEach((l, i) => {
+                const star = l.querySelector('i');
+                if (i <= index) {
+                    star.classList.remove('far');
+                    star.classList.add('fas');
+                }
+            });
+        });
+        
+        label.addEventListener('mouseleave', function() {
+            const checkedStar = starContainer.querySelector('input[type="radio"]:checked');
+            if (checkedStar) {
+                updateStars(parseInt(checkedStar.value));
+            } else {
+                starLabels.forEach(l => {
+                    const star = l.querySelector('i');
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                });
+            }
+        });
+    });
+});
+</script>
                             
                             <div class="mb-4">
                                 <label for="comment" class="block text-gray-700 font-semibold mb-2">Your Review</label>
@@ -365,11 +471,11 @@
                     <ul class="space-y-4">
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-map-marker-alt mt-1 mr-3 text-purple-400"></i>
-                            <span>123 Hotel Street, City, Country</span>
+                            <span>Jl.Cimindi no.81, Bandung, Indonesia</span>
                         </li>
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-phone-alt mt-1 mr-3 text-purple-400"></i>
-                            <span>+1 (555) 123-4567</span>
+                            <span>+62 (555) 123-4567</span>
                         </li>
                         <li class="flex items-start text-gray-300">
                             <i class="fas fa-envelope mt-1 mr-3 text-purple-400"></i>

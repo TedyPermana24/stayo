@@ -1,15 +1,16 @@
 package com.stayo.service;
 
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
 import com.stayo.model.Hotel;
 import com.stayo.model.Review;
 import com.stayo.repository.HotelRepository;
 import com.stayo.repository.ReviewRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.time.LocalDate;
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ReviewService {
@@ -20,7 +21,7 @@ public class ReviewService {
     @Autowired
     private HotelRepository hotelRepository;
     
-    public List<Review> getAllReviews() {
+    public List<Review> getAllReviews() { 
         return reviewRepository.findAll();
     }
     

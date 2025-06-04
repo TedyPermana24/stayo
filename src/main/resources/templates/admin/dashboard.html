@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Stayo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen">
+    <!-- Navigation -->
+    <nav class="glass-effect sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-bed text-2xl text-purple-600 mr-2"></i>
+                    <span class="text-xl font-bold text-gradient">Stayo Admin</span>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/admin/dashboard" class="text-purple-600 font-medium">Dashboard</a>
+                    <a href="/admin/vendors" class="text-gray-600 hover:text-purple-600 transition">Vendors</a>
+                    <a href="/admin/bookings/pending" class="text-gray-600 hover:text-purple-600 transition">Pending Bookings</a>
+                    <a href="/admin/bookings" class="text-gray-600 hover:text-purple-600 transition">All Bookings</a>
+                    <a href="/signout" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto py-8 px-4">
+        <h1 class="text-4xl font-bold text-white mb-8 text-center">Admin Dashboard</h1>
+        
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div class="glass-effect rounded-lg p-6 hover-lift card-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-blue-100 text-blue-600">
+                        <i class="fas fa-users text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Users</p>
+                        <p class="text-2xl font-bold text-gradient" th:text="${totalUsers}">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-effect rounded-lg p-6 hover-lift card-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-green-100 text-green-600">
+                        <i class="fas fa-hotel text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Hotels</p>
+                        <p class="text-2xl font-bold text-gradient" th:text="${totalHotels}">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-effect rounded-lg p-6 hover-lift card-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-yellow-100 text-yellow-600">
+                        <i class="fas fa-calendar-check text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Total Bookings</p>
+                        <p class="text-2xl font-bold text-gradient" th:text="${totalBookings}">0</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="glass-effect rounded-lg p-6 hover-lift card-shadow">
+                <div class="flex items-center">
+                    <div class="p-3 rounded-full bg-purple-100 text-purple-600">
+                        <i class="fas fa-clock text-2xl"></i>
+                    </div>
+                    <div class="ml-4">
+                        <p class="text-sm font-medium text-gray-600">Pending Approvals</p>
+                        <p class="text-2xl font-bold text-gradient" th:text="${pendingApprovals}">0</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quick Actions -->
+        <div class="glass-effect rounded-lg p-6 card-shadow">
+            <h2 class="text-2xl font-bold text-gradient mb-6">Quick Actions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <a href="/admin/vendors" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift">
+                    <i class="fas fa-store mr-2"></i> Manage Vendors
+                </a>
+                <a href="/admin/bookings/pending" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift">
+                    <i class="fas fa-clock mr-2"></i> Pending Bookings
+                </a>
+                <a href="/admin/bookings" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift">
+                    <i class="fas fa-list mr-2"></i> All Bookings
+                </a>
+                <a href="/admin/users" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift">
+                    <i class="fas fa-list mr-2"></i> User Management
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
