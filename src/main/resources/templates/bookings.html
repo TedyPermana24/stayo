@@ -40,14 +40,15 @@
         }
         .booking-image {
             width: 100%;
-            height: 180px;
+            height: 210px;
             object-fit: cover;
             border-radius: 12px;
         }
         @media (min-width: 768px) {
             .booking-image {
-                height: 100%;
-                min-height: 160px;
+                width: 100%;
+                height: 220px;
+                object-fit: cover;
                 border-radius: 16px 0 0 16px;
             }
         }
@@ -69,13 +70,13 @@
         }
     </style>
 </head>
-<body class="bg-gray-50 flex flex-col min-h-screen">
+<body class="bg-gray-50 flex flex-col min-h-screen overflow-x-hidden">
     <!-- Header/Navigation -->
-    <header class="glass-effect fixed w-full top-0 z-50 shadow-sm">
+    <header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
         <div class="container mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <div>
-                    <a href="/" class="text-2xl font-bold text-gradient flex items-center">
+                    <a href="/" class="text-3xl font-bold text-gradient flex items-center">
                         <i class="fas fa-bed mr-2"></i>
                         Stayo
                     </a>
@@ -83,9 +84,15 @@
                 <div class="flex items-center space-x-6">
                     <a href="/" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Home</a>
                     <a href="/hotels" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Hotels</a>
-                    <a href="/bookings" class="text-purple-600 font-medium">My Bookings</a>
-                    <a href="/profile" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Profile</a>
-                    <a href="/signout" class="btn-gradient text-white px-4 py-2 rounded-lg font-medium">Sign Out</a>
+                    <th:block th:if="${session.user != null}">
+                        <a href="/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">My Bookings</a>
+                        <a href="/profile" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Profile</a>
+                        <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Sign Out</a>
+                    </th:block>
+                    <th:block th:unless="${session.user != null}">
+                        <a href="/signin" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Sign In</a>
+                        <a href="/register" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Register</a>
+                    </th:block>
                 </div>
             </div>
         </div>
@@ -134,7 +141,10 @@
                         <div th:each="booking : ${pendingPaymentBookings}" class="booking-card">
                             <div class="flex flex-col md:flex-row">
                                 <div class="md:w-1/4">
-                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="booking-image">
+                                    <img th:if="${booking.room.hotel.imageUrl != null and !booking.room.hotel.imageUrl.isEmpty()}" 
+                                    th:src="${booking.room.hotel.imageUrl.startsWith('http') ? booking.room.hotel.imageUrl : '/images/hotels/' + booking.room.hotel.imageUrl}" 
+                                    th:alt="${booking.room.hotel.name}" 
+                                    class="booking-image">
                                 </div>
                                 <div class="p-6 md:w-3/4">
                                     <div class="flex justify-between items-start mb-4">
@@ -165,7 +175,7 @@
                                     <div class="flex justify-between items-center">
                                         <div>
                                             <p class="text-gray-500 text-sm">Total Price</p>
-                                            <p class="text-purple-600 font-bold text-lg">$<span th:text="${booking.totalPrice}">500</span></p>
+                                            <p class="text-purple-600 font-bold text-lg">Rp<span th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'POINT', 0, 'COMMA')}">0</span></p>
                                         </div>
                                         <div class="flex space-x-2">
                                             <a th:href="@{/payments/process/{id}(id=${booking.id})}" class="btn-gradient text-white px-4 py-2 rounded-lg text-sm font-semibold">
@@ -194,7 +204,10 @@
                         <div th:each="booking : ${upcomingBookings}" class="booking-card">
                             <div class="flex flex-col md:flex-row">
                                 <div class="md:w-1/4">
-                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="booking-image">
+                                    <img th:if="${booking.room.hotel.imageUrl != null and !booking.room.hotel.imageUrl.isEmpty()}" 
+                                    th:src="${booking.room.hotel.imageUrl.startsWith('http') ? booking.room.hotel.imageUrl : '/images/hotels/' + booking.room.hotel.imageUrl}" 
+                                    th:alt="${booking.room.hotel.name}" 
+                                    class="booking-image">
                                 </div>
                                 <div class="p-6 md:w-3/4">
                                     <div class="flex justify-between items-start mb-4">
@@ -225,7 +238,7 @@
                                     <div class="flex justify-between items-center">
                                         <div>
                                             <p class="text-gray-500 text-sm">Total Price</p>
-                                            <p class="text-purple-600 font-bold text-lg">$<span th:text="${booking.totalPrice}">500</span></p>
+                                            <p class="text-purple-600 font-bold text-lg">Rp<span th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'POINT', 0, 'COMMA')}">0</span></p>
                                         </div>
                                         <div class="flex space-x-2">
                                             <a th:href="@{/hotels/{id}(id=${booking.room.hotel.id})}" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition duration-300">
@@ -254,7 +267,10 @@
                         <div th:each="booking : ${pastBookings}" class="booking-card">
                             <div class="flex flex-col md:flex-row">
                                 <div class="md:w-1/4">
-                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="booking-image">
+                                    <img th:if="${booking.room.hotel.imageUrl != null and !booking.room.hotel.imageUrl.isEmpty()}" 
+                                    th:src="${booking.room.hotel.imageUrl.startsWith('http') ? booking.room.hotel.imageUrl : '/images/hotels/' + booking.room.hotel.imageUrl}" 
+                                    th:alt="${booking.room.hotel.name}" 
+                                    class="booking-image">
                                 </div>
                                 <div class="p-6 md:w-3/4">
                                     <div class="flex justify-between items-start mb-4">
@@ -285,7 +301,7 @@
                                     <div class="flex justify-between items-center">
                                         <div>
                                             <p class="text-gray-500 text-sm">Total Price</p>
-                                            <p class="text-purple-600 font-bold text-lg">$<span th:text="${booking.totalPrice}">500</span></p>
+                                            <p class="text-purple-600 font-bold text-lg">Rp<span th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'POINT', 0, 'COMMA')}">0</span></p>
                                         </div>
                                         <div class="flex space-x-2">
                                             <a th:href="@{/hotels/{id}(id=${booking.room.hotel.id})}" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition duration-300">
@@ -312,7 +328,10 @@
                         <div th:each="booking : ${cancelledBookings}" class="booking-card">
                             <div class="flex flex-col md:flex-row">
                                 <div class="md:w-1/4">
-                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="booking-image">
+                                    <img th:if="${booking.room.hotel.imageUrl != null and !booking.room.hotel.imageUrl.isEmpty()}" 
+                                    th:src="${booking.room.hotel.imageUrl.startsWith('http') ? booking.room.hotel.imageUrl : '/images/hotels/' + booking.room.hotel.imageUrl}" 
+                                    th:alt="${booking.room.hotel.name}" 
+                                    class="booking-image">
                                 </div>
                                 <div class="p-6 md:w-3/4">
                                     <div class="flex justify-between items-start mb-4">
@@ -343,7 +362,7 @@
                                     <div class="flex justify-between items-center">
                                         <div>
                                             <p class="text-gray-500 text-sm">Total Price</p>
-                                            <p class="text-purple-600 font-bold text-lg">$<span th:text="${booking.totalPrice}">500</span></p>
+                                            <p class="text-purple-600 font-bold text-lg">Rp<span th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'POINT', 0, 'COMMA')}">0</span></p>
                                         </div>
                                         <a th:href="@{/hotels/{id}(id=${booking.room.hotel.id})}" class="bg-gray-100 text-gray-700 px-4 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition duration-300">
                                             <i class="fas fa-eye mr-1"></i> View Hotel

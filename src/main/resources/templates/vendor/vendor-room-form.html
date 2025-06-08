@@ -3,30 +3,170 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title th:text="${room.id != null ? 'Edit Room' : 'Add Room'}">Room Form - Stayo</title>
+    <title th:text="${room.id != null ? 'Edit Room' : 'Add Room'} + ' - Stayo'">Room Form - Stayo</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
+        
         .btn-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        
+        .btn-gradient:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+        }
+        
+        .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .form-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .input-group {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9CA3AF;
+            z-index: 10;
+        }
+        
+        .input-with-icon {
+            padding-left: 2.5rem;
+        }
+        
+        .input-focus {
+            transition: all 0.3s ease;
+        }
+        
+        .input-focus:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.15);
+        }
+        
+        .amenity-card {
+            background: rgba(255, 255, 255, 0.8);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            border-radius: 12px;
+            padding: 1rem;
+        }
+        
+        .amenity-card:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+            transform: translateY(-2px);
+        }
+        
+        .amenity-checkbox:checked + .amenity-label {
+            color: #667eea;
+            font-weight: 600;
+        }
+        
+        .upload-area {
+            border: 2px dashed #D1D5DB;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.05);
+        }
+        
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .section-title {
+            position: relative;
+            padding-bottom: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-success {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            color: white;
+            border: none;
+        }
+        
+        .alert-error {
+            background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);
+            color: white;
+            border: none;
+        }
+        
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
     </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
-    <!-- Header -->
-    <header class="bg-white shadow-lg">
-        <div class="container mx-auto px-6">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center">
-                    <i class="fas fa-door-open text-3xl text-purple-600 mr-3"></i>
-                    <h1 class="text-2xl font-bold text-gray-800" th:text="${room.id != null ? 'Edit Room' : 'Add New Room'}">Room Form</h1>
+<body class="bg-gradient-to-br from-indigo-50 via-white to-purple-50 min-h-screen overflow-x-hidden">
+    <!-- Header/Navigation -->
+    <header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <a href="/vendor/dashboard" class="text-3xl font-bold text-gradient flex items-center">
+                        <i class="fas fa-building mr-2"></i>
+                        Stayo Vendor
+                    </a>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a th:href="@{/vendor/hotels/{id}/rooms(id=${hotel.id})}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
-                        <i class="fas fa-arrow-left mr-1"></i> Back to Rooms
+                <div class="flex items-center space-x-6">
+                    <span class="text-sm text-gray-600 hidden sm:block">
+                        Welcome, <span th:text="${vendor.companyName}" class="font-medium text-gray-900">Company</span>
+                    </span>
+                    <a href="/vendor/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Sign Out
                     </a>
                 </div>
             </div>
@@ -34,113 +174,270 @@
     </header>
 
     <!-- Main Content -->
-    <main class="py-12">
+    <main class="pt-28 pb-12">
         <div class="container mx-auto px-6">
-            <div class="max-w-2xl mx-auto">
+            <div class="max-w-4xl mx-auto">
+                <!-- Page Title with Back Button -->
+                <div class="flex items-center mb-8">
+                    <a th:href="@{/vendor/hotels/{id}/rooms(id=${hotel.id})}" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all duration-300 hover:transform hover:-translate-y-1 mr-6">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Rooms
+                    </a>
+                    <div class="flex-1">
+                        <h1 class="text-3xl font-bold text-gray-800 mb-2" th:text="${room.id != null ? 'Edit Room' : 'Add New Room'}">Room Form</h1>
+                        <p class="text-gray-600">Manage your room information and amenities</p>
+                    </div>
+                </div>
+                
                 <!-- Alert Messages -->
-                <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
-                    <span th:text="${success}">Success message</span>
+                <div th:if="${success}" class="alert-success px-6 py-4 rounded-lg mb-6 fade-in" role="alert">
+                    <div class="flex items-center">
+                        <i class="fas fa-check-circle mr-3 text-xl"></i>
+                        <span th:text="${success}">Success message</span>
+                    </div>
                 </div>
                 
-                <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
-                    <span th:text="${error}">Error message</span>
+                <div th:if="${error}" class="alert-error px-6 py-4 rounded-lg mb-6 fade-in" role="alert">
+                    <div class="flex items-center">
+                        <i class="fas fa-exclamation-circle mr-3 text-xl"></i>
+                        <span th:text="${error}">Error message</span>
+                    </div>
                 </div>
                 
-                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                <div class="form-card rounded-2xl shadow-2xl overflow-hidden fade-in">
                     <div class="p-8">
                         <form th:action="@{${room.id != null} ? '/vendor/hotels/' + ${hotel.id} + '/rooms/edit/' + ${room.id} : '/vendor/hotels/' + ${hotel.id} + '/rooms/add'}" method="POST" th:object="${room}" enctype="multipart/form-data">
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div class="md:col-span-2">
-                                    <label for="type" class="block text-sm font-medium text-gray-700 mb-2">Room Type</label>
-                                    <input type="text" id="type" name="type" required 
-                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                           placeholder="e.g. Standard, Deluxe, Suite" th:field="*{type}">
-                                </div>
+                            
+                            <!-- Basic Information Section -->
+                            <div class="mb-8">
+                                <h2 class="section-title text-xl font-bold text-gray-800">Basic Information</h2>
                                 
-                                <div>
-                                    <label for="capacity" class="block text-sm font-medium text-gray-700 mb-2">Capacity (Guests)</label>
-                                    <input type="number" id="capacity" name="capacity" required min="1" 
-                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                           placeholder="Number of guests" th:field="*{capacity}">
-                                </div>
-                                
-                                <div>
-                                    <label for="pricePerNight" class="block text-sm font-medium text-gray-700 mb-2">Price Per Night (Rp)</label>
-                                    <input type="number" id="pricePerNight" name="pricePerNight" required step="0.01" min="0" 
-                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                                           placeholder="Price per night" th:field="*{pricePerNight}">
-                                </div>
-                                
-                                <div class="md:col-span-2">
-                                    <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">Room Image</label>
-                                    <input type="file" id="imageFile" name="imageFile" accept="image/*"
-                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <div th:if="${room.imageUrl != null}" class="mt-2">
-                                        <p class="text-sm text-gray-600">Current image:</p>
-                                        <img th:src="@{'/images/hotels/' + ${room.imageUrl}}" alt="Room Image" class="mt-2 h-32 object-cover rounded">
-                                        <input type="hidden" name="imageUrl" th:value="${room.imageUrl}">
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <div class="lg:col-span-2 input-group">
+                                        <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
+                                            <i class="fas fa-door-open mr-2 text-purple-600"></i>Room Type
+                                        </label>
+                                        <div class="relative">
+                                            <i class="fas fa-door-open input-icon"></i>
+                                            <input type="text" id="type" name="type" required 
+                                                   class="input-with-icon input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                                   placeholder="e.g. Standard, Deluxe, Suite" th:field="*{type}">
+                                        </div>
                                     </div>
-                                </div>
-                                
-                                <div class="md:col-span-2 mt-6">
-                                    <h3 class="text-lg font-semibold text-gray-700 mb-4">Room Amenities</h3>
-                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasPrivateBathroom" name="hasPrivateBathroom" th:field="*{hasPrivateBathroom}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasPrivateBathroom" class="ml-2 block text-sm text-gray-700">Private Bathroom</label>
+                                    
+                                    <div class="input-group">
+                                        <label for="capacity" class="block text-sm font-medium text-gray-700 mb-2">
+                                            <i class="fas fa-users mr-2 text-purple-600"></i>Capacity (Guests)
+                                        </label>
+                                        <div class="relative">
+                                            <i class="fas fa-users input-icon"></i>
+                                            <input type="number" id="capacity" name="capacity" required min="1" 
+                                                   class="input-with-icon input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                                   placeholder="Number of guests" th:field="*{capacity}">
                                         </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasKingBed" name="hasKingBed" th:field="*{hasKingBed}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasKingBed" class="ml-2 block text-sm text-gray-700">King Bed</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasQueenBed" name="hasQueenBed" th:field="*{hasQueenBed}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasQueenBed" class="ml-2 block text-sm text-gray-700">Queen Bed</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasTwinBeds" name="hasTwinBeds" th:field="*{hasTwinBeds}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasTwinBeds" class="ml-2 block text-sm text-gray-700">Twin Beds</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasTV" name="hasTV" th:field="*{hasTV}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasTV" class="ml-2 block text-sm text-gray-700">TV</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasMinibar" name="hasMinibar" th:field="*{hasMinibar}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasMinibar" class="ml-2 block text-sm text-gray-700">Minibar</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasBalcony" name="hasBalcony" th:field="*{hasBalcony}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasBalcony" class="ml-2 block text-sm text-gray-700">Balcony</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasAirConditioning" name="hasAirConditioning" th:field="*{hasAirConditioning}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasAirConditioning" class="ml-2 block text-sm text-gray-700">Air Conditioning</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasWifi" name="hasWifi" th:field="*{hasWifi}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasWifi" class="ml-2 block text-sm text-gray-700">WiFi</label>
-                                        </div>
-                                        <div class="flex items-center">
-                                            <input type="checkbox" id="hasSafetyDeposit" name="hasSafetyDeposit" th:field="*{hasSafetyDeposit}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
-                                            <label for="hasSafetyDeposit" class="ml-2 block text-sm text-gray-700">Safety Deposit Box</label>
+                                    </div>
+                                    
+                                    <div class="input-group">
+                                        <label for="pricePerNight" class="block text-sm font-medium text-gray-700 mb-2">
+                                            <i class="fas fa-money-bill-wave mr-2 text-purple-600"></i>Price Per Night (Rp)
+                                        </label>
+                                        <div class="relative">
+                                            <i class="fas fa-money-bill-wave input-icon"></i>
+                                            <input type="number" id="pricePerNight" name="pricePerNight" required step="0.01" min="0" 
+                                                   class="input-with-icon input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                                   placeholder="Price per night" th:field="*{pricePerNight}">
                                         </div>
                                     </div>
                                 </div>
                                 
-                                <div>
-                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <div class="input-group">
+                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">
+                                        <i class="fas fa-align-left mr-2 text-purple-600"></i>Description
+                                    </label>
                                     <textarea id="description" name="description" rows="4" 
-                                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                              class="input-focus w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                                               placeholder="Room description" th:field="*{description}"></textarea>
                                 </div>
                             </div>
                             
+                            <!-- Image Upload Section -->
+                            <div class="mb-8">
+                                <h2 class="section-title text-xl font-bold text-gray-800">Room Image</h2>
+                                
+                                <div class="input-group">
+                                    <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">
+                                        <i class="fas fa-image mr-2 text-purple-600"></i>Upload Image
+                                    </label>
+                                    <div class="upload-area rounded-lg p-6 text-center">
+                                        <input type="file" id="imageFile" name="imageFile" accept="image/*"
+                                               class="hidden" onchange="handleFileSelect(this)">
+                                        
+                                        <!-- Default Upload Content -->
+                                        <div class="upload-content">
+                                            <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-4"></i>
+                                            <p class="text-gray-600 mb-2">Click to upload or drag and drop</p>
+                                            <p class="text-sm text-gray-500">PNG, JPG, GIF up to 10MB</p>
+                                            <button type="button" onclick="document.getElementById('imageFile').click()" 
+                                                    class="mt-4 bg-purple-600 text-white px-4 py-2 rounded-lg hover:bg-purple-700 transition">
+                                                Choose File
+                                            </button>
+                                        </div>
+                                        
+                                        <!-- Image Preview Thumbnail -->
+                                        <div id="imagePreviewContent" class="hidden">
+                                            <div class="flex items-center justify-center space-x-4">
+                                                <div class="relative group">
+                                                    <img id="previewImg" src="" alt="Image Preview" 
+                                                         class="w-20 h-20 object-cover rounded-lg border-2 border-purple-300 shadow-md">
+                                                    
+                                                    <!-- Hover Overlay -->
+                                                    <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg flex items-center justify-center">
+                                                        <div class="flex space-x-1">
+                                                            <button type="button" onclick="previewImage()" 
+                                                                    class="bg-blue-500 text-white p-1 rounded text-xs hover:bg-blue-600 transition" title="Preview">
+                                                                <i class="fas fa-eye"></i>
+                                                            </button>
+                                                            <button type="button" onclick="removePreview()" 
+                                                                    class="bg-red-500 text-white p-1 rounded text-xs hover:bg-red-600 transition" title="Delete">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div class="text-left">
+                                                    <p class="text-green-600 font-medium" id="fileName">File selected</p>
+                                                    <p class="text-sm text-gray-500" id="fileSize">Size: 0 MB</p>
+                                                    <button type="button" onclick="document.getElementById('imageFile').click()" 
+                                                            class="mt-2 text-purple-600 text-sm hover:text-purple-700 transition">
+                                                        <i class="fas fa-edit mr-1"></i>Change File
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div th:if="${room.imageUrl != null}" class="mt-4 p-4 bg-gray-50 rounded-lg">
+                                        <p class="text-sm text-gray-600 mb-2">Current image:</p>
+                                        <img th:src="@{'/images/hotels/' + ${room.imageUrl}}" alt="Room Image" 
+                                             class="h-32 w-48 object-cover rounded-lg shadow-md">
+                                        <input type="hidden" name="imageUrl" th:value="${room.imageUrl}">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Amenities Section -->
+                            <div class="mb-8">
+                                <h2 class="section-title text-xl font-bold text-gray-800">Room Amenities</h2>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasPrivateBathroom" name="hasPrivateBathroom" th:field="*{hasPrivateBathroom}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasPrivateBathroom" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-bath mr-2 text-blue-500"></i>Private Bathroom
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasKingBed" name="hasKingBed" th:field="*{hasKingBed}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasKingBed" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-bed mr-2 text-green-500"></i>King Bed
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasQueenBed" name="hasQueenBed" th:field="*{hasQueenBed}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasQueenBed" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-bed mr-2 text-pink-500"></i>Queen Bed
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasTwinBeds" name="hasTwinBeds" th:field="*{hasTwinBeds}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasTwinBeds" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-bed mr-2 text-orange-500"></i>Twin Beds
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasTV" name="hasTV" th:field="*{hasTV}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasTV" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-tv mr-2 text-indigo-500"></i>TV
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasMinibar" name="hasMinibar" th:field="*{hasMinibar}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasMinibar" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-wine-bottle mr-2 text-red-500"></i>Minibar
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasBalcony" name="hasBalcony" th:field="*{hasBalcony}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasBalcony" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-door-open mr-2 text-teal-500"></i>Balcony
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasAirConditioning" name="hasAirConditioning" th:field="*{hasAirConditioning}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasAirConditioning" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-snowflake mr-2 text-cyan-500"></i>Air Conditioning
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasWifi" name="hasWifi" th:field="*{hasWifi}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasWifi" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-wifi mr-2 text-blue-500"></i>WiFi
+                                            </label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="amenity-card">
+                                        <div class="flex items-center">
+                                            <input type="checkbox" id="hasSafetyDeposit" name="hasSafetyDeposit" th:field="*{hasSafetyDeposit}" 
+                                                   class="amenity-checkbox h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                            <label for="hasSafetyDeposit" class="amenity-label ml-3 flex items-center text-sm text-gray-700">
+                                                <i class="fas fa-lock mr-2 text-yellow-500"></i>Safety Deposit Box
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Buttons -->
                             <div class="flex justify-end space-x-4 mt-8">
-                                <a th:href="@{/vendor/hotels/{id}/rooms(id=${hotel.id})}" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
-                                    Cancel
+                                <a th:href="@{/vendor/hotels/{id}/rooms(id=${hotel.id})}" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition-all duration-300 hover:transform hover:-translate-y-1">
+                                    <i class="fas fa-times mr-2"></i>Cancel
                                 </a>
-                                <button type="submit" class="px-6 py-3 btn-gradient text-white rounded-lg hover:opacity-90 transition">
+                                <button type="submit" class="px-6 py-3 btn-gradient text-white rounded-lg font-medium">
                                     <i class="fas fa-save mr-2"></i>
                                     <span th:text="${room.id != null ? 'Update Room' : 'Add Room'}">Save Room</span>
                                 </button>
@@ -151,5 +448,109 @@
             </div>
         </div>
     </main>
+    
+    <script>
+        function handleFileSelect(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const uploadContent = document.querySelector('.upload-content');
+                const imagePreviewContent = document.getElementById('imagePreviewContent');
+                const previewImg = document.getElementById('previewImg');
+                const fileName = document.getElementById('fileName');
+                const fileSize = document.getElementById('fileSize');
+                
+                // Update file info
+                fileName.textContent = file.name;
+                fileSize.textContent = `Size: ${(file.size / 1024 / 1024).toFixed(2)} MB`;
+                
+                // Show image preview thumbnail
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    uploadContent.classList.add('hidden');
+                    imagePreviewContent.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function removePreview() {
+            const fileInput = document.getElementById('imageFile');
+            const uploadContent = document.querySelector('.upload-content');
+            const imagePreviewContent = document.getElementById('imagePreviewContent');
+            
+            // Reset file input
+            fileInput.value = '';
+            
+            // Show upload content, hide preview
+            uploadContent.classList.remove('hidden');
+            imagePreviewContent.classList.add('hidden');
+        }
+        
+        function previewImage() {
+            const previewImg = document.getElementById('previewImg');
+            const modal = document.createElement('div');
+            modal.className = 'fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50';
+            modal.onclick = function() { document.body.removeChild(modal); };
+            
+            const img = document.createElement('img');
+            img.src = previewImg.src;
+            img.className = 'max-w-full max-h-full object-contain';
+            
+            const closeBtn = document.createElement('button');
+            closeBtn.innerHTML = '<i class="fas fa-times"></i>';
+            closeBtn.className = 'absolute top-4 right-4 text-white text-2xl hover:text-gray-300';
+            closeBtn.onclick = function() { document.body.removeChild(modal); };
+            
+            modal.appendChild(img);
+            modal.appendChild(closeBtn);
+            document.body.appendChild(modal);
+        }
+        
+        // Drag and drop functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const uploadArea = document.querySelector('.upload-area');
+            const fileInput = document.getElementById('imageFile');
+            
+            if (uploadArea && fileInput) {
+                ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, preventDefaults, false);
+                });
+                
+                function preventDefaults(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                }
+                
+                ['dragenter', 'dragover'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, highlight, false);
+                });
+                
+                ['dragleave', 'drop'].forEach(eventName => {
+                    uploadArea.addEventListener(eventName, unhighlight, false);
+                });
+                
+                function highlight(e) {
+                    uploadArea.classList.add('dragover');
+                }
+                
+                function unhighlight(e) {
+                    uploadArea.classList.remove('dragover');
+                }
+                
+                uploadArea.addEventListener('drop', handleDrop, false);
+                
+                function handleDrop(e) {
+                    const dt = e.dataTransfer;
+                    const files = dt.files;
+                    
+                    if (files.length > 0) {
+                        fileInput.files = files;
+                        handleFileSelect(fileInput);
+                    }
+                }
+            }
+        });
+    </script>
 </body>
 </html>

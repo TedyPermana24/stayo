@@ -264,7 +264,10 @@
                 <th:block th:each="hotel : ${featuredHotels}">
                     <div class="bg-white rounded-3xl card-shadow overflow-hidden hover-lift">
                         <div class="relative">
-                            <img th:src="${hotel.imageUrl}" th:alt="${hotel.name}" class="w-full h-64 object-cover">
+                            <img th:if="${hotel.imageUrl != null and !hotel.imageUrl.isEmpty()}" 
+                                 th:src="${hotel.imageUrl.startsWith('http') ? hotel.imageUrl : '/images/hotels/' + hotel.imageUrl}" 
+                                 th:alt="${hotel.name}" 
+                                 class="w-full h-64 object-cover">
                             <div class="absolute top-4 right-4 bg-gradient-to-br from-purple-600 to-indigo-500 rounded-full p-2 shadow-lg flex items-center justify-center" style="height: 2.5rem; width: 2.5rem;">
                                 <i class="fas fa-heart text-white hover:text-yellow-300 cursor-pointer transition duration-300"
                                    style="font-size: 1.25rem;"
@@ -288,7 +291,7 @@
                             <div class="flex justify-between items-center">
                                 <div>
                                     <p class="text-gray-500 text-sm">Starting from</p>
-                                    <p class="text-purple-600 font-bold text-2xl">Rp.<span th:text="${hotel.lowestPrice}">Price</span><span class="text-sm text-gray-500">/night</span></p>
+                                    <p class="text-purple-600 font-bold text-2xl">Rp.<span th:text="${#numbers.formatDecimal(hotel.lowestPrice, 0, 'COMMA', 0, 'POINT')}">Price</span><span class="text-sm text-gray-500">/night</span></p>
                                 </div>
                                 <a th:href="@{/hotels/{id}(id=${hotel.id})}" class="btn-gradient text-white px-6 py-3 rounded-full font-medium">
                                     View Details
@@ -344,7 +347,7 @@
                 
                 <!-- Destination 3 -->
                 <div class="relative rounded-3xl overflow-hidden h-80 group hover-lift">
-                    <img src="https://images.unsplash.com/photo-1583608564476-c6dfb5d8e8ec?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1170&q=80" 
+                    <img src="https://plus.unsplash.com/premium_photo-1700954824012-08ce5362e6c6?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                          alt="Yogyakarta" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                     <div class="absolute bottom-0 left-0 p-6 text-white">
@@ -360,7 +363,7 @@
                 
                 <!-- Destination 4 -->
                 <div class="relative rounded-3xl overflow-hidden h-80 group hover-lift">
-                    <img src="https://images.unsplash.com/photo-1596422846543-75c6fc197f11?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1164&q=80" 
+                    <img src="https://images.unsplash.com/photo-1611638281871-1063d3e76e1f?q=80&w=2033&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
                          alt="Bandung" class="w-full h-full object-cover group-hover:scale-110 transition duration-500">
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                     <div class="absolute bottom-0 left-0 p-6 text-white">

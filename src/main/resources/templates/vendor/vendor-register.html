@@ -128,52 +128,97 @@
                     <h2 class="text-xl font-semibold text-gray-800">Business Information</h2>
                 </div>
                 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    <div>
-                        <label for="companyName" class="block text-sm font-medium text-gray-700 mb-2">Company Name</label>
-                        <input type="text" id="companyName" name="vendor.companyName" required
-                               class="input-focus block w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-                               placeholder="Your company name">
+                <!-- Company Details Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="space-y-2">
+                        <label for="companyName" class="block text-sm font-medium text-gray-700">Company Name</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-building text-gray-400"></i>
+                            </div>
+                            <input type="text" id="companyName" name="vendor.companyName" required
+                                   class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                                   placeholder="Enter your company name">
+                        </div>
                     </div>
                     
-                    <div>
-                        <label for="businessLicense" class="block text-sm font-medium text-gray-700 mb-2">Business License Number</label>
-                        <input type="text" id="businessLicense" name="vendor.businessLicense" required
-                               class="input-focus block w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-                               placeholder="License number">
+                    <div class="space-y-2">
+                        <label for="businessLicense" class="block text-sm font-medium text-gray-700">Business License Number</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-certificate text-gray-400"></i>
+                            </div>
+                            <input type="text" id="businessLicense" name="vendor.businessLicense" required
+                                   class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                                   placeholder="Enter license number">
+                        </div>
                     </div>
-                    
-                    <div>
-                        <label for="phoneNumber" class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                </div>
+                
+                <!-- Contact Information Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <div class="space-y-2">
+                        <label for="phoneNumber" class="block text-sm font-medium text-gray-700">Phone Number</label>
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-phone text-gray-400"></i>
                             </div>
                             <input type="tel" id="phoneNumber" name="vendor.phoneNumber" required
                                    class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-                                   placeholder="+1234567890">
+                                   placeholder="+62 812 3456 7890">
                         </div>
                     </div>
                     
-                    <div>
-                        <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">Business License Image</label>
+                    <!-- Business License Image -->
+                    <div class="space-y-2">
+                        <label for="imageFile" class="block text-sm font-medium text-gray-700">Business License Image</label>
                         <div class="relative">
-                            <input type="file" id="imageFile" name="imageFile"
-                                   class="input-focus block w-full px-4 py-3 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300">
+                            <!-- Hidden file input -->
+                            <input type="file" id="imageFile" name="imageFile" accept="image/*" class="hidden" onchange="previewImage(this)">
+                            
+                            <!-- Custom upload area -->
+                            <label for="imageFile" class="cursor-pointer">
+                                <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-300 group min-h-[120px] flex items-center justify-center">
+                                    <div class="upload-content">
+                                        <div class="w-12 h-12 bg-indigo-100 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:bg-indigo-200 transition-colors">
+                                            <i class="fas fa-cloud-upload-alt text-indigo-600 text-xl"></i>
+                                        </div>
+                                        <h3 class="text-sm font-semibold text-gray-700 mb-1">Upload License</h3>
+                                        <p class="text-gray-500 text-xs mb-1">Click to browse</p>
+                                        <p class="text-gray-400 text-xs">PNG, JPG (Max 10MB)</p>
+                                    </div>
+                                    
+                                    <!-- Preview area (will be shown via JavaScript) -->
+                                    <div class="preview-content hidden">
+                                        <img class="preview-image max-w-full max-h-32 mx-auto rounded-lg shadow-lg mb-3" src="" alt="Preview">
+                                        <div class="flex items-center justify-center space-x-3">
+                                            <span class="file-name text-gray-700 font-medium text-sm"></span>
+                                            <button type="button" onclick="removeImage()" class="text-red-500 hover:text-red-700 transition-colors px-2 py-1 rounded text-sm">
+                                                <i class="fas fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </label>
                         </div>
                     </div>
-                    
-                    <div class="md:col-span-2">
-                        <label for="address" class="block text-sm font-medium text-gray-700 mb-2">Business Address</label>
-                        <div class="relative">
-                            <div class="absolute top-3 left-3 pointer-events-none">
-                                <i class="fas fa-map-marker-alt text-gray-400"></i>
-                            </div>
-                            <textarea id="address" name="vendor.address" rows="3"
-                                      class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
-                                      placeholder="Complete business address"></textarea>
+                </div>
+                
+                <!-- Business Address - Full Width -->
+                <div class="space-y-2">
+                    <label for="address" class="block text-sm font-medium text-gray-700">Business Address</label>
+                    <div class="relative">
+                        <div class="absolute top-3 left-3 pointer-events-none">
+                            <i class="fas fa-map-marker-alt text-gray-400"></i>
                         </div>
+                        <textarea id="address" name="vendor.address" rows="4"
+                                  class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300 resize-none"
+                                  placeholder="Enter complete business address including street, city, postal code, and country"></textarea>
                     </div>
+                    <p class="text-xs text-gray-500 mt-1">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        Please provide a complete and accurate business address for verification purposes.
+                    </p>
                 </div>
             </div>
 
@@ -203,5 +248,54 @@
             </p>
         </div>
     </div>
+    
+    <!-- JavaScript for image preview -->
+    <script>
+        function previewImage(input) {
+            const file = input.files[0];
+            const uploadContent = input.parentElement.querySelector('.upload-content');
+            const previewContent = input.parentElement.querySelector('.preview-content');
+            const previewImg = previewContent.querySelector('.preview-image');
+            const fileName = previewContent.querySelector('.file-name');
+            
+            if (file) {
+                // Validate file type
+                const validTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+                if (!validTypes.includes(file.type)) {
+                    alert('Please select a valid image file (PNG, JPG, JPEG)');
+                    input.value = '';
+                    return;
+                }
+                
+                // Validate file size (10MB)
+                if (file.size > 10 * 1024 * 1024) {
+                    alert('File size must be less than 10MB');
+                    input.value = '';
+                    return;
+                }
+                
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    previewImg.src = e.target.result;
+                    fileName.textContent = file.name;
+                    uploadContent.classList.add('hidden');
+                    previewContent.classList.remove('hidden');
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        function removeImage() {
+            const input = document.getElementById('imageFile');
+            const uploadContent = input.parentElement.querySelector('.upload-content');
+            const previewContent = input.parentElement.querySelector('.preview-content');
+            const previewImg = previewContent.querySelector('.preview-image');
+            
+            input.value = '';
+            previewImg.src = '';
+            uploadContent.classList.remove('hidden');
+            previewContent.classList.add('hidden');
+        }
+    </script>
 </body>
 </html>

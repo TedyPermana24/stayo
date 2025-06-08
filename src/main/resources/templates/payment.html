@@ -110,7 +110,7 @@
                     <hr class="my-4">
                     <div class="flex justify-between items-center text-lg">
                         <span class="font-bold text-gray-800">Total Amount:</span>
-                        <span class="font-bold text-purple-600 text-xl" th:text="${#numbers.formatCurrency(booking.totalPrice)}">Total Price</span>
+                        <span class="font-bold text-purple-600 text-xl" th:text="${'Rp ' + #numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')}">Total Price</span>
                     </div>
                 </div>
             </div>
