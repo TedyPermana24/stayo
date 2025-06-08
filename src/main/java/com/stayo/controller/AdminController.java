@@ -53,6 +53,12 @@ public class AdminController {
         long totalUsers = userRepository.count();
         model.addAttribute("totalUsers", totalUsers);
 
+        // Menambahkan totalHotels
+        long totalHotels = vendorHotelService.getAllVendors().stream()
+                .filter(v -> v.getStatus() == VendorStatus.APPROVED)
+                .count();
+        model.addAttribute("totalHotels", totalHotels);
+
         // Menghitung statistik untuk dashboard
         long totalBookings = bookingService.getAllBookings().size();
         long pendingBookings = bookingService.getAllBookings().stream()
@@ -64,6 +70,12 @@ public class AdminController {
         long rejectedBookings = bookingService.getAllBookings().stream()
                 .filter(b -> "REJECTED".equals(b.getStatus()))
                 .count();
+
+        // Menambahkan pendingApprovals untuk dashboard
+        long pendingApprovals = vendorHotelService.getAllVendors().stream()
+                .filter(v -> v.getStatus() == VendorStatus.PENDING)
+                .count();
+        model.addAttribute("pendingApprovals", pendingApprovals);
 
         model.addAttribute("totalBookings", totalBookings);
         model.addAttribute("pendingBookings", pendingBookings);
@@ -85,7 +97,16 @@ public class AdminController {
                 .filter(v -> v.getStatus() == VendorStatus.PENDING)
                 .collect(Collectors.toList());
 
+        // Menambahkan statistik untuk vendor approval
+        long todayApplications = 0; // Implementasi sesuai kebutuhan
+        long approvedToday = 0; // Implementasi sesuai kebutuhan  
+        long rejectedToday = 0; // Implementasi sesuai kebutuhan
+
         model.addAttribute("pendingVendors", pendingVendors);
+        model.addAttribute("todayApplications", todayApplications);
+        model.addAttribute("approvedToday", approvedToday);
+        model.addAttribute("rejectedToday", rejectedToday);
+        
         return "admin/vendor-approval";
     }
 
@@ -132,7 +153,14 @@ public class AdminController {
     @GetMapping("/users")
     public String listUsers(Model model) {
         List<User> users = userService.getAllUsers();
+        
+        // Menambahkan data vendor users untuk statistik
+        List<User> vendorUsers = users.stream()
+                .filter(u -> u.getRole() == Role.VENDOR)
+                .collect(Collectors.toList());
+        
         model.addAttribute("users", users);
+        model.addAttribute("vendorUsers", vendorUsers);
         return "admin/users/list";
     }
 
