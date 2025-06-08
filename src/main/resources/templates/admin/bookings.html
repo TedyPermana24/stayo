@@ -45,8 +45,10 @@
                     <span class="text-xl font-bold text-gradient">Stayo Admin</span>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <span class="text-gray-600">Welcome, <span th:text="${admin.firstName}" class="font-medium"></span>!</span>
-                    <a th:href="@{/admin/logout}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
+                    <span class="text-gray-600">Welcome, 
+                        <span th:if="${admin != null}" th:text="${admin.firstName}" class="font-medium">Admin</span>!
+                    </span>
+                    <a href="/signout" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">
                         <i class="fas fa-sign-out-alt mr-1"></i> Logout
                     </a>
                 </div>
@@ -60,14 +62,20 @@
             <div class="lg:w-64">
                 <div class="glass-effect rounded-lg p-4 card-shadow">
                     <nav class="space-y-2">
-                        <a th:href="@{/admin/dashboard}" class="flex items-center px-4 py-3 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition">
+                        <a href="/admin/dashboard" class="flex items-center px-4 py-3 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition">
                             <i class="fas fa-tachometer-alt mr-3"></i> Dashboard
                         </a>
-                        <a th:href="@{/admin/bookings}" class="flex items-center px-4 py-3 text-purple-600 bg-purple-50 rounded-lg font-medium">
+                        <a href="/admin/bookings" class="flex items-center px-4 py-3 text-purple-600 bg-purple-50 rounded-lg font-medium">
                             <i class="fas fa-calendar-check mr-3"></i> Semua Booking
                         </a>
-                        <a th:href="@{/admin/bookings/pending}" class="flex items-center px-4 py-3 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition">
+                        <a href="/admin/bookings/pending" class="flex items-center px-4 py-3 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition">
                             <i class="fas fa-clock mr-3"></i> Booking Pending
+                        </a>
+                        <a href="/admin/vendors" class="flex items-center px-4 py-3 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition">
+                            <i class="fas fa-building mr-3"></i> Vendor Approval
+                        </a>
+                        <a href="/admin/users" class="flex items-center px-4 py-3 text-gray-600 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition">
+                            <i class="fas fa-users mr-3"></i> Users
                         </a>
                     </nav>
                 </div>
@@ -81,16 +89,25 @@
                         
                         <!-- Filter by Status -->
                         <div class="relative">
-                            <select th:onchange="'window.location.th:href=\'' + @{/admin/bookings(status='')} + '\' + this.value'"
+                            <select onchange="filterBookings(this.value)"
                                     class="btn-gradient text-white px-4 py-2 rounded-lg appearance-none cursor-pointer pl-8">
                                 <option value="ALL" th:selected="${selectedStatus == 'ALL'}">Semua</option>
                                 <option value="PENDING" th:selected="${selectedStatus == 'PENDING'}">Pending</option>
                                 <option value="CONFIRMED" th:selected="${selectedStatus == 'CONFIRMED'}">Confirmed</option>
+                                <option value="COMPLETED" th:selected="${selectedStatus == 'COMPLETED'}">Completed</option>
                                 <option value="CANCELLED" th:selected="${selectedStatus == 'CANCELLED'}">Cancelled</option>
                                 <option value="REJECTED" th:selected="${selectedStatus == 'REJECTED'}">Rejected</option>
                             </select>
                             <i class="fas fa-filter absolute left-2 top-1/2 transform -translate-y-1/2 text-white pointer-events-none"></i>
                         </div>
+                    </div>
+
+                    <!-- Flash Messages -->
+                    <div th:if="${success}" class="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded mb-4">
+                        <span th:text="${success}"></span>
+                    </div>
+                    <div th:if="${error}" class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
+                        <span th:text="${error}"></span>
                     </div>
 
                     <!-- Bookings Table -->
@@ -111,31 +128,34 @@
                             </thead>
                             <tbody>
                                 <tr th:each="booking : ${bookings}" class="border-b border-gray-100 hover:bg-gray-50 transition">
-                                    <td class="py-4 px-4" th:text="${booking.id}"></td>
+                                    <td class="py-4 px-4" th:text="${booking.id}">1</td>
                                     <td class="py-4 px-4">
                                         <div>
-                                            <div class="font-semibold" th:text="${booking.user.firstName + ' ' + booking.user.lastName}"></div>
-                                            <div class="text-sm text-gray-500" th:text="${booking.user.email}"></div>
+                                            <div class="font-semibold" th:text="${booking.user != null ? booking.user.firstName + ' ' + booking.user.lastName : 'N/A'}">Customer Name</div>
+                                            <div class="text-sm text-gray-500" th:text="${booking.user != null ? booking.user.email : 'N/A'}">customer@email.com</div>
                                         </div>
                                     </td>
-                                    <td class="py-4 px-4" th:text="${booking.hotel.name}"></td>
-                                    <td class="py-4 px-4" th:text="${booking.room.roomType}"></td>
-                                    <td class="py-4 px-4" th:text="${booking.checkInDate}"></td>
-                                    <td class="py-4 px-4" th:text="${booking.checkOutDate}"></td>
+                                    <td class="py-4 px-4" th:text="${booking.hotel != null ? booking.hotel.name : 'N/A'}">Hotel Name</td>
+                                    <td class="py-4 px-4" th:text="${booking.room != null ? booking.room.type : 'N/A'}">Room Type</td>
+                                    <td class="py-4 px-4" th:text="${booking.checkInDate != null ? #temporals.format(booking.checkInDate, 'dd/MM/yyyy') : 'N/A'}">01/01/2025</td>
+                                    <td class="py-4 px-4" th:text="${booking.checkOutDate != null ? #temporals.format(booking.checkOutDate, 'dd/MM/yyyy') : 'N/A'}">02/01/2025</td>
                                     <td class="py-4 px-4">
                                         <span class="px-3 py-1 rounded-full text-sm font-medium"
-                                              th:classappend="${booking.status == 'CONFIRMED'} ? 'bg-green-100 text-green-800' : 
-                                                             (${booking.status == 'PENDING'} ? 'bg-yellow-100 text-yellow-800' : 
-                                                             (${booking.status == 'REJECTED'} ? 'bg-red-100 text-red-800' : 'bg-gray-100 text-gray-800'))"
-                                              th:text="${booking.status}"></span>
+                                              th:class="'px-3 py-1 rounded-full text-sm font-medium ' + 
+                                                       (${booking.status == 'CONFIRMED'} ? 'bg-green-100 text-green-800' : 
+                                                       (${booking.status == 'COMPLETED'} ? 'bg-blue-100 text-blue-800' : 
+                                                       (${booking.status == 'PENDING'} ? 'bg-yellow-100 text-yellow-800' : 
+                                                       (${booking.status == 'REJECTED'} ? 'bg-red-100 text-red-800' : 
+                                                       (${booking.status == 'CANCELLED'} ? 'bg-gray-100 text-gray-800' : 'bg-gray-100 text-gray-800')))))"
+                                              th:text="${booking.status}">PENDING</span>
                                     </td>
-                                    <td class="py-4 px-4 font-semibold" th:text="'Rp ' + ${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')}"></td>
-                                    <td class="py-4 px-4" th:text="${booking.bookingDate}"></td>
+                                    <td class="py-4 px-4 font-semibold" th:text="'Rp ' + ${booking.totalPrice != null ? #numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT') : '0'}">Rp 500,000</td>
+                                    <td class="py-4 px-4" th:text="${booking.bookingDate != null ? #temporals.format(booking.bookingDate, 'dd/MM/yyyy HH:mm') : 'N/A'}">01/01/2025 10:00</td>
                                 </tr>
                             </tbody>
                         </table>
                         
-                        <div th:if="${#lists.isEmpty(bookings)}" class="text-center py-12">
+                        <div th:if="${bookings == null or #lists.isEmpty(bookings)}" class="text-center py-12">
                             <i class="fas fa-inbox text-6xl text-gray-300 mb-4"></i>
                             <h5 class="text-xl font-semibold text-gray-500 mb-2">Tidak ada booking ditemukan</h5>
                             <p class="text-gray-400">Belum ada booking dengan filter yang dipilih.</p>
@@ -145,5 +165,16 @@
             </div>
         </div>
     </div>
+
+    <script>
+        function filterBookings(status) {
+            const baseUrl = '/admin/bookings';
+            if (status === 'ALL') {
+                window.location.href = baseUrl;
+            } else {
+                window.location.href = baseUrl + '?status=' + status;
+            }
+        }
+    </script>
 </body>
 </html>

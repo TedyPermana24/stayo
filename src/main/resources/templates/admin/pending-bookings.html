@@ -76,7 +76,7 @@
             <!-- Main Content -->
             <div class="flex-1">
                 <div class="glass-effect rounded-lg p-6 card-shadow">
-                    <h2 class="text-3xl font-bold text-gradient mb-6">Booking Pending Approval</h2>
+                    <h2 class="text-3xl font-bold text-gradient mb-6">Booking Pending</h2>
 
                     <!-- Success/Error Messages -->
                     <div th:if="${success}" class="mb-6 p-4 bg-green-100 border border-green-400 text-green-700 rounded-lg">
@@ -106,7 +106,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr th:each="booking : ${pendingBookings}" class="border-b border-gray-100 hover:bg-gray-50 transition">
+                                <tr th:each="booking : ${bookings}" class="border-b border-gray-100 hover:bg-gray-50 transition">
                                     <td class="py-4 px-4" th:text="${booking.id}"></td>
                                     <td class="py-4 px-4">
                                         <div>
@@ -115,7 +115,7 @@
                                         </div>
                                     </td>
                                     <td class="py-4 px-4" th:text="${booking.hotel.name}"></td>
-                                    <td class="py-4 px-4" th:text="${booking.room.roomType}"></td>
+                                    <td class="py-4 px-4" th:text="${booking.room.type}"></td>
                                     <td class="py-4 px-4" th:text="${booking.checkInDate}"></td>
                                     <td class="py-4 px-4" th:text="${booking.checkOutDate}"></td>
                                     <td class="py-4 px-4" th:text="${booking.numberOfGuests}"></td>
