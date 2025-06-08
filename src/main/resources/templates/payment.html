@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Payment - Stayo</title>
-    <!-- Tailwind CSS -->
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <!-- Add Midtrans Snap JS -->
@@ -12,26 +11,35 @@
             src="https://app.sandbox.midtrans.com/snap/snap.js"
             data-client-key="SB-Mid-client-5yXhC7zkffeExYWE"></script>
     <style>
-        .text-gradient {
-            background: linear-gradient(to right, #6366F1, #8B5CF6);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .btn-gradient {
-            background: linear-gradient(to right, #6366F1, #8B5CF6);
-        }
         .glass-effect {
-            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
-        }
-        .card-shadow {
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
         .hover-lift {
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
         }
         .hover-lift:hover {
             transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
     </style>
 </head>
@@ -64,62 +72,79 @@
     </header>
     
     <!-- Payment Content -->
-    <div class="flex-grow flex items-center justify-center py-12 px-4 pt-32">
+    <div class="flex-grow flex items-center justify-center pb-20 px-4 pt-32">
         <div class="max-w-2xl w-full bg-white rounded-3xl card-shadow p-8 hover-lift">
-            <h2 class="text-3xl font-bold text-center mb-6 text-gradient">Payment Details</h2>
+            <div class="text-center mb-8">
+                <h1 class="text-4xl font-bold text-gradient mb-2">Complete Payment</h1>
+                <p class="text-gray-600">Secure your booking with confidence</p>
+            </div>
             
-            <div class="booking-details mb-8">
-                <h3 class="text-xl font-semibold mb-4 text-gray-800">Booking Information</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="flex items-start">
-                        <i class="fas fa-hotel text-purple-600 mt-1 mr-3"></i>
-                        <div>
-                            <p class="text-sm text-gray-500">Hotel</p>
-                            <p class="font-medium text-gray-800" th:text="${booking.hotel.name}">Hotel Name</p>
-                        </div>
+            <!-- Booking Summary -->
+            <div class="bg-gray-50 rounded-2xl p-6 mb-8">
+                <h2 class="text-xl font-bold text-gray-800 mb-4 flex items-center">
+                    <i class="fas fa-receipt text-purple-600 mr-2"></i>
+                    Booking Summary
+                </h2>
+                
+                <div class="space-y-3">
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Hotel:</span>
+                        <span class="font-semibold" th:text="${booking.hotel.name}">Hotel Name</span>
                     </div>
-                    <div class="flex items-start">
-                        <i class="fas fa-door-open text-purple-600 mt-1 mr-3"></i>
-                        <div>
-                            <p class="text-sm text-gray-500">Room Type</p>
-                            <p class="font-medium text-gray-800" th:text="${booking.room.type}">Room Type</p>
-                        </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Room:</span>
+                        <span class="font-semibold" th:text="${booking.room.type}">Room Type</span>
                     </div>
-                    <div class="flex items-start">
-                        <i class="fas fa-calendar-check text-purple-600 mt-1 mr-3"></i>
-                        <div>
-                            <p class="text-sm text-gray-500">Check-in</p>
-                            <p class="font-medium text-gray-800" th:text="${#temporals.format(booking.checkInDate, 'dd MMM yyyy')}">Check-in Date</p>
-                        </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Check-in:</span>
+                        <span class="font-semibold" th:text="${#temporals.format(booking.checkInDate, 'dd MMM yyyy')}">Check-in Date</span>
                     </div>
-                    <div class="flex items-start">
-                        <i class="fas fa-calendar-times text-purple-600 mt-1 mr-3"></i>
-                        <div>
-                            <p class="text-sm text-gray-500">Check-out</p>
-                            <p class="font-medium text-gray-800" th:text="${#temporals.format(booking.checkOutDate, 'dd MMM yyyy')}">Check-out Date</p>
-                        </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Check-out:</span>
+                        <span class="font-semibold" th:text="${#temporals.format(booking.checkOutDate, 'dd MMM yyyy')}">Check-out Date</span>
                     </div>
-                    <div class="flex items-start">
-                        <i class="fas fa-users text-purple-600 mt-1 mr-3"></i>
-                        <div>
-                            <p class="text-sm text-gray-500">Guests</p>
-                            <p class="font-medium text-gray-800" th:text="${booking.numberOfGuests}">Number of Guests</p>
-                        </div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-gray-600">Guests:</span>
+                        <span class="font-semibold" th:text="${booking.numberOfGuests}">Number of Guests</span>
                     </div>
-                    <div class="flex items-start">
-                        <i class="fas fa-money-bill-wave text-purple-600 mt-1 mr-3"></i>
-                        <div>
-                            <p class="text-sm text-gray-500">Total Amount</p>
-                            <p class="font-bold text-lg text-purple-700" th:text="${#numbers.formatCurrency(booking.totalPrice)}">Total Price</p>
-                        </div>
+                    <hr class="my-4">
+                    <div class="flex justify-between items-center text-lg">
+                        <span class="font-bold text-gray-800">Total Amount:</span>
+                        <span class="font-bold text-purple-600 text-xl" th:text="${#numbers.formatCurrency(booking.totalPrice)}">Total Price</span>
                     </div>
                 </div>
             </div>
             
+            <!-- Payment Section -->
             <div class="text-center">
-                <button id="pay-button" class="btn-gradient text-white px-8 py-3 rounded-full font-medium text-lg hover:shadow-lg transition duration-300">
+                <div class="mb-6">
+                    <div class="flex justify-center space-x-4 mb-4">
+                        <div class="bg-white p-3 rounded-lg shadow-sm border">
+                            <i class="fab fa-cc-visa text-2xl text-blue-600"></i>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border">
+                            <i class="fab fa-cc-mastercard text-2xl text-red-500"></i>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border">
+                            <i class="fas fa-university text-2xl text-purple-600"></i>
+                        </div>
+                        <div class="bg-white p-3 rounded-lg shadow-sm border">
+                            <i class="fas fa-mobile-alt text-2xl text-green-500"></i>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-6">
+                        <i class="fas fa-shield-alt text-green-500 mr-1"></i>
+                        Secure payment powered by Midtrans
+                    </p>
+                </div>
+                
+                <button id="pay-button" class="w-full btn-gradient text-white py-4 rounded-2xl font-bold text-lg hover-lift mb-4">
                     <i class="fas fa-credit-card mr-2"></i>Pay Now
                 </button>
+                
+                <p class="text-xs text-gray-500">
+                    By proceeding, you agree to our terms and conditions
+                </p>
             </div>
         </div>
     </div>
@@ -169,24 +194,24 @@
                 </div>
                 <div>
                     <h4 class="text-xl font-semibold mb-6">Contact Us</h4>
-                    <ul class="space-y-3">
-                        <li class="flex items-start">
-                            <i class="fas fa-map-marker-alt text-purple-400 mt-1 mr-3"></i>
-                            <span class="text-gray-300">123 Hotel Street, City, Country</span>
+                    <ul class="space-y-4">
+                        <li class="flex items-start text-gray-300">
+                            <i class="fas fa-map-marker-alt mt-1 mr-3 text-purple-400"></i>
+                            <span>Jl.Cimindi no.81, Bandung, Indonesia</span>
                         </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-phone-alt text-purple-400 mt-1 mr-3"></i>
-                            <span class="text-gray-300">+1 234 567 890</span>
+                        <li class="flex items-start text-gray-300">
+                            <i class="fas fa-phone-alt mt-1 mr-3 text-purple-400"></i>
+                            <span>+62 (555) 123-4567</span>
                         </li>
-                        <li class="flex items-start">
-                            <i class="fas fa-envelope text-purple-400 mt-1 mr-3"></i>
-                            <span class="text-gray-300">info@stayo.com</span>
+                        <li class="flex items-start text-gray-300">
+                            <i class="fas fa-envelope mt-1 mr-3 text-purple-400"></i>
+                            <span>info@stayo.com</span>
                         </li>
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
-                <p>&copy; 2023 Stayo. All rights reserved.</p>
+            <div class="border-t border-gray-700 mt-12 pt-8 text-center">
+                <p class="text-gray-400">&copy; 2023 Stayo. All rights reserved. Made with ❤️ for travelers worldwide.</p>
             </div>
         </div>
     </footer>

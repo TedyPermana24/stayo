@@ -47,7 +47,7 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
-        
+
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col min-h-screen overflow-x-hidden">
@@ -90,6 +90,7 @@
                             <i class="fas fa-user mr-2 text-purple-600"></i>First Name
                         </label>
                         <input type="text" id="firstName" name="firstName" required th:field="*{firstName}" 
+                               placeholder="Nama depan"
                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                     </div>
                     
@@ -98,6 +99,7 @@
                             <i class="fas fa-user mr-2 text-purple-600"></i>Last Name
                         </label>
                         <input type="text" id="lastName" name="lastName" required th:field="*{lastName}" 
+                               placeholder="Nama belakang"
                                class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                     </div>
                 </div>
@@ -107,6 +109,7 @@
                         <i class="fas fa-envelope mr-2 text-purple-600"></i>Email
                     </label>
                     <input type="email" id="email" name="email" required th:field="*{email}" 
+                           placeholder="contoh@email.com"
                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                 </div>
                 
@@ -115,6 +118,7 @@
                         <i class="fas fa-phone mr-2 text-purple-600"></i>Phone Number
                     </label>
                     <input type="tel" id="phone" name="phone" required th:field="*{phone}" 
+                           placeholder="08xxxxxxxxxx"
                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                 </div>
                 
@@ -123,6 +127,7 @@
                         <i class="fas fa-lock mr-2 text-purple-600"></i>Password
                     </label>
                     <input type="password" id="password" name="password" required th:field="*{password}" 
+                           placeholder="Minimal 8 karakter"
                            class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                 </div>
                 
