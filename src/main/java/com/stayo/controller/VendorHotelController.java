@@ -17,9 +17,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.UUID;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
@@ -123,36 +125,38 @@ public class VendorHotelController {
         if (vendor == null) {
             return "redirect:/vendor/signin";
         }
-
+    
         // Get vendor's hotels
         List<Hotel> hotels = hotelService.getHotelsByVendorId(vendor.getId());
         model.addAttribute("hotels", hotels);
-
+    
         // Get booking statistics
         int totalBookings = 0;
         double totalRevenue = 0.0;
         int totalRooms = 0;
         double totalRating = 0.0;
         int hotelWithRatings = 0;
-
+    
         for (Hotel hotel : hotels) {
             List<Booking> hotelBookings = bookingService.getBookingsByHotelId(hotel.getId());
             totalBookings += hotelBookings.size();
             for (Booking booking : hotelBookings) {
-                totalRevenue += booking.getTotalPrice().doubleValue();
+                if ("CONFIRMED".equals(booking.getStatus())) {
+                    totalRevenue += booking.getTotalPrice().doubleValue();
+                }
             }
-
+    
             // Count total rooms
             List<Room> hotelRooms = roomService.getRoomsByHotelId(hotel.getId());
             totalRooms += hotelRooms.size();
-
+    
             // Calculate average rating
             if (hotel.getAverageRating() != null && hotel.getAverageRating() > 0) {
                 totalRating += hotel.getAverageRating();
                 hotelWithRatings++;
             }
         }
-
+    
         // Calculate occupancy rate
         double occupancyRate = 0.0;
         if (totalRooms > 0) {
@@ -160,21 +164,40 @@ public class VendorHotelController {
             if (occupancyRate > 100)
                 occupancyRate = 100.0; // Cap at 100%
         }
-
+    
         // Calculate average rating across all hotels
         double averageRating = 0.0;
         if (hotelWithRatings > 0) {
             averageRating = totalRating / hotelWithRatings;
         }
-
+    
+        // Get monthly booking statistics for current year
+        int currentYear = LocalDate.now().getYear();
+        List<Object[]> monthlyStats = bookingService.getMonthlyBookingStatsByVendor(vendor.getId(), currentYear);
+        
+        // Prepare monthly data arrays
+        int[] monthlyBookings = new int[12];
+        double[] monthlyRevenue = new double[12];
+        
+        for (Object[] stat : monthlyStats) {
+            int month = (Integer) stat[0] - 1; // Convert to 0-based index
+            long bookingCount = (Long) stat[1];
+            BigDecimal revenue = (BigDecimal) stat[2];
+            
+            monthlyBookings[month] = (int) bookingCount;
+            monthlyRevenue[month] = revenue.doubleValue();
+        }
+    
         model.addAttribute("totalHotels", hotels.size());
         model.addAttribute("totalBookings", totalBookings);
         model.addAttribute("totalRevenue", totalRevenue);
         model.addAttribute("totalRooms", totalRooms);
         model.addAttribute("occupancyRate", occupancyRate);
         model.addAttribute("averageRating", averageRating);
+        model.addAttribute("monthlyBookings", monthlyBookings);
+        model.addAttribute("monthlyRevenue", monthlyRevenue);
         model.addAttribute("vendor", vendor);
-
+    
         return "vendor/vendor-dashboard";
     }
 
@@ -339,10 +362,12 @@ public class VendorHotelController {
                         occupancyRate = 100.0; // Cap at 100%
                 }
 
-                // Calculate total revenue for this hotel
+                // Calculate total revenue for this hotel - only CONFIRMED bookings
                 double totalRevenue = 0.0;
                 for (Booking booking : hotelBookings) {
-                    totalRevenue += booking.getTotalPrice().doubleValue();
+                    if ("CONFIRMED".equals(booking.getStatus())) {
+                        totalRevenue += booking.getTotalPrice().doubleValue();
+                    }
                 }
 
                 model.addAttribute("hotel", hotel);

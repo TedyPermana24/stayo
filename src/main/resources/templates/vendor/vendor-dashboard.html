@@ -134,7 +134,7 @@
                             <i class="fas fa-dollar-sign text-purple-600 text-xl"></i>
                         </div>
                         <div class="text-right">
-                            <p class="text-lg font-bold text-gray-900">Rp <span th:text="${#numbers.formatDecimal(totalRevenue, 1, 0)}">0</span></p>
+                            <p class="text-md font-bold text-gray-900" th:text="${'Rp ' + #numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">Rp 0</p>
                             <p class="text-sm text-gray-500">Revenue</p>
                         </div>
                     </div>
@@ -302,22 +302,16 @@
         const occupancyRate = /*[[${occupancyRate}]]*/ 0;
         const averageRating = /*[[${averageRating}]]*/ 0;
         
-        // Calculate monthly distribution (simplified - you can enhance this with actual monthly data)
-        const monthlyRevenue = [];
-        const monthlyBookings = [];
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'];
+        // Get real monthly data from backend
+        const monthlyRevenueData = /*[[${monthlyRevenue}]]*/ [];
+        const monthlyBookingsData = /*[[${monthlyBookings}]]*/ [];
         
-        // Distribute revenue and bookings across months (this is a simplified approach)
-        // In a real scenario, you would get this data from the backend grouped by month
-        for (let i = 0; i < 6; i++) {
-            // Simulate monthly distribution with some variation
-            const revenueVariation = 0.7 + (Math.random() * 0.6); // 70% to 130% variation
-            const bookingVariation = 0.8 + (Math.random() * 0.4); // 80% to 120% variation
-            
-            monthlyRevenue.push(Math.round((totalRevenue / 6) * revenueVariation));
-            monthlyBookings.push(Math.round((totalBookings / 6) * bookingVariation));
-        }
-
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        // Use real data instead of simulated data
+        const monthlyRevenue = monthlyRevenueData;
+        const monthlyBookings = monthlyBookingsData;
+    
         // Revenue Chart
         const revenueCtx = document.getElementById('revenueChart').getContext('2d');
         const revenueChart = new Chart(revenueCtx, {

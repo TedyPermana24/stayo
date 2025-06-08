@@ -78,4 +78,8 @@ public class BookingService {
             throw new RuntimeException("Booking not found");
         }
     }
+    
+    public List<Object[]> getMonthlyBookingStatsByVendor(Long vendorId, int year) {
+        return bookingRepository.getMonthlyBookingStats(vendorId, year);
+    }
 }
