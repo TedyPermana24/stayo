@@ -43,12 +43,12 @@ public class BookingController {
 
         // Categorize bookings for the template
         List<Booking> upcomingBookings = bookings.stream()
-                .filter(b -> b.getStatus() == null || "CONFIRMED".equals(b.getStatus()))
+                .filter(b -> "CONFIRMED".equals(b.getStatus()))
                 .filter(b -> b.getCheckOutDate().isAfter(LocalDate.now()))
                 .toList();
 
         List<Booking> pastBookings = bookings.stream()
-                .filter(b -> b.getStatus() == null || "CONFIRMED".equals(b.getStatus()))
+                .filter(b -> "CONFIRMED".equals(b.getStatus()))
                 .filter(b -> b.getCheckOutDate().isBefore(LocalDate.now()) ||
                         b.getCheckOutDate().isEqual(LocalDate.now()))
                 .toList();
@@ -57,10 +57,16 @@ public class BookingController {
                 .filter(b -> "CANCELLED".equals(b.getStatus()))
                 .toList();
 
+        // Add pending payment bookings
+        List<Booking> pendingPaymentBookings = bookings.stream()
+                .filter(b -> "PENDING".equals(b.getStatus()))
+                .toList();
+
         model.addAttribute("bookings", bookings);
         model.addAttribute("upcomingBookings", upcomingBookings);
         model.addAttribute("pastBookings", pastBookings);
         model.addAttribute("cancelledBookings", cancelledBookings);
+        model.addAttribute("pendingPaymentBookings", pendingPaymentBookings);
 
         return "bookings";
     }
@@ -148,12 +154,12 @@ public class BookingController {
             booking.setCheckInDate(checkIn);
             booking.setCheckOutDate(checkOut);
             booking.setNumberOfGuests(numberOfGuests);
-            booking.setStatus("CONFIRMED");
+            booking.setStatus("PENDING");
 
             try {
                 Booking savedBooking = bookingService.createBooking(booking);
-                redirectAttributes.addFlashAttribute("success", "Booking confirmed successfully!");
-                return "redirect:/bookings"; // Redirect to the bookings list instead of a specific booking
+                // Redirect to payment page
+                return "redirect:/payments/process/" + savedBooking.getId();
             } catch (Exception e) {
                 redirectAttributes.addFlashAttribute("error", "Failed to create booking: " + e.getMessage());
                 return "redirect:/hotels/" + hotelId;

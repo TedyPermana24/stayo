@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Details - Stayo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-hotel text-3xl text-purple-600 mr-3"></i>
+                    <h1 class="text-2xl font-bold text-gray-800">Hotel Details</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/vendor/dashboard" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-12">
+        <div class="container mx-auto px-6">
+            <!-- Hotel Information -->
+            <div class="bg-white rounded-xl card-shadow overflow-hidden mb-8">
+                <div class="relative h-64">
+                    <img th:if="${hotel.imageUrl}" th:src="@{'/images/hotels/' + ${hotel.imageUrl}}" th:alt="${hotel.name}" class="w-full h-full object-cover">
+                    <div th:unless="${hotel.imageUrl}" class="w-full h-full bg-gray-200 flex items-center justify-center">
+                        <i class="fas fa-hotel text-gray-400 text-5xl"></i>
+                    </div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
+                    <div class="absolute bottom-0 left-0 p-6">
+                        <h1 class="text-3xl font-bold text-white mb-2" th:text="${hotel.name}">Hotel Name</h1>
+                        <div class="flex text-yellow-400 mb-2">
+                            <th:block th:each="i : ${#numbers.sequence(1, hotel.stars)}">
+                                <i class="fas fa-star"></i>
+                            </th:block>
+                        </div>
+                        <p class="text-white text-lg"><i class="fas fa-map-marker-alt mr-2"></i><span th:text="${hotel.location}">Location</span></p>
+                    </div>
+                </div>
+                
+                <div class="p-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Description</h3>
+                            <p class="text-gray-600" th:text="${hotel.description}">Hotel description</p>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-semibold text-gray-800 mb-2">Hotel Statistics</h3>
+                            <div class="space-y-2">
+                                <p class="text-gray-600"><strong>Average Rating:</strong> <span th:text="${#numbers.formatDecimal(hotel.averageRating, 1, 1)}">0.0</span>/10</p>
+                                <p class="text-gray-600"><strong>Total Rooms:</strong> <span th:text="${#lists.size(hotel.rooms)}">0</span></p>
+                                <p class="text-gray-600"><strong>Total Bookings:</strong> <span th:text="${#lists.size(bookings)}">0</span></p>
+                                <p class="text-gray-600"><strong>Occupancy Rate:</strong> <span th:text="${#numbers.formatDecimal(occupancyRate, 1, 1)} + '%'">0.0%</span></p>
+                                <p class="text-gray-600"><strong>Revenue:</strong> $<span th:text="${#numbers.formatDecimal(totalRevenue, 1, 2)}">0.00</span></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="p-6 bg-gray-50 border-t border-gray-200">
+                    <div class="flex flex-wrap gap-3">
+                        <a th:href="@{/vendor/hotels/edit/{id}(id=${hotel.id})}" class="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600 transition">
+                            <i class="fas fa-edit mr-1"></i> Edit Hotel
+                        </a>
+                        <a th:href="@{/vendor/hotels/{id}/rooms(id=${hotel.id})}" class="bg-purple-500 text-white px-4 py-2 rounded-lg hover:bg-purple-600 transition">
+                            <i class="fas fa-door-open mr-1"></i> Manage Rooms
+                        </a>
+                        <a th:href="@{/vendor/hotels/close/{id}(id=${hotel.id})}" 
+                           onclick="return confirm('Are you sure you want to permanently close this hotel? This action cannot be undone.')" 
+                           class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+                            <i class="fas fa-door-closed mr-1"></i> Close Hotel
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Bookings -->
+            <div class="bg-white rounded-xl card-shadow overflow-hidden">
+                <div class="p-6 border-b border-gray-200">
+                    <h2 class="text-2xl font-bold text-gray-800">Recent Bookings</h2>
+                </div>
+                
+                <div th:if="${#lists.isEmpty(bookings)}" class="p-8 text-center">
+                    <i class="fas fa-calendar-times text-6xl text-gray-300 mb-4"></i>
+                    <h3 class="text-xl font-semibold text-gray-600 mb-2">No Bookings Yet</h3>
+                    <p class="text-gray-500">This hotel hasn't received any bookings yet.</p>
+                </div>
+                
+                <div th:unless="${#lists.isEmpty(bookings)}" class="divide-y divide-gray-200">
+                    <div th:each="booking : ${bookings}" th:if="${booking.status == 'CONFIRMED'}" class="p-6 hover:bg-gray-50 transition">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800" th:text="${booking.user != null ? booking.user.firstName + ' ' + booking.user.lastName : 'Guest'}">Guest Name</h3>
+                                <p class="text-gray-600">Room: <span th:text="${booking.room.type}">Room Type</span></p>
+                                <p class="text-gray-600">
+                                    <span th:text="${#temporals.format(booking.checkInDate, 'dd MMM yyyy')}">Check-in</span> - 
+                                    <span th:text="${#temporals.format(booking.checkOutDate, 'dd MMM yyyy')}">Check-out</span>
+                                </p>
+                            </div>
+                            <div class="text-right">
+                                <p class="text-2xl font-bold text-green-600">$<span th:text="${#numbers.formatDecimal(booking.totalPrice, 1, 2)}">0.00</span></p>
+                                <p class="text-sm text-gray-500" th:text="${booking.status}">CONFIRMED</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

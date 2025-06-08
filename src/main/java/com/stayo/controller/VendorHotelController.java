@@ -50,7 +50,7 @@ public class VendorHotelController {
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("vendorForm", new VendorRegistrationForm());
-        return "vendor-register";
+        return "vendor/vendor-register";
     }
 
     @PostMapping("/register")
@@ -82,7 +82,7 @@ public class VendorHotelController {
 
     @GetMapping("/signin")
     public String showSignInForm() {
-        return "vendor-signin";
+        return "/vendor/vendor-signin";
     }
 
     @PostMapping("/signin")
@@ -175,7 +175,7 @@ public class VendorHotelController {
         model.addAttribute("averageRating", averageRating);
         model.addAttribute("vendor", vendor);
 
-        return "vendor-dashboard";
+        return "vendor/vendor-dashboard";
     }
 
     // CRUD Operations for Hotels
@@ -272,7 +272,7 @@ public class VendorHotelController {
 
                 model.addAttribute("hotel", hotel);
                 model.addAttribute("vendor", vendor);
-                return "vendor-hotel-form";
+                return "vendor/vendor-hotel-form";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to edit this hotel.");
             }
@@ -350,7 +350,7 @@ public class VendorHotelController {
                 model.addAttribute("occupancyRate", occupancyRate);
                 model.addAttribute("totalRevenue", totalRevenue);
                 model.addAttribute("vendor", vendor);
-                return "vendor-hotel-details";
+                return "vendor/vendor-hotel-details";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to view this hotel.");
             }
@@ -382,7 +382,7 @@ public class VendorHotelController {
                 model.addAttribute("hotel", hotel);
                 model.addAttribute("rooms", rooms);
                 model.addAttribute("vendor", vendor);
-                return "vendor-rooms";
+                return "vendor/vendor-rooms";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to view these rooms.");
             }
@@ -414,7 +414,7 @@ public class VendorHotelController {
                 model.addAttribute("room", room);
                 model.addAttribute("hotel", hotel);
                 model.addAttribute("vendor", vendor);
-                return "vendor-room-form";
+                return "vendor/vendor-room-form";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to add rooms to this hotel.");
             }
@@ -504,7 +504,7 @@ public class VendorHotelController {
                 model.addAttribute("room", room);
                 model.addAttribute("hotel", hotel);
                 model.addAttribute("vendor", vendor);
-                return "vendor-room-form";
+                return "vendor/vendor-room-form";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to edit this room.");
             }
@@ -640,7 +640,7 @@ public class VendorHotelController {
 
         model.addAttribute("hotel", hotel);
         model.addAttribute("vendor", vendor);
-        return "vendor-hotel-form";
+        return "vendor/vendor-hotel-form";
     }
 
     @PostMapping("/hotels/add")

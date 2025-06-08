@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${hotel.id == null ? 'Add Hotel' : 'Edit Hotel'} + ' - Stayo'">Hotel Form - Stayo</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="bg-white shadow-lg">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <i class="fas fa-building text-3xl text-purple-600 mr-3"></i>
+                    <h1 class="text-2xl font-bold text-gray-800" th:text="${hotel.id == null ? 'Add Hotel' : 'Edit Hotel'}">Hotel Form</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/vendor/dashboard" class="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition">
+                        <i class="fas fa-arrow-left mr-1"></i> Back to Dashboard
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="py-12">
+        <div class="container mx-auto px-6">
+            <div class="max-w-2xl mx-auto">
+                <!-- Alert Messages -->
+                <div th:if="${success}" class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6" role="alert">
+                    <span th:text="${success}">Success message</span>
+                </div>
+                
+                <div th:if="${error}" class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6" role="alert">
+                    <span th:text="${error}">Error message</span>
+                </div>
+                
+                <div class="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div class="p-8">
+                        <form th:action="${hotel.id == null ? '/vendor/hotels/add' : '/vendor/hotels/edit/' + hotel.id}" method="POST" th:object="${hotel}" enctype="multipart/form-data">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="md:col-span-2">
+                                    <label for="name" class="block text-sm font-medium text-gray-700 mb-2">Hotel Name</label>
+                                    <input type="text" id="name" name="name" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                           placeholder="Enter hotel name" th:field="*{name}">
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label for="location" class="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                                    <input type="text" id="location" name="location" required 
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                           placeholder="Enter hotel location" th:field="*{location}">
+                                </div>
+                                
+                                <!-- Stars and Average Rating fields removed -->
+                                <!-- Hidden input to maintain default values -->
+                                <input type="hidden" name="stars" th:field="*{stars}">
+                                <input type="hidden" name="averageRating" th:field="*{averageRating}">
+                                
+                                <div class="md:col-span-2">
+                                    <label for="imageFile" class="block text-sm font-medium text-gray-700 mb-2">Hotel Image</label>
+                                    <input type="file" id="imageFile" name="imageFile" accept="image/*"
+                                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <div th:if="${hotel.imageUrl != null}" class="mt-2">
+                                        <p class="text-sm text-gray-600">Current image:</p>
+                                        <img th:src="@{'/images/hotels/' + ${hotel.imageUrl}}" alt="Hotel Image" class="mt-2 h-32 object-cover rounded">
+                                        <input type="hidden" name="imageUrl" th:value="${hotel.imageUrl}">
+                                    </div>
+                                </div>
+                                
+                                <div class="md:col-span-2">
+                                    <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                    <textarea id="description" name="description" rows="4" 
+                                              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
+                                              placeholder="Enter hotel description" th:field="*{description}"></textarea>
+                                </div>
+                            </div>
+                            
+                            <div class="md:col-span-2 mt-6">
+                                <h3 class="text-lg font-semibold text-gray-700 mb-4">Hotel Amenities</h3>
+                                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasWifi" name="hasWifi" th:field="*{hasWifi}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasWifi" class="ml-2 block text-sm text-gray-700">Free WiFi</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasBreakfast" name="hasBreakfast" th:field="*{hasBreakfast}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasBreakfast" class="ml-2 block text-sm text-gray-700">Breakfast Included</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasSwimmingPool" name="hasSwimmingPool" th:field="*{hasSwimmingPool}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasSwimmingPool" class="ml-2 block text-sm text-gray-700">Swimming Pool</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasParking" name="hasParking" th:field="*{hasParking}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasParking" class="ml-2 block text-sm text-gray-700">Free Parking</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasRestaurant" name="hasRestaurant" th:field="*{hasRestaurant}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasRestaurant" class="ml-2 block text-sm text-gray-700">Restaurant</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasRoomService" name="hasRoomService" th:field="*{hasRoomService}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasRoomService" class="ml-2 block text-sm text-gray-700">Room Service</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasFitnessCenter" name="hasFitnessCenter" th:field="*{hasFitnessCenter}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasFitnessCenter" class="ml-2 block text-sm text-gray-700">Fitness Center</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasSpa" name="hasSpa" th:field="*{hasSpa}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasSpa" class="ml-2 block text-sm text-gray-700">Spa</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="isPetFriendly" name="isPetFriendly" th:field="*{petFriendly}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="isPetFriendly" class="ml-2 block text-sm text-gray-700">Pet Friendly</label>
+                                    </div>
+                                    <div class="flex items-center">
+                                        <input type="checkbox" id="hasAirConditioning" name="hasAirConditioning" th:field="*{hasAirConditioning}" class="h-4 w-4 text-purple-600 focus:ring-purple-500 border-gray-300 rounded">
+                                        <label for="hasAirConditioning" class="ml-2 block text-sm text-gray-700">Air Conditioning</label>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end space-x-4 mt-8">
+                                <a href="/vendor/dashboard" class="px-6 py-3 bg-gray-500 text-white rounded-lg hover:bg-gray-600 transition">
+                                    Cancel
+                                </a>
+                                <button type="submit" class="px-6 py-3 btn-gradient text-white rounded-lg hover:opacity-90 transition">
+                                    <i class="fas fa-save mr-2"></i>
+                                    <span th:text="${hotel.id == null ? 'Add Hotel' : 'Update Hotel'}">Submit</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

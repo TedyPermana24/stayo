@@ -47,6 +47,28 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
+        .booking-card {
+            background: white;
+            border-radius: 24px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        .booking-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .booking-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        @media (min-width: 768px) {
+            .booking-image {
+                height: 100%;
+                min-height: 180px;
+            }
+        }
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col min-h-screen overflow-x-hidden">
@@ -92,7 +114,7 @@
             </div>
             
             <!-- No Bookings -->
-            <div th:if="${#lists.isEmpty(bookings)}" class="bg-white rounded-3xl card-shadow p-8 text-center hover-lift">
+            <div th:if="${#lists.isEmpty(bookings)}" class="booking-card p-8 text-center">
                 <i class="far fa-calendar-alt text-purple-400 text-6xl mb-6"></i>
                 <h3 class="text-2xl font-bold mb-4">No bookings found</h3>
                 <p class="text-gray-600 mb-6 max-w-lg mx-auto">You haven't made any bookings yet. Start exploring hotels to book your stay!</p>
@@ -103,6 +125,67 @@
             
             <!-- Booking List -->
             <div th:unless="${#lists.isEmpty(bookings)}" class="space-y-10">
+                
+                <!-- Pending Payments -->
+                <div th:if="${!#lists.isEmpty(pendingPaymentBookings)}">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-credit-card text-purple-600 mr-3"></i>
+                        Pending Payments
+                    </h2>
+                    <div class="space-y-6">
+                        <div th:each="booking : ${pendingPaymentBookings}" class="booking-card">
+                            <div class="flex flex-col md:flex-row">
+                                <div class="md:w-1/4">
+                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="booking-image">
+                                </div>
+                                <div class="p-6 md:w-3/4">
+                                    <div class="flex justify-between items-start mb-4">
+                                        <div>
+                                            <h3 class="text-xl font-bold mb-1" th:text="${booking.room.hotel.name}">Hotel Name</h3>
+                                            <p class="text-gray-600 mb-2"><i class="fas fa-map-marker-alt mr-2 text-purple-600"></i><span th:text="${booking.room.hotel.location}">Location</span></p>
+                                        </div>
+                                        <div class="bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full text-sm font-semibold pulse-animation">
+                                            Payment Pending
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                                        <div>
+                                            <p class="text-gray-600 text-sm">Room Type</p>
+                                            <p class="font-semibold" th:text="${booking.room.type}">Deluxe Room</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-600 text-sm">Check-in</p>
+                                            <p class="font-semibold" th:text="${#temporals.format(booking.checkInDate, 'MMM dd, yyyy')}">Jan 15, 2023</p>
+                                        </div>
+                                        <div>
+                                            <p class="text-gray-600 text-sm">Check-out</p>
+                                            <p class="font-semibold" th:text="${#temporals.format(booking.checkOutDate, 'MMM dd, yyyy')}">Jan 20, 2023</p>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex justify-between items-center">
+                                        <div>
+                                            <p class="text-gray-600 text-sm">Total Price</p>
+                                            <p class="text-purple-600 font-bold text-xl">$<span th:text="${booking.totalPrice}">500</span></p>
+                                        </div>
+                                        <div class="flex space-x-3">
+                                            <a th:href="@{/payments/process/{id}(id=${booking.id})}" class="btn-gradient text-white px-4 py-2 rounded-full font-semibold">
+                                                <i class="fas fa-credit-card mr-1"></i> Complete Payment
+                                            </a>
+                                            <form th:action="@{/bookings/{id}/cancel(id=${booking.id})}" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');" class="inline">
+                                                <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-red-700 transition duration-300">
+                                                    <i class="fas fa-times mr-1"></i> Cancel
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
                 <!-- Upcoming Bookings -->
                 <div th:if="${!#lists.isEmpty(upcomingBookings)}">
                     <h2 class="text-2xl font-bold mb-6 flex items-center">
@@ -110,10 +193,10 @@
                         Upcoming Stays
                     </h2>
                     <div class="space-y-6">
-                        <div th:each="booking : ${upcomingBookings}" class="bg-white rounded-3xl card-shadow overflow-hidden hover-lift">
+                        <div th:each="booking : ${upcomingBookings}" class="booking-card">
                             <div class="flex flex-col md:flex-row">
                                 <div class="md:w-1/4">
-                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="w-full h-full object-cover">
+                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="booking-image">
                                 </div>
                                 <div class="p-6 md:w-3/4">
                                     <div class="flex justify-between items-start mb-4">
@@ -150,7 +233,7 @@
                                             <a th:href="@{/hotels/{id}(id=${booking.room.hotel.id})}" class="bg-gray-200 text-gray-800 px-4 py-2 rounded-full font-semibold hover:bg-gray-300 transition duration-300">
                                                 <i class="fas fa-eye mr-1"></i> View Hotel
                                             </a>
-                                            <form th:action="@{/bookings/{id}/cancel(id=${booking.id})}" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                            <form th:action="@{/bookings/{id}/cancel(id=${booking.id})}" method="post" onsubmit="return confirm('Are you sure you want to cancel this booking?');" class="inline">
                                                 <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-full font-semibold hover:bg-red-700 transition duration-300">
                                                     <i class="fas fa-times mr-1"></i> Cancel
                                                 </button>
@@ -165,15 +248,15 @@
                 
                 <!-- Past Bookings -->
                 <div th:if="${!#lists.isEmpty(pastBookings)}">
-                    <h2 class="text-2xl font-bold mb-6 flex items-center mt-10">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
                         <i class="fas fa-history text-purple-600 mr-3"></i>
                         Past Stays
                     </h2>
                     <div class="space-y-6">
-                        <div th:each="booking : ${pastBookings}" class="bg-white rounded-3xl card-shadow overflow-hidden hover-lift">
+                        <div th:each="booking : ${pastBookings}" class="booking-card">
                             <div class="flex flex-col md:flex-row">
                                 <div class="md:w-1/4">
-                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="w-full h-full object-cover">
+                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="booking-image">
                                 </div>
                                 <div class="p-6 md:w-3/4">
                                     <div class="flex justify-between items-start mb-4">
@@ -223,15 +306,15 @@
                 
                 <!-- Cancelled Bookings -->
                 <div th:if="${!#lists.isEmpty(cancelledBookings)}">
-                    <h2 class="text-2xl font-bold mb-6 flex items-center mt-10">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
                         <i class="fas fa-ban text-purple-600 mr-3"></i>
                         Cancelled Bookings
                     </h2>
                     <div class="space-y-6">
-                        <div th:each="booking : ${cancelledBookings}" class="bg-white rounded-3xl card-shadow overflow-hidden hover-lift">
+                        <div th:each="booking : ${cancelledBookings}" class="booking-card">
                             <div class="flex flex-col md:flex-row">
                                 <div class="md:w-1/4">
-                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="w-full h-full object-cover">
+                                    <img th:src="${booking.room.hotel.imageUrl}" th:alt="${booking.room.hotel.name}" class="booking-image">
                                 </div>
                                 <div class="p-6 md:w-3/4">
                                     <div class="flex justify-between items-start mb-4">

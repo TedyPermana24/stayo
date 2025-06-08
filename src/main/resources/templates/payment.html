@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment - Stayo</title>
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Add Midtrans Snap JS -->
+    <script type="text/javascript"
+            src="https://app.sandbox.midtrans.com/snap/snap.js"
+            data-client-key="SB-Mid-client-5yXhC7zkffeExYWE"></script>
+    <style>
+        .text-gradient {
+            background: linear-gradient(to right, #6366F1, #8B5CF6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .btn-gradient {
+            background: linear-gradient(to right, #6366F1, #8B5CF6);
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+        }
+        .card-shadow {
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+        .hover-lift {
+            transition: transform 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 flex flex-col min-h-screen overflow-x-hidden">
+    <!-- Header/Navigation -->
+    <header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <a href="/" class="text-3xl font-bold text-gradient flex items-center">
+                        <i class="fas fa-bed mr-2"></i>
+                        Stayo
+                    </a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <a href="/" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Home</a>
+                    <a href="/hotels" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Hotels</a>
+                    <th:block th:if="${session.user != null}">
+                        <a href="/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">My Bookings</a>
+                        <a href="/profile" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Profile</a>
+                        <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Sign Out</a>
+                    </th:block>
+                    <th:block th:unless="${session.user != null}">
+                        <a href="/signin" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Sign In</a>
+                        <a href="/register" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Register</a>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Payment Content -->
+    <div class="flex-grow flex items-center justify-center py-12 px-4 pt-32">
+        <div class="max-w-2xl w-full bg-white rounded-3xl card-shadow p-8 hover-lift">
+            <h2 class="text-3xl font-bold text-center mb-6 text-gradient">Payment Details</h2>
+            
+            <div class="booking-details mb-8">
+                <h3 class="text-xl font-semibold mb-4 text-gray-800">Booking Information</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="flex items-start">
+                        <i class="fas fa-hotel text-purple-600 mt-1 mr-3"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Hotel</p>
+                            <p class="font-medium text-gray-800" th:text="${booking.hotel.name}">Hotel Name</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-door-open text-purple-600 mt-1 mr-3"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Room Type</p>
+                            <p class="font-medium text-gray-800" th:text="${booking.room.type}">Room Type</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-calendar-check text-purple-600 mt-1 mr-3"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Check-in</p>
+                            <p class="font-medium text-gray-800" th:text="${#temporals.format(booking.checkInDate, 'dd MMM yyyy')}">Check-in Date</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-calendar-times text-purple-600 mt-1 mr-3"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Check-out</p>
+                            <p class="font-medium text-gray-800" th:text="${#temporals.format(booking.checkOutDate, 'dd MMM yyyy')}">Check-out Date</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-users text-purple-600 mt-1 mr-3"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Guests</p>
+                            <p class="font-medium text-gray-800" th:text="${booking.numberOfGuests}">Number of Guests</p>
+                        </div>
+                    </div>
+                    <div class="flex items-start">
+                        <i class="fas fa-money-bill-wave text-purple-600 mt-1 mr-3"></i>
+                        <div>
+                            <p class="text-sm text-gray-500">Total Amount</p>
+                            <p class="font-bold text-lg text-purple-700" th:text="${#numbers.formatCurrency(booking.totalPrice)}">Total Price</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button id="pay-button" class="btn-gradient text-white px-8 py-3 rounded-full font-medium text-lg hover:shadow-lg transition duration-300">
+                    <i class="fas fa-credit-card mr-2"></i>Pay Now
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-16">
+        <div class="container mx-auto px-6">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12">
+                <div>
+                    <div class="flex items-center mb-6">
+                        <i class="fas fa-bed text-3xl text-purple-400 mr-3"></i>
+                        <h3 class="text-3xl font-bold">Stayo</h3>
+                    </div>
+                    <p class="mb-6 text-gray-300 leading-relaxed">Find your perfect hotel at the best prices. Guaranteed satisfaction with every booking.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-facebook-f"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center hover:bg-purple-700 transition duration-300">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                    </div>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-6">Quick Links</h4>
+                    <ul class="space-y-3">
+                        <li><a href="/" class="text-gray-300 hover:text-purple-400 transition duration-300">Home</a></li>
+                        <li><a href="/hotels" class="text-gray-300 hover:text-purple-400 transition duration-300">Hotels</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">About Us</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-6">Support</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Help Center</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">FAQs</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Privacy Policy</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-purple-400 transition duration-300">Terms of Service</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xl font-semibold mb-6">Contact Us</h4>
+                    <ul class="space-y-3">
+                        <li class="flex items-start">
+                            <i class="fas fa-map-marker-alt text-purple-400 mt-1 mr-3"></i>
+                            <span class="text-gray-300">123 Hotel Street, City, Country</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-phone-alt text-purple-400 mt-1 mr-3"></i>
+                            <span class="text-gray-300">+1 234 567 890</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="fas fa-envelope text-purple-400 mt-1 mr-3"></i>
+                            <span class="text-gray-300">info@stayo.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="border-t border-gray-800 mt-12 pt-8 text-center text-gray-400">
+                <p>&copy; 2023 Stayo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script th:inline="javascript">
+        document.getElementById('pay-button').onclick = function() {
+            // SnapToken acquired from previous step
+            var snapToken = /*[[${token}]]*/ '';
+            
+            snap.pay(snapToken, {
+                // Optional
+                onSuccess: function(result) {
+                    /* Update booking status via AJAX */
+                    var bookingId = /*[[${booking.id}]]*/ '';
+                    fetch('/payments/update-status/' + bookingId, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            status: 'CONFIRMED',
+                            transactionId: result.transaction_id
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert("Payment successful! Your booking is confirmed.");
+                        } else {
+                            alert("Payment successful, but we couldn't update your booking status. Please contact support.");
+                        }
+                        window.location.href = '/bookings';
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert("Payment successful, but there was an error updating your booking. Please contact support.");
+                        window.location.href = '/bookings';
+                    });
+                },
+                // Optional
+                onPending: function(result) {
+                    /* You may add your own js here, this is just example */
+                    alert("Payment is pending. Please complete your payment.");
+                    window.location.href = '/bookings';
+                },
+                // Optional
+                onError: function(result) {
+                    /* You may add your own js here, this is just example */
+                    alert("Payment failed: " + result.status_message);
+                    window.location.href = '/bookings';
+                },
+                // Optional
+                onClose: function() {
+                    /* You may add your own implementation here */
+                    alert('You closed the popup without finishing the payment');
+                    window.location.href = '/bookings';
+                }
+            });
+        };
+    </script>
+</body>
+</html>

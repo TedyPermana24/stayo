@@ -33,11 +33,14 @@ public class User {
 
     @Column(nullable = false)
     private String password;
-    
+
+    @Column
+    private String phone;
+
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)
     private Role role = Role.USER; // Default role
-    
+
     @OneToOne(mappedBy = "user")
     private VendorHotel vendorProfile;
 
@@ -84,38 +87,51 @@ public class User {
     public void setPassword(String password) {
         this.password = password;
     }
-    
+
     public Role getRole() {
         return role;
     }
-    
+
     public void setRole(Role role) {
         this.role = role;
     }
-    
+
     public VendorHotel getVendorProfile() {
         return vendorProfile;
     }
-    
+
     public void setVendorProfile(VendorHotel vendorProfile) {
         this.vendorProfile = vendorProfile;
     }
-    
+
     // Helper methods
     public boolean isAdmin() {
         return this.role == Role.ADMIN;
     }
-    
+
     public boolean isVendor() {
         return this.role == Role.VENDOR;
     }
-    
+
     public boolean isUser() {
         return this.role == Role.USER;
     }
-    
+
     // Role enum
     public enum Role {
         USER, ADMIN, VENDOR
+    }
+
+    public String getPhone() {
+        return phone;
+    }
+
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+    // Tambahkan metode getPhoneNumber() yang digunakan di PaymentService
+    public String getPhoneNumber() {
+        return phone;
     }
 }

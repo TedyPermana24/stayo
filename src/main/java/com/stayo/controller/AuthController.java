@@ -48,6 +48,15 @@ public class AuthController {
                     session.setAttribute("userId", user.getId());
                     session.setAttribute("userRole", user.getRole().toString());
                     
+                    // Tambahkan properti individual ke sesi
+                    session.setAttribute("firstName", user.getFirstName());
+                    session.setAttribute("lastName", user.getLastName());
+                    session.setAttribute("email", user.getEmail());
+                    session.setAttribute("phone", user.getPhone());
+                    
+                    // Inisialisasi profilePicture dengan nilai default
+                    session.setAttribute("profilePicture", "/images/default-profile.svg");
+                    
                     // Redirect based on role
                     switch (user.getRole()) {
                         case ADMIN:
