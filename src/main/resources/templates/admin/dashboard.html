@@ -73,7 +73,7 @@
             <div class="flex items-center space-x-6">
                 <a href="/admin/dashboard" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Dashboard</a>
                 <a href="/admin/vendors" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Vendors</a>
-                <a href="/admin/bookings/pending" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Pending</a>
+                <a href="/admin/bookings/pending" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">In-Progress</a>
                 <a href="/admin/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Bookings</a>
                 <a href="/admin/users" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Users</a>
                 <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">
@@ -133,7 +133,7 @@
                     <i class="fas fa-clock text-purple-600 text-lg"></i>
                 </div>
                 <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${pendingApprovals != null ? pendingApprovals : 0}">0</h3>
-                <p class="text-gray-600 font-medium text-xs">Pending Approvals</p>
+                <p class="text-gray-600 font-medium text-xs">In-Progress Payments</p>
             </div>
         </div>
         
@@ -156,7 +156,7 @@
                         <i class="fas fa-store mr-2"></i> Manage Vendors
                     </a>
                     <a href="/admin/bookings/pending" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift flex items-center justify-center">
-                        <i class="fas fa-clock mr-2"></i> Pending Bookings
+                        <i class="fas fa-clock mr-2"></i> In-Progress Bookings
                     </a>
                     <a href="/admin/bookings" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift flex items-center justify-center">
                         <i class="fas fa-list mr-2"></i> All Bookings

@@ -80,7 +80,7 @@
             <div class="flex items-center space-x-6">
                 <a href="/admin/dashboard" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Dashboard</a>
                 <a href="/admin/vendors" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Vendors</a>
-                <a href="/admin/bookings/pending" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Pending</a>
+                <a href="/admin/bookings/pending" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">In-Progress</a>
                 <a href="/admin/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Bookings</a>
                 <a href="/admin/users" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Users</a>
                 <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">
@@ -102,8 +102,8 @@
                         <i class="fas fa-clock text-white text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-800 mb-1">Pending Bookings</h1>
-                        <p class="text-gray-600">Review and manage pending booking requests</p>
+                        <h1 class="text-2xl font-bold text-gray-800 mb-1">Bookings In Progress</h1>
+                        <p class="text-gray-600">Review and manage the booking requests</p>
                     </div>
                 </div>
             </div>
@@ -117,7 +117,7 @@
                     <i class="fas fa-clock text-yellow-600 text-lg"></i>
                 </div>
                 <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${bookings != null ? bookings.size() : 0}">0</h3>
-                <p class="text-gray-600 font-medium text-xs">Pending Bookings</p>
+                <p class="text-gray-600 font-medium text-xs">In-Progress Payments</p>
             </div>
             
             <!-- Today's Pending -->
@@ -125,8 +125,8 @@
                 <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
                     <i class="fas fa-calendar-day text-orange-600 text-lg"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-1">0</h3>
-                <p class="text-gray-600 font-medium text-xs">Today's Pending</p>
+                <h3 class="text-xl font-bold text-gray-900 mb-1"th:text="${bookings != null ? bookings.size() : 0}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Ongoing Bookings</p>
             </div>
             
             <!-- Urgent Reviews -->
@@ -149,8 +149,8 @@
                             <i class="fas fa-list-alt text-white text-lg"></i>
                         </div>
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800 mb-1">Pending Bookings</h2>
-                            <p class="text-gray-600">Review and approve booking requests</p>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-1">In-Progress Payments</h2>
+                            <p class="text-gray-600">Review booking requests</p>
                         </div>
                     </div>
                 </div>
@@ -171,7 +171,7 @@
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
                     <i class="fas fa-inbox text-3xl text-gray-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">No pending bookings</h3>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No bookings</h3>
                 <p class="text-gray-500 mb-6">All booking requests have been processed.</p>
             </div>
             
@@ -201,9 +201,6 @@
                                 </th>
                                 <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
                                     <i class="fas fa-clock mr-2 text-purple-600"></i>Booking Date
-                                </th>
-                                <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">
-                                    <i class="fas fa-cogs mr-2 text-purple-600"></i>Actions
                                 </th>
                             </tr>
                         </thead>
@@ -253,22 +250,6 @@
                                 <td class="px-6 py-4">
                                     <p class="text-gray-900 font-medium" th:text="${booking.bookingDate != null ? #temporals.format(booking.bookingDate, 'dd/MM/yyyy') : 'N/A'}">01/01/2025</p>
                                     <p class="text-sm text-gray-500" th:text="${booking.bookingDate != null ? #temporals.format(booking.bookingDate, 'HH:mm') : 'N/A'}">10:00</p>
-                                </td>
-                                <td class="px-6 py-4">
-                                    <div class="flex justify-center space-x-2">
-                                        <form th:action="@{/admin/bookings/{id}/approve(id=${booking.id})}" method="post" style="display: inline;">
-                                            <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-green-700 transition duration-300 flex items-center text-sm" 
-                                                    onclick="return confirm('Apakah Anda yakin ingin menyetujui booking ini?')">
-                                                <i class="fas fa-check mr-1"></i> Approve
-                                            </button>
-                                        </form>
-                                        <form th:action="@{/admin/bookings/{id}/reject(id=${booking.id})}" method="post" style="display: inline;">
-                                            <button type="submit" class="bg-red-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-red-700 transition duration-300 flex items-center text-sm" 
-                                                    onclick="return confirm('Apakah Anda yakin ingin menolak booking ini?')">
-                                                <i class="fas fa-times mr-1"></i> Reject
-                                            </button>
-                                        </form>
-                                    </div>
                                 </td>
                             </tr>
                         </tbody>

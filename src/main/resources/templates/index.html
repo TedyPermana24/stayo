@@ -518,7 +518,7 @@
         </div>
     </footer>
 
-    <script>
+    <script >
         // Sticky Search Form Script
         const searchFormContainer = document.getElementById('searchForm');
         const stickySearchForm = document.getElementById('stickySearchForm');
@@ -578,62 +578,5 @@
         syncFormValues();
     </script>
 </body>
-</html><script>
-    // Sticky Search Form Script
-    const searchFormContainer = document.getElementById('searchForm');
-    const stickySearchForm = document.getElementById('stickySearchForm');
-    
-    // Sync input values between forms
-    const originalLocationInput = document.getElementById('location');
-    const originalCheckInInput = document.getElementById('check-in');
-    const originalCheckOutInput = document.getElementById('check-out');
-    const originalGuestsInput = document.getElementById('guests');
-    
-    const stickyLocationInput = document.getElementById('sticky-location');
-    const stickyCheckInInput = document.getElementById('sticky-check-in');
-    const stickyCheckOutInput = document.getElementById('sticky-check-out');
-    const stickyGuestsInput = document.getElementById('sticky-guests');
-    
-    // Sync original form values to sticky form
-    function syncFormValues() {
-        stickyLocationInput.value = originalLocationInput.value;
-        stickyCheckInInput.value = originalCheckInInput.value;
-        stickyCheckOutInput.value = originalCheckOutInput.value;
-        stickyGuestsInput.value = originalGuestsInput.value;
-    }
-    
-    // Sync sticky form values to original form
-    function syncStickyToOriginal() {
-        originalLocationInput.value = stickyLocationInput.value;
-        originalCheckInInput.value = stickyCheckInInput.value;
-        originalCheckOutInput.value = stickyCheckOutInput.value;
-        originalGuestsInput.value = stickyGuestsInput.value;
-    }
-    
-    // Add input event listeners to sync forms
-    originalLocationInput.addEventListener('input', syncFormValues);
-    originalCheckInInput.addEventListener('input', syncFormValues);
-    originalCheckOutInput.addEventListener('input', syncFormValues);
-    originalGuestsInput.addEventListener('change', syncFormValues);
-    
-    stickyLocationInput.addEventListener('input', syncStickyToOriginal);
-    stickyCheckInInput.addEventListener('input', syncStickyToOriginal);
-    stickyCheckOutInput.addEventListener('input', syncStickyToOriginal);
-    stickyGuestsInput.addEventListener('change', syncStickyToOriginal);
-    
-    // Handle scroll event
-    window.addEventListener('scroll', function() {
-        const rect = searchFormContainer.getBoundingClientRect();
-        
-        if (rect.top <= 0) {
-            // Show sticky form when original form reaches top of viewport
-            stickySearchForm.classList.add('visible');
-        } else {
-            // Hide sticky form when original form is visible
-            stickySearchForm.classList.remove('visible');
-        }
-    });
-    
-    // Initial sync
-    syncFormValues();
-</script>
+</html>
+
