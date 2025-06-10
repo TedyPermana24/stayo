@@ -117,8 +117,17 @@
                     <div class="absolute bottom-0 left-0 p-8">
                         <h1 class="text-4xl font-bold text-white mb-2" th:text="${hotel.name}">Hotel Name</h1>
                         <div class="flex text-yellow-400 mb-2">
-                            <th:block th:each="i : ${#numbers.sequence(1, hotel.averageRating)}">
+                            <!-- Tampilkan bintang sesuai rating -->
+                            <th:block th:if="${hotel.averageRating > 0}" th:each="i : ${#numbers.sequence(1, hotel.averageRating)}">
                                 <i class="fas fa-star text-xl"></i>
+                            </th:block>
+                            <!-- Tampilkan bintang kosong jika rating 0 -->
+                            <th:block th:if="${hotel.averageRating == 0}">
+                                <i class="far fa-star text-xl"></i>
+                                <i class="far fa-star text-xl"></i>
+                                <i class="far fa-star text-xl"></i>
+                                <i class="far fa-star text-xl"></i>
+                                <i class="far fa-star text-xl"></i>
                             </th:block>
                         </div>
                         <p class="text-white text-xl"><i class="fas fa-map-marker-alt mr-2"></i><span th:text="${hotel.location}">Location</span></p>
@@ -179,7 +188,7 @@
                     </div>
                     <div class="text-3xl font-bold text-gray-800 mb-2" th:text="${#numbers.formatDecimal(hotel.averageRating, 1, 1)}">0.0</div>
                     <div class="w-full bg-gray-200 rounded-full h-2">
-                        <div class="progress-bar h-2 rounded-full" th:style="'width: ' + ${hotel.averageRating * 10} + '%'"></div>
+                        <div class="progress-bar h-2 rounded-full" th:style="'width: ' + ${hotel.averageRating * 20} + '%'"></div>
                     </div>
                 </div>
 
@@ -299,7 +308,7 @@
                 </div>
                 
                 <div th:unless="${#lists.isEmpty(bookings)}" class="divide-y divide-gray-100">
-                    <div th:each="booking : ${bookings}" th:if="${booking.status == 'CONFIRMED'}" class="p-6 hover:bg-gray-50 transition booking-card">
+                    <div th:each="booking : ${bookings}" th:if="${booking.status == 'CONFIRMED' || booking.status == 'COMPLETED'}" class="p-6 hover:bg-gray-50 transition booking-card">
                         <div class="flex items-center justify-between">
                             <div class="flex items-center space-x-4">
                                 <div class="p-3 bg-blue-100 rounded-xl">
@@ -320,10 +329,19 @@
                                 </div>
                             </div>
                             <div class="text-right">
-                                <div class="text-3xl font-bold text-emerald-600 mb-1">Rp <span th:text="${#numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">0</span></div>
-                                <div class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                                    <i class="fas fa-check-circle mr-1"></i>
-                                    <span th:text="${booking.status}">CONFIRMED</span>
+                                <div class="text-3xl font-bold text-emerald-600 mb-1">Rp <span th:text="${#numbers.formatDecimal(booking.totalPrice, 0, 'COMMA', 0, 'POINT')}">0</span></div>
+                                <div class="flex flex-col items-end gap-2">
+                                    <div th:class="${booking.status == 'CONFIRMED' ? 'bg-green-100 text-green-800' : 'bg-purple-100 text-purple-800'}" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium">
+                                        <i th:class="${booking.status == 'CONFIRMED' ? 'fas fa-check-circle' : 'fas fa-sign-out-alt'}" class="mr-1"></i>
+                                        <span th:text="${booking.status}">STATUS</span>
+                                    </div>
+                                    
+                                    <!-- Tombol Checkout hanya ditampilkan jika status CONFIRMED -->
+                                    <form th:if="${booking.status == 'CONFIRMED'}" th:action="@{/vendor/hotels/{hotelId}/bookings/{bookingId}/checkout(hotelId=${hotel.id},bookingId=${booking.id})}" method="post">
+                                        <button type="submit" class="bg-purple-500 hover:bg-purple-600 text-white px-3 py-1 rounded-full text-sm font-medium transition flex items-center">
+                                            <i class="fas fa-sign-out-alt mr-1"></i> Checkout
+                                        </button>
+                                    </form>
                                 </div>
                             </div>
                         </div>

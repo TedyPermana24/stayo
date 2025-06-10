@@ -315,8 +315,17 @@
                         <div class="p-6">
                             <h3 class="text-2xl font-bold mb-3 text-gray-800" th:text="${hotel.name}">Hotel Name</h3>
                             <div class="flex text-yellow-400 mb-3">
-                                <th:block th:each="i : ${#numbers.sequence(1, hotel.averageRating)}">
+                                <!-- Tampilkan bintang sesuai rating -->
+                                <th:block th:if="${hotel.averageRating > 0}" th:each="i : ${#numbers.sequence(1, hotel.averageRating)}">
                                     <i class="fas fa-star"></i>
+                                </th:block>
+                                <!-- Tampilkan bintang kosong jika rating 0 -->
+                                <th:block th:if="${hotel.averageRating == 0}">
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
+                                    <i class="far fa-star"></i>
                                 </th:block>
                             </div>
                             <p class="text-gray-600 mb-4 flex items-center">

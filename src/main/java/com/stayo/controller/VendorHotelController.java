@@ -125,38 +125,38 @@ public class VendorHotelController {
         if (vendor == null) {
             return "redirect:/vendor/signin";
         }
-    
+
         // Get vendor's hotels
         List<Hotel> hotels = hotelService.getHotelsByVendorId(vendor.getId());
         model.addAttribute("hotels", hotels);
-    
+
         // Get booking statistics
         int totalBookings = 0;
         double totalRevenue = 0.0;
         int totalRooms = 0;
         double totalRating = 0.0;
         int hotelWithRatings = 0;
-    
+
         for (Hotel hotel : hotels) {
             List<Booking> hotelBookings = bookingService.getBookingsByHotelId(hotel.getId());
             totalBookings += hotelBookings.size();
             for (Booking booking : hotelBookings) {
-                if ("CONFIRMED".equals(booking.getStatus())) {
+                if ("COMPLETED".equals(booking.getStatus())) {
                     totalRevenue += booking.getTotalPrice().doubleValue();
                 }
             }
-    
+
             // Count total rooms
             List<Room> hotelRooms = roomService.getRoomsByHotelId(hotel.getId());
             totalRooms += hotelRooms.size();
-    
+
             // Calculate average rating
             if (hotel.getAverageRating() != null && hotel.getAverageRating() > 0) {
                 totalRating += hotel.getAverageRating();
                 hotelWithRatings++;
             }
         }
-    
+
         // Calculate occupancy rate
         double occupancyRate = 0.0;
         if (totalRooms > 0) {
@@ -164,30 +164,30 @@ public class VendorHotelController {
             if (occupancyRate > 100)
                 occupancyRate = 100.0; // Cap at 100%
         }
-    
+
         // Calculate average rating across all hotels
         double averageRating = 0.0;
         if (hotelWithRatings > 0) {
             averageRating = totalRating / hotelWithRatings;
         }
-    
+
         // Get monthly booking statistics for current year
         int currentYear = LocalDate.now().getYear();
         List<Object[]> monthlyStats = bookingService.getMonthlyBookingStatsByVendor(vendor.getId(), currentYear);
-        
+
         // Prepare monthly data arrays
         int[] monthlyBookings = new int[12];
         double[] monthlyRevenue = new double[12];
-        
+
         for (Object[] stat : monthlyStats) {
-            int month = (Integer) stat[0] - 1; // Convert to 0-based index
+            int month = (Integer) stat[0] - 1;
             long bookingCount = (Long) stat[1];
             BigDecimal revenue = (BigDecimal) stat[2];
-            
+
             monthlyBookings[month] = (int) bookingCount;
             monthlyRevenue[month] = revenue.doubleValue();
         }
-    
+
         model.addAttribute("totalHotels", hotels.size());
         model.addAttribute("totalBookings", totalBookings);
         model.addAttribute("totalRevenue", totalRevenue);
@@ -197,7 +197,7 @@ public class VendorHotelController {
         model.addAttribute("monthlyBookings", monthlyBookings);
         model.addAttribute("monthlyRevenue", monthlyRevenue);
         model.addAttribute("vendor", vendor);
-    
+
         return "vendor/vendor-dashboard";
     }
 
@@ -365,7 +365,7 @@ public class VendorHotelController {
                 // Calculate total revenue for this hotel - only CONFIRMED bookings
                 double totalRevenue = 0.0;
                 for (Booking booking : hotelBookings) {
-                    if ("CONFIRMED".equals(booking.getStatus())) {
+                    if ("COMPLETED".equals(booking.getStatus())) {
                         totalRevenue += booking.getTotalPrice().doubleValue();
                     }
                 }
@@ -713,5 +713,51 @@ public class VendorHotelController {
     public String signOut(HttpSession session) {
         session.removeAttribute("vendor");
         return "redirect:/vendor/signin";
+    }
+
+    // Ubah mapping ini
+    @PostMapping("/hotels/{hotelId}/bookings/{bookingId}/checkout")
+    public String checkoutBooking(
+            @PathVariable Long hotelId,
+            @PathVariable Long bookingId,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        VendorHotel vendor = (VendorHotel) session.getAttribute("vendor");
+        if (vendor == null) {
+            return "redirect:/vendor/signin";
+        }
+
+        try {
+            // Verifikasi bahwa booking ada dan milik hotel yang dimiliki vendor ini
+            Optional<Booking> bookingOpt = bookingService.getBookingById(bookingId);
+            if (bookingOpt.isPresent()) {
+                Booking booking = bookingOpt.get();
+
+                // Verifikasi booking milik hotel yang dimiliki vendor ini
+                if (!booking.getHotel().getId().equals(hotelId) ||
+                        !booking.getHotel().getVendor().getId().equals(vendor.getId())) {
+                    redirectAttributes.addFlashAttribute("error",
+                            "You don't have permission to checkout this booking.");
+                    return "redirect:/vendor/hotels/" + hotelId;
+                }
+
+                // Verifikasi status booking adalah CONFIRMED
+                if (!"CONFIRMED".equals(booking.getStatus())) {
+                    redirectAttributes.addFlashAttribute("error", "Only confirmed bookings can be checked out.");
+                    return "redirect:/vendor/hotels/" + hotelId;
+                }
+
+                // Update status booking menjadi CHECKOUT
+                bookingService.updateBookingStatus(bookingId, "COMPLETED");
+                redirectAttributes.addFlashAttribute("success", "Booking has been checked out successfully.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Booking not found.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to checkout booking: " + e.getMessage());
+        }
+
+        return "redirect:/vendor/hotels/view/" + hotelId;
     }
 }

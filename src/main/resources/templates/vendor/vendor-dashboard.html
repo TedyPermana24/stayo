@@ -260,8 +260,16 @@
                                         </p>
                                         <div class="flex items-center">
                                             <div class="flex text-yellow-400 mr-3">
-                                                <th:block th:each="i : ${#numbers.sequence(1, hotel.averageRating)}">
-                                                    <i class="fas fa-star"></i>
+                                                <th:block th:if="${hotel.averageRating > 0}" th:each="i : ${#numbers.sequence(1, hotel.averageRating)}">
+                                                    <i class="fas fa-star text-xl"></i>
+                                                </th:block>
+                                                <!-- Tampilkan bintang kosong jika rating 0 -->
+                                                <th:block th:if="${hotel.averageRating == 0}">
+                                                    <i class="far fa-star text-xl"></i>
+                                                    <i class="far fa-star text-xl"></i>
+                                                    <i class="far fa-star text-xl"></i>
+                                                    <i class="far fa-star text-xl"></i>
+                                                    <i class="far fa-star text-xl"></i>
                                                 </th:block>
                                             </div>
                                             <span class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full">
