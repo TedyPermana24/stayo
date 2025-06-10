@@ -73,7 +73,6 @@
             <div class="flex items-center space-x-6">
                 <a href="/admin/dashboard" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Dashboard</a>
                 <a href="/admin/vendors" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Vendors</a>
-                <a href="/admin/bookings/pending" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">In-Progress</a>
                 <a href="/admin/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Bookings</a>
                 <a href="/admin/users" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Users</a>
                 <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">
@@ -103,37 +102,29 @@
         </div>
         
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-            <div class="stat-card rounded-xl p-4 hover-lift text-center">
-                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <i class="fas fa-users text-blue-600 text-lg"></i>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div class="stat-card rounded-xl p-6 hover-lift text-center">
+                <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-users text-blue-600 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${totalUsers != null ? totalUsers : 0}">0</h3>
-                <p class="text-gray-600 font-medium text-xs">Total Users</p>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2" th:text="${totalUsers != null ? totalUsers : 0}">0</h3>
+                <p class="text-gray-600 font-medium">Total Users</p>
             </div>
             
-            <div class="stat-card rounded-xl p-4 hover-lift text-center">
-                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <i class="fas fa-hotel text-green-600 text-lg"></i>
+            <div class="stat-card rounded-xl p-6 hover-lift text-center">
+                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-hotel text-green-600 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${totalHotels != null ? totalHotels : 0}">0</h3>
-                <p class="text-gray-600 font-medium text-xs">Total Hotels</p>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2" th:text="${totalHotels != null ? totalHotels : 0}">0</h3>
+                <p class="text-gray-600 font-medium">Total Hotels</p>
             </div>
             
-            <div class="stat-card rounded-xl p-4 hover-lift text-center">
-                <div class="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <i class="fas fa-calendar-check text-yellow-600 text-lg"></i>
+            <div class="stat-card rounded-xl p-6 hover-lift text-center">
+                <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                    <i class="fas fa-calendar-check text-yellow-600 text-xl"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${totalBookings != null ? totalBookings : 0}">0</h3>
-                <p class="text-gray-600 font-medium text-xs">Total Bookings</p>
-            </div>
-            
-            <div class="stat-card rounded-xl p-4 hover-lift text-center">
-                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <i class="fas fa-clock text-purple-600 text-lg"></i>
-                </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${pendingApprovals != null ? pendingApprovals : 0}">0</h3>
-                <p class="text-gray-600 font-medium text-xs">In-Progress Payments</p>
+                <h3 class="text-2xl font-bold text-gray-900 mb-2" th:text="${totalBookings != null ? totalBookings : 0}">0</h3>
+                <p class="text-gray-600 font-medium">Total Bookings</p>
             </div>
         </div>
         
@@ -151,12 +142,9 @@
                 </div>
             </div>
             <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <a href="/admin/vendors" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift flex items-center justify-center">
                         <i class="fas fa-store mr-2"></i> Manage Vendors
-                    </a>
-                    <a href="/admin/bookings/pending" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift flex items-center justify-center">
-                        <i class="fas fa-clock mr-2"></i> In-Progress Bookings
                     </a>
                     <a href="/admin/bookings" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift flex items-center justify-center">
                         <i class="fas fa-list mr-2"></i> All Bookings
