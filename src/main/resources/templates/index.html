@@ -55,6 +55,18 @@
         .animate-pop {
             animation: pop 0.3s;
         }
+
+        /* Custom Dropdown Styles */
+        .dropdown-group:hover .dropdown-menu {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+        
+        .dropdown-menu {
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
         
         /* Search Form Styles */
         .search-form-original {
@@ -125,7 +137,26 @@
                         <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Sign Out</a>
                     </th:block>
                     <th:block th:unless="${session.user != null}">
-                        <a href="/signin" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Sign In</a>
+                        <!-- Sign In Dropdown -->
+                        <div class="relative dropdown-group">
+                            <span class="text-gray-700 hover:text-purple-600 font-medium transition duration-300 cursor-pointer flex items-center">
+                                Sign In
+                                <i class="fas fa-chevron-down ml-1 text-xs transition-transform duration-200"></i>
+                            </span>
+                            <!-- Dropdown Menu -->
+                            <div class="dropdown-menu absolute right-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg" style="z-index: 9999;">
+                                <div class="py-2">
+                                    <a href="/signin" class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition duration-200 flex items-center">
+                                        <i class="fas fa-user mr-3 text-purple-600 w-4"></i>
+                                        Sign In as User
+                                    </a>
+                                    <a href="/vendor/signin" class="block px-4 py-2 text-gray-700 hover:bg-purple-50 hover:text-purple-600 transition duration-200 flex items-center">
+                                        <i class="fas fa-building mr-3 text-purple-600 w-4"></i>
+                                        Sign In as Vendor
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                         <a href="/register" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Register</a>
                     </th:block>
                 </div>
@@ -280,7 +311,7 @@
                         <div class="p-6">
                             <h3 class="text-2xl font-bold mb-3 text-gray-800" th:text="${hotel.name}">Hotel Name</h3>
                             <div class="flex text-yellow-400 mb-3">
-                                <th:block th:each="i : ${#numbers.sequence(1, hotel.stars)}">
+                                <th:block th:each="i : ${#numbers.sequence(1, hotel.averageRating)}">
                                     <i class="fas fa-star"></i>
                                 </th:block>
                             </div>
@@ -320,11 +351,6 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                     <div class="absolute bottom-0 left-0 p-6 text-white">
                         <h3 class="text-2xl font-bold mb-2">Bali</h3>
-                        <p class="text-lg opacity-90">1,245 properties</p>
-                        <div class="flex items-center mt-2">
-                            <i class="fas fa-star text-yellow-400 mr-1"></i>
-                            <span class="text-sm">4.8 Rating</span>
-                        </div>
                     </div>
                     <a href="/search?location=Bali" class="absolute inset-0"></a>
                 </div>
@@ -336,11 +362,6 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                     <div class="absolute bottom-0 left-0 p-6 text-white">
                         <h3 class="text-2xl font-bold mb-2">Jakarta</h3>
-                        <p class="text-lg opacity-90">879 properties</p>
-                        <div class="flex items-center mt-2">
-                            <i class="fas fa-star text-yellow-400 mr-1"></i>
-                            <span class="text-sm">4.7 Rating</span>
-                        </div>
                     </div>
                     <a href="/search?location=Jakarta" class="absolute inset-0"></a>
                 </div>
@@ -352,11 +373,6 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                     <div class="absolute bottom-0 left-0 p-6 text-white">
                         <h3 class="text-2xl font-bold mb-2">Yogyakarta</h3>
-                        <p class="text-lg opacity-90">645 properties</p>
-                        <div class="flex items-center mt-2">
-                            <i class="fas fa-star text-yellow-400 mr-1"></i>
-                            <span class="text-sm">4.9 Rating</span>
-                        </div>
                     </div>
                     <a href="/search?location=Yogyakarta" class="absolute inset-0"></a>
                 </div>
@@ -368,11 +384,6 @@
                     <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-70"></div>
                     <div class="absolute bottom-0 left-0 p-6 text-white">
                         <h3 class="text-2xl font-bold mb-2">Bandung</h3>
-                        <p class="text-lg opacity-90">532 properties</p>
-                        <div class="flex items-center mt-2">
-                            <i class="fas fa-star text-yellow-400 mr-1"></i>
-                            <span class="text-sm">4.6 Rating</span>
-                        </div>
                     </div>
                     <a href="/search?location=Bandung" class="absolute inset-0"></a>
                 </div>
