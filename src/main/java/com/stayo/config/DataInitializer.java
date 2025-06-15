@@ -1,17 +1,18 @@
 package com.stayo.config;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+
 import com.stayo.model.Hotel;
 import com.stayo.model.Room;
 import com.stayo.model.User;
 import com.stayo.repository.HotelRepository;
 import com.stayo.repository.RoomRepository;
 import com.stayo.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Component;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
 
 @Component
 public class DataInitializer implements CommandLineRunner {

@@ -17,9 +17,11 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.UUID;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
@@ -50,7 +52,7 @@ public class VendorHotelController {
     @GetMapping("/register")
     public String showRegisterForm(Model model) {
         model.addAttribute("vendorForm", new VendorRegistrationForm());
-        return "vendor-register";
+        return "vendor/vendor-register";
     }
 
     @PostMapping("/register")
@@ -82,7 +84,7 @@ public class VendorHotelController {
 
     @GetMapping("/signin")
     public String showSignInForm() {
-        return "vendor-signin";
+        return "/vendor/vendor-signin";
     }
 
     @PostMapping("/signin")
@@ -139,7 +141,9 @@ public class VendorHotelController {
             List<Booking> hotelBookings = bookingService.getBookingsByHotelId(hotel.getId());
             totalBookings += hotelBookings.size();
             for (Booking booking : hotelBookings) {
-                totalRevenue += booking.getTotalPrice().doubleValue();
+                if ("COMPLETED".equals(booking.getStatus())) {
+                    totalRevenue += booking.getTotalPrice().doubleValue();
+                }
             }
 
             // Count total rooms
@@ -167,15 +171,34 @@ public class VendorHotelController {
             averageRating = totalRating / hotelWithRatings;
         }
 
+        // Get monthly booking statistics for current year
+        int currentYear = LocalDate.now().getYear();
+        List<Object[]> monthlyStats = bookingService.getMonthlyBookingStatsByVendor(vendor.getId(), currentYear);
+
+        // Prepare monthly data arrays
+        int[] monthlyBookings = new int[12];
+        double[] monthlyRevenue = new double[12];
+
+        for (Object[] stat : monthlyStats) {
+            int month = (Integer) stat[0] - 1;
+            long bookingCount = (Long) stat[1];
+            BigDecimal revenue = (BigDecimal) stat[2];
+
+            monthlyBookings[month] = (int) bookingCount;
+            monthlyRevenue[month] = revenue.doubleValue();
+        }
+
         model.addAttribute("totalHotels", hotels.size());
         model.addAttribute("totalBookings", totalBookings);
         model.addAttribute("totalRevenue", totalRevenue);
         model.addAttribute("totalRooms", totalRooms);
         model.addAttribute("occupancyRate", occupancyRate);
         model.addAttribute("averageRating", averageRating);
+        model.addAttribute("monthlyBookings", monthlyBookings);
+        model.addAttribute("monthlyRevenue", monthlyRevenue);
         model.addAttribute("vendor", vendor);
 
-        return "vendor-dashboard";
+        return "vendor/vendor-dashboard";
     }
 
     // CRUD Operations for Hotels
@@ -272,7 +295,7 @@ public class VendorHotelController {
 
                 model.addAttribute("hotel", hotel);
                 model.addAttribute("vendor", vendor);
-                return "vendor-hotel-form";
+                return "vendor/vendor-hotel-form";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to edit this hotel.");
             }
@@ -339,10 +362,12 @@ public class VendorHotelController {
                         occupancyRate = 100.0; // Cap at 100%
                 }
 
-                // Calculate total revenue for this hotel
+                // Calculate total revenue for this hotel - only CONFIRMED bookings
                 double totalRevenue = 0.0;
                 for (Booking booking : hotelBookings) {
-                    totalRevenue += booking.getTotalPrice().doubleValue();
+                    if ("COMPLETED".equals(booking.getStatus())) {
+                        totalRevenue += booking.getTotalPrice().doubleValue();
+                    }
                 }
 
                 model.addAttribute("hotel", hotel);
@@ -350,7 +375,7 @@ public class VendorHotelController {
                 model.addAttribute("occupancyRate", occupancyRate);
                 model.addAttribute("totalRevenue", totalRevenue);
                 model.addAttribute("vendor", vendor);
-                return "vendor-hotel-details";
+                return "vendor/vendor-hotel-details";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to view this hotel.");
             }
@@ -382,7 +407,7 @@ public class VendorHotelController {
                 model.addAttribute("hotel", hotel);
                 model.addAttribute("rooms", rooms);
                 model.addAttribute("vendor", vendor);
-                return "vendor-rooms";
+                return "vendor/vendor-rooms";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to view these rooms.");
             }
@@ -414,7 +439,7 @@ public class VendorHotelController {
                 model.addAttribute("room", room);
                 model.addAttribute("hotel", hotel);
                 model.addAttribute("vendor", vendor);
-                return "vendor-room-form";
+                return "vendor/vendor-room-form";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to add rooms to this hotel.");
             }
@@ -504,7 +529,7 @@ public class VendorHotelController {
                 model.addAttribute("room", room);
                 model.addAttribute("hotel", hotel);
                 model.addAttribute("vendor", vendor);
-                return "vendor-room-form";
+                return "vendor/vendor-room-form";
             } else {
                 redirectAttributes.addFlashAttribute("error", "You don't have permission to edit this room.");
             }
@@ -640,7 +665,7 @@ public class VendorHotelController {
 
         model.addAttribute("hotel", hotel);
         model.addAttribute("vendor", vendor);
-        return "vendor-hotel-form";
+        return "vendor/vendor-hotel-form";
     }
 
     @PostMapping("/hotels/add")
@@ -688,5 +713,51 @@ public class VendorHotelController {
     public String signOut(HttpSession session) {
         session.removeAttribute("vendor");
         return "redirect:/vendor/signin";
+    }
+
+    // Ubah mapping ini
+    @PostMapping("/hotels/{hotelId}/bookings/{bookingId}/checkout")
+    public String checkoutBooking(
+            @PathVariable Long hotelId,
+            @PathVariable Long bookingId,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        VendorHotel vendor = (VendorHotel) session.getAttribute("vendor");
+        if (vendor == null) {
+            return "redirect:/vendor/signin";
+        }
+
+        try {
+            // Verifikasi bahwa booking ada dan milik hotel yang dimiliki vendor ini
+            Optional<Booking> bookingOpt = bookingService.getBookingById(bookingId);
+            if (bookingOpt.isPresent()) {
+                Booking booking = bookingOpt.get();
+
+                // Verifikasi booking milik hotel yang dimiliki vendor ini
+                if (!booking.getHotel().getId().equals(hotelId) ||
+                        !booking.getHotel().getVendor().getId().equals(vendor.getId())) {
+                    redirectAttributes.addFlashAttribute("error",
+                            "You don't have permission to checkout this booking.");
+                    return "redirect:/vendor/hotels/" + hotelId;
+                }
+
+                // Verifikasi status booking adalah CONFIRMED
+                if (!"CONFIRMED".equals(booking.getStatus())) {
+                    redirectAttributes.addFlashAttribute("error", "Only confirmed bookings can be checked out.");
+                    return "redirect:/vendor/hotels/" + hotelId;
+                }
+
+                // Update status booking menjadi CHECKOUT
+                bookingService.updateBookingStatus(bookingId, "COMPLETED");
+                redirectAttributes.addFlashAttribute("success", "Booking has been checked out successfully.");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "Booking not found.");
+            }
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to checkout booking: " + e.getMessage());
+        }
+
+        return "redirect:/vendor/hotels/view/" + hotelId;
     }
 }

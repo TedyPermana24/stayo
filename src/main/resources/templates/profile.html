@@ -4,6 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile - Stayo</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -71,22 +75,27 @@
                 <div class="flex items-center space-x-6">
                     <a href="/" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Home</a>
                     <a href="/hotels" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Hotels</a>
-                    <a href="/search" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Search</a>
-                    <a href="/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">My Bookings</a>
-                    <a href="/profile" class="text-purple-600 font-medium transition duration-300">Profile</a>
-                    <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Sign Out</a>
+                    <th:block th:if="${session.user != null}">
+                        <a href="/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">My Bookings</a>
+                        <a href="/profile" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Profile</a>
+                        <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Sign Out</a>
+                    </th:block>
+                    <th:block th:unless="${session.user != null}">
+                        <a href="/signin" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Sign In</a>
+                        <a href="/register" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">Register</a>
+                    </th:block>
                 </div>
             </div>
         </div>
     </header>
 
     <!-- Main content -->
-    <main class="container mx-auto my-6 flex-grow pt-24">
+    <main class="container mx-auto my-6 flex-grow pt-32 pb-28">
         <div class="bg-white rounded-3xl card-shadow overflow-hidden">
             <!-- Profile header -->
             <div class="p-8 border-b border-gray-200 flex items-center gradient-bg text-white">
                 <div class="relative w-20 h-20 rounded-full overflow-hidden mr-6 border-4 border-white shadow-lg">
-                    <img th:src="${profilePicture != null ? profilePicture : 'https://via.placeholder.com/150x150/667eea/ffffff?text=User'}" alt="Profile Picture" class="w-full h-full object-cover" id="profile-image">
+                    <img th:src="${profilePicture != null ? '/images/profiles/' + profilePicture : '/images/profiles/orang.png'}" alt="Profile Picture" class="w-full h-full profile-image-fit" id="profile-image">
                     <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity duration-300 cursor-pointer" onclick="document.getElementById('profile-picture-input').click()">
                         <i class="fas fa-camera text-white text-lg"></i>
                     </div>
@@ -95,11 +104,6 @@
                     <h1 class="text-2xl font-bold" th:text="${firstName + ' ' + lastName}">John Doe</h1>
                     <p class="text-white opacity-90" th:text="${email}">john.doe@example.com</p>
                 </div>
-                
-                <!-- Hidden file input for profile picture -->
-                <form id="profile-picture-form" th:action="@{/profile/update-profile-picture}" method="post" enctype="multipart/form-data" class="hidden">
-                    <input type="file" id="profile-picture-input" name="profilePicture" accept="image/*" onchange="uploadProfilePicture()">
-                </form>
             </div>
             
             <!-- Profile tabs -->
@@ -110,9 +114,10 @@
                 <button class="tab-btn px-6 py-4 text-gray-500 hover:text-gray-700 transition duration-300" data-tab="security">
                     <i class="fas fa-lock mr-2"></i>Security
                 </button>
+                <!--
                 <button class="tab-btn px-6 py-4 text-gray-500 hover:text-gray-700 transition duration-300" data-tab="preferences">
                     <i class="fas fa-cog mr-2"></i>Preferences
-                </button>
+                </button> -->
             </div>
             
             <!-- Tab content -->
@@ -142,12 +147,7 @@
                                        class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300">
                             </div>
                         </div>
-                        <div class="mb-6">
-                            <label for="address" class="block mb-2 font-semibold text-gray-700">Address</label>
-                            <textarea id="address" name="address" 
-                                      class="w-full px-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:border-purple-500 transition duration-300 h-24 resize-y" 
-                                      th:text="${address}"></textarea>
-                        </div>
+                    
                         <button type="submit" class="btn-gradient text-white px-6 py-3 rounded-full font-medium hover-lift">Save Changes</button>
                     </form>
                 </div>
@@ -174,7 +174,8 @@
                     </form>
                 </div>
                 
-                <!-- Preferences Tab -->
+                <!-- Preferences Tab --> 
+                <!-- 
                 <div id="preferences" class="tab-content hidden">
                     <form th:action="@{/profile/update-preferences}" method="post">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -205,7 +206,7 @@
                         <button type="submit" class="btn-gradient text-white px-6 py-3 rounded-full font-medium hover-lift">Save Preferences</button>
                     </form>
                 </div>
-            </div>
+            </div> -->
             
             <!-- Logout button -->
             <div class="p-8 border-t border-gray-200 bg-gray-50">

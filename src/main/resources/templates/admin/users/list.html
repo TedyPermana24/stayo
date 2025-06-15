@@ -2,7 +2,12 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Management - Stayo</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -18,8 +23,15 @@
             transition: all 0.3s ease;
         }
         .hover-lift:hover {
-            transform: translateY(-5px);
+            transform: translateY(-8px);
             box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         .text-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -39,75 +51,194 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .table-row-hover {
+            transition: all 0.3s ease;
+        }
+        .table-row-hover:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            transform: translateX(5px);
+        }
     </style>
 </head>
-<body class="gradient-bg min-h-screen">
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 overflow-x-hidden">
 
-<!-- Navbar -->
-<nav class="glass-effect sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="flex justify-between items-center py-4">
-            <div class="flex items-center">
-                <i class="fas fa-bed text-2xl text-purple-600 mr-2"></i>
-                <span class="text-xl font-bold text-gradient">Stayo Admin</span>
+<!-- Header/Navigation -->
+<header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
+    <div class="container mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <a href="/admin/dashboard" class="text-3xl font-bold text-gradient flex items-center">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    Stayo Admin
+                </a>
             </div>
-            <div class="flex items-center space-x-4">
-                <a href="/admin/dashboard" class="text-purple-600 font-medium">Dashboard</a>
-                <a href="/admin/vendors" class="text-gray-600 hover:text-purple-600 transition">Vendors</a>
-                <a href="/admin/bookings/pending" class="text-gray-600 hover:text-purple-600 transition">Pending</a>
-                <a href="/admin/bookings" class="text-gray-600 hover:text-purple-600 transition">Bookings</a>
-                <a href="/signout" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Logout</a>
+            <div class="flex items-center space-x-6">
+                <a href="/admin/dashboard" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Dashboard</a>
+                <a href="/admin/vendors" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Vendors</a>
+                <a href="/admin/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Bookings</a>
+                <a href="/admin/users" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Users</a>
+                <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                </a>
             </div>
         </div>
     </div>
-</nav>
+</header>
 
 <!-- Main Content -->
-<div class="max-w-7xl mx-auto py-10 px-4">
-    <div class="glass-effect rounded-lg p-6 card-shadow">
-        <div class="flex justify-between items-center mb-6">
-            <h1 class="text-3xl font-bold text-gradient">User Management</h1>
-            <a href="/users/create" class="btn-gradient text-white px-5 py-2 rounded hover-lift">
-                <i class="fas fa-plus mr-2"></i> Add User
-            </a>
+<main class="pt-28 pb-12">
+    <div class="container mx-auto px-6">
+        <!-- Welcome Section -->
+        <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-6 border-b">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-users text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800 mb-1">User Management</h1>
+                        <p class="text-gray-600">Manage all users in your system efficiently</p>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <div class="overflow-x-auto">
-            <table class="min-w-full bg-white rounded-lg overflow-hidden shadow">
-                <thead class="bg-gradient-to-r from-purple-400 to-indigo-500 text-white">
-                    <tr>
-                        <th class="px-6 py-3 text-left text-sm font-semibold uppercase">Name</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold uppercase">Email</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold uppercase">Role</th>
-                        <th class="px-6 py-3 text-left text-sm font-semibold uppercase">Actions</th>
-                    </tr>
-                </thead>
-                <tbody class="text-gray-700" th:if="${users.size() > 0}">
-                    <tr th:each="user : ${users}" class="border-b hover:bg-gray-50 transition">
-                        <td class="px-6 py-4" th:text="${user.firstName + ' ' + user.lastName}">John Doe</td>
-                        <td class="px-6 py-4" th:text="${user.email}">email@example.com</td>
-                        <td class="px-6 py-4 capitalize" th:text="${user.role}">USER</td>
-                        <td class="px-6 py-4 space-x-2">
-                            <a th:href="@{'/users/edit/' + ${user.id}}" class="text-blue-500 hover:text-blue-700 transition">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            <a th:href="@{'/users/delete/' + ${user.id}}"
-                               onclick="return confirm('Yakin ingin menghapus user ini?')"
-                               class="text-red-500 hover:text-red-700 transition">
-                                <i class="fas fa-trash-alt"></i> Delete
-                            </a>
-                        </td>
-                    </tr>
-                </tbody>
-                <tbody th:if="${users.size() == 0}">
-                    <tr>
-                        <td colspan="4" class="text-center text-gray-500 py-6">No users found.</td>
-                    </tr>
-                </tbody>
-            </table>
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <!-- Total Users -->
+            <div class="stat-card rounded-xl p-4 hover-lift text-center">
+                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-users text-blue-600 text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${users.size()}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Total Users</p>
+            </div>
+            
+            <!-- Vendor Users -->
+            <div class="stat-card rounded-xl p-4 hover-lift text-center">
+                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-user-check text-green-600 text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${vendorUsers != null ? vendorUsers.size() : 0}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Vendor Users</p>
+            </div>
+            
+            <!-- Admin Users -->
+            <div class="stat-card rounded-xl p-4 hover-lift text-center">
+                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-user-shield text-purple-600 text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1">2</h3>
+                <p class="text-gray-600 font-medium text-xs">Admin Users</p>
+            </div>
+        </div>
+
+        <!-- Users Table Section -->
+        <div class="bg-white rounded-3xl card-shadow overflow-hidden">
+            <!-- Section Header -->
+            <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-6 border-b">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-users-cog text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-1">All Users</h2>
+                            <p class="text-gray-600">Manage user accounts and permissions</p>
+                        </div>
+                    </div>
+                    <a href="/admin/users/create" class="bg-white text-purple-600 px-6 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 flex items-center">
+                        <i class="fas fa-plus mr-2"></i> Add New User
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Empty State -->
+            <div th:if="${#lists.isEmpty(users)}" class="p-12 text-center">
+                <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-users text-3xl text-gray-400"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No users found</h3>
+                <p class="text-gray-500 mb-6">Get started by adding your first user to the system.</p>
+                <a href="/admin/users/create" class="btn-gradient text-white px-8 py-3 rounded-full font-medium">
+                    <i class="fas fa-plus mr-2"></i> Add Your First User
+                </a>
+            </div>
+            
+            <!-- Users Table -->
+            <div th:unless="${#lists.isEmpty(users)}" class="p-6">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b-2 border-gray-100">
+                                <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-user mr-2 text-purple-600"></i>User Information
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-envelope mr-2 text-purple-600"></i>Contact
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-tag mr-2 text-purple-600"></i>Role & Status
+                                </th>
+                                <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-cogs mr-2 text-purple-600"></i>Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="user : ${users}" class="table-row-hover border-b border-gray-50">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                                            <span th:text="${#strings.substring(user.firstName, 0, 1) + #strings.substring(user.lastName, 0, 1)}">JD</span>
+                                        </div>
+                                        <div>
+                                            <p class="text-lg font-semibold text-gray-900 mb-1" th:text="${user.firstName + ' ' + user.lastName}">John Doe</p>
+                                            <p class="text-sm text-gray-500">Member since 2024</p>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div>
+                                        <p class="text-gray-900 font-medium mb-1" th:text="${user.email}">email@example.com</p>
+                                        <p class="text-sm text-green-600 flex items-center">
+                                            <i class="fas fa-check-circle mr-1"></i>Verified account
+                                        </p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div>
+                                        <span th:class="${user.role == 'ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'} + ' px-3 py-1 rounded-full text-sm font-medium capitalize mb-2 inline-block'" th:text="${user.role}">USER</span>
+                                        <p class="text-sm text-green-600 flex items-center">
+                                            <i class="fas fa-circle text-xs mr-2"></i>Active
+                                        </p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex justify-center space-x-2">
+                                        <a th:href="@{'/admin/users/edit/' + ${user.id}}" class="bg-blue-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-300 flex items-center text-sm">
+                                            <i class="fas fa-edit mr-1"></i> Edit
+                                        </a>
+                                        <a th:href="@{'/admin/users/delete/' + ${user.id}}"
+                                           onclick="return confirm('Yakin ingin menghapus user ini?')"
+                                           class="bg-red-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-red-700 transition duration-300 flex items-center text-sm">
+                                            <i class="fas fa-trash-alt mr-1"></i> Delete
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
-</div>
+</main>
 
 </body>
 </html>

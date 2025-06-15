@@ -6,22 +6,12 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import jakarta.servlet.http.HttpSession;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.UUID;
 
 @Controller
 @RequestMapping("/profile")
 public class ProfileController {
-
-    private static final String UPLOAD_DIR = "src/main/resources/static/images/profiles/";
 
     /**
      * Display the user profile page
@@ -32,14 +22,12 @@ public class ProfileController {
         if (session.getAttribute("userId") == null) {
             return "redirect:/signin";
         }
-        
+
         // Get user information from session with default values
         String firstName = (String) session.getAttribute("firstName");
         String lastName = (String) session.getAttribute("lastName");
         String email = (String) session.getAttribute("email");
         String phone = (String) session.getAttribute("phone");
-        String address = (String) session.getAttribute("address");
-        String profilePicture = (String) session.getAttribute("profilePicture");
 
         // Set default values if null
         if (firstName == null || firstName.trim().isEmpty()) {
@@ -54,20 +42,12 @@ public class ProfileController {
         if (phone == null) {
             phone = "";
         }
-        if (address == null) {
-            address = "";
-        }
-        if (profilePicture == null || profilePicture.trim().isEmpty()) {
-            profilePicture = "/images/default-profile.svg";
-        }
 
         // Add user information to model
         model.addAttribute("firstName", firstName);
         model.addAttribute("lastName", lastName);
         model.addAttribute("email", email);
         model.addAttribute("phone", phone);
-        model.addAttribute("address", address);
-        model.addAttribute("profilePicture", profilePicture);
 
         return "profile";
     }
@@ -94,53 +74,9 @@ public class ProfileController {
         session.setAttribute("firstName", firstName.trim());
         session.setAttribute("lastName", lastName != null ? lastName.trim() : "");
         session.setAttribute("phone", phone != null ? phone.trim() : "");
-        session.setAttribute("address", address != null ? address.trim() : "");
 
         // Add success message
         redirectAttributes.addFlashAttribute("successMessage", "Personal information updated successfully");
-
-        return "redirect:/profile";
-    }
-
-    /**
-     * Update profile picture
-     */
-    @PostMapping("/update-profile-picture")
-    public String updateProfilePicture(
-            @RequestParam("profilePicture") MultipartFile file,
-            HttpSession session,
-            RedirectAttributes redirectAttributes) {
-
-        if (file.isEmpty()) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Please select a file to upload");
-            return "redirect:/profile";
-        }
-
-        try {
-            // Create upload directory if it doesn't exist
-            File uploadDir = new File(UPLOAD_DIR);
-            if (!uploadDir.exists()) {
-                uploadDir.mkdirs();
-            }
-
-            // Generate unique filename
-            String originalFilename = file.getOriginalFilename();
-            String fileExtension = originalFilename.substring(originalFilename.lastIndexOf("."));
-            String newFilename = UUID.randomUUID().toString() + fileExtension;
-
-            // Save file
-            Path filePath = Paths.get(UPLOAD_DIR + newFilename);
-            Files.write(filePath, file.getBytes());
-
-            // Update session
-            String profilePictureUrl = "/images/profiles/" + newFilename;
-            session.setAttribute("profilePicture", profilePictureUrl);
-
-            redirectAttributes.addFlashAttribute("successMessage", "Profile picture updated successfully");
-
-        } catch (IOException e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Failed to upload profile picture");
-        }
 
         return "redirect:/profile";
     }

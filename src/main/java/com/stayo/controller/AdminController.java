@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.stayo.model.Booking;
 import com.stayo.model.User;
 import com.stayo.model.User.Role;
 import com.stayo.model.VendorHotel;
@@ -43,12 +45,19 @@ public class AdminController {
 
     @GetMapping("/dashboard")
     public String showDashboard(HttpSession session, Model model) {
-        long totalUsers = userRepository.count();
         User admin = (User) session.getAttribute("user");
-        model.addAttribute("totalUsers", totalUsers);
         if (admin == null || !admin.isAdmin()) {
             return "redirect:/signin";
         }
+
+        long totalUsers = userRepository.count();
+        model.addAttribute("totalUsers", totalUsers);
+
+        // Menambahkan totalHotels
+        long totalHotels = vendorHotelService.getAllVendors().stream()
+                .filter(v -> v.getStatus() == VendorStatus.APPROVED)
+                .count();
+        model.addAttribute("totalHotels", totalHotels);
 
         // Menghitung statistik untuk dashboard
         long totalBookings = bookingService.getAllBookings().size();
@@ -61,6 +70,12 @@ public class AdminController {
         long rejectedBookings = bookingService.getAllBookings().stream()
                 .filter(b -> "REJECTED".equals(b.getStatus()))
                 .count();
+
+        // Menambahkan pendingApprovals untuk dashboard
+        long pendingApprovals = vendorHotelService.getAllVendors().stream()
+                .filter(v -> v.getStatus() == VendorStatus.PENDING)
+                .count();
+        model.addAttribute("pendingApprovals", pendingApprovals);
 
         model.addAttribute("totalBookings", totalBookings);
         model.addAttribute("pendingBookings", pendingBookings);
@@ -82,7 +97,16 @@ public class AdminController {
                 .filter(v -> v.getStatus() == VendorStatus.PENDING)
                 .collect(Collectors.toList());
 
+        // Menambahkan statistik untuk vendor approval
+        long todayApplications = 0; // Implementasi sesuai kebutuhan
+        long approvedToday = 0; // Implementasi sesuai kebutuhan  
+        long rejectedToday = 0; // Implementasi sesuai kebutuhan
+
         model.addAttribute("pendingVendors", pendingVendors);
+        model.addAttribute("todayApplications", todayApplications);
+        model.addAttribute("approvedToday", approvedToday);
+        model.addAttribute("rejectedToday", rejectedToday);
+        
         return "admin/vendor-approval";
     }
 
@@ -126,29 +150,33 @@ public class AdminController {
         return "redirect:/admin/vendors";
     }
     
-  @GetMapping ("/users")
+    @GetMapping("/users")
     public String listUsers(Model model) {
         List<User> users = userService.getAllUsers();
+        
+        // Menambahkan data vendor users untuk statistik
+        List<User> vendorUsers = users.stream()
+                .filter(u -> u.getRole() == Role.VENDOR)
+                .collect(Collectors.toList());
+        
         model.addAttribute("users", users);
-        return "admin/users/list"; // resources/templates/user/list.html
+        model.addAttribute("vendorUsers", vendorUsers);
+        return "admin/users/list";
     }
 
-    // Show form to add user
     @GetMapping("/users/create")
     public String showCreateForm(Model model) {
         model.addAttribute("user", new User());
         model.addAttribute("roles", Role.values());
-        return "admin/users/form"; // resources/templates/user/form.html
+        return "admin/users/form";
     }
 
-    // Handle create user
     @PostMapping("/users/save")
     public String saveUser(@ModelAttribute("user") User user) {
         userService.createUser(user);
         return "redirect:/admin/users";
     }
 
-    // Show form to edit user
     @GetMapping("/users/edit/{id}")
     public String showEditForm(@PathVariable Long id, Model model) {
         User user = userService.getUserById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
@@ -157,17 +185,98 @@ public class AdminController {
         return "admin/users/form";
     }
 
-    // Handle update user
     @PostMapping("/users/update/{id}")
     public String updateUser(@PathVariable Long id, @ModelAttribute("user") User updatedUser) {
         userService.updateUser(id, updatedUser);
         return "redirect:/admin/users";
     }
 
-    // Delete user
     @GetMapping("/users/delete/{id}")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
         return "redirect:/admin/users";
+    }
+
+    // PERBAIKAN: Menambahkan parameter status untuk filter
+    @GetMapping("/bookings")
+    public String showAllBookings(
+            @RequestParam(value = "status", required = false, defaultValue = "ALL") String status,
+            HttpSession session, 
+            Model model) {
+        
+        User admin = (User) session.getAttribute("user");
+        if (admin == null || !admin.isAdmin()) {
+            return "redirect:/signin";
+        }
+    
+        // Get all bookings
+        List<Booking> allBookings = bookingService.getAllBookings();
+        List<Booking> filteredBookings;
+        
+        // Filter berdasarkan status
+        if ("ALL".equals(status)) {
+            filteredBookings = allBookings;
+        } else {
+            filteredBookings = allBookings.stream()
+                    .filter(b -> status.equals(b.getStatus()))
+                    .collect(Collectors.toList());
+        }
+    
+        model.addAttribute("bookings", filteredBookings);
+        model.addAttribute("admin", admin);
+        model.addAttribute("selectedStatus", status);
+        return "admin/bookings";
+    }
+
+    @GetMapping("/bookings/pending")
+    public String showPendingBookings(HttpSession session, Model model) {
+        User admin = (User) session.getAttribute("user");
+        if (admin == null || !admin.isAdmin()) {
+            return "redirect:/signin";
+        }
+    
+        // Gunakan pola yang sama seperti di showAllBookings
+        List<Booking> pendingBookings = bookingService.getAllBookings().stream()
+                .filter(b -> "PENDING".equals(b.getStatus()))
+                .collect(Collectors.toList());
+    
+        model.addAttribute("bookings", pendingBookings);
+        model.addAttribute("admin", admin);
+        model.addAttribute("selectedStatus", "PENDING");
+        return "admin/pending-bookings";
+    }
+
+    @PostMapping("/bookings/approve/{id}")
+    public String approveBooking(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+        User admin = (User) session.getAttribute("user");
+        if (admin == null || !admin.isAdmin()) {
+            return "redirect:/signin";
+        }
+
+        try {
+            bookingService.updateBookingStatus(id, "CONFIRMED");
+            redirectAttributes.addFlashAttribute("success", "Booking approved successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to approve booking");
+        }
+
+        return "redirect:/admin/bookings/pending";
+    }
+
+    @PostMapping("/bookings/reject/{id}")
+    public String rejectBooking(@PathVariable Long id, HttpSession session, RedirectAttributes redirectAttributes) {
+        User admin = (User) session.getAttribute("user");
+        if (admin == null || !admin.isAdmin()) {
+            return "redirect:/signin";
+        }
+
+        try {
+            bookingService.updateBookingStatus(id, "REJECTED");
+            redirectAttributes.addFlashAttribute("success", "Booking rejected successfully");
+        } catch (Exception e) {
+            redirectAttributes.addFlashAttribute("error", "Failed to reject booking");
+        }
+
+        return "redirect:/admin/bookings/pending";
     }
 }

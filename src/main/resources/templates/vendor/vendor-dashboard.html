@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard - Stayo</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-effect {
+            backdrop-filter: blur(10px);
+            background: rgba(255, 255, 255, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .hover-lift {
+            transition: all 0.3s ease;
+        }
+        .hover-lift:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        .text-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .card-shadow {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        .btn-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-gradient:hover {
+            background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 overflow-x-hidden">
+    <!-- Header/Navigation -->
+    <header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <a href="/vendor/dashboard" class="text-3xl font-bold text-gradient flex items-center">
+                        <i class="fas fa-building mr-2"></i>
+                        Stayo Vendor
+                    </a>
+                </div>
+                <div class="flex items-center space-x-6">
+                    <span class="text-sm text-gray-600 hidden sm:block">
+                        Welcome, <span th:text="${vendor.companyName}" class="font-medium text-gray-900">Company</span>
+                    </span>
+                    <a href="/vendor/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">
+                        <i class="fas fa-sign-out-alt mr-1"></i> Sign Out
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-28 pb-12">
+        <div class="container mx-auto px-6">
+            <!-- Welcome Section -->
+            <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-8">
+                <div class="gradient-bg p-8 text-white">
+                    <h1 class="text-4xl font-bold mb-2">Welcome Back!</h1>
+                    <p class="text-xl opacity-90" th:text="'Hello ' + ${vendor.companyName} + ', here\'s your business overview'">Hello Company, here's your business overview</p>
+                </div>
+            </div>
+
+            <!-- Statistics Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+                <!-- Total Hotels -->
+                <div class="stat-card rounded-2xl p-6 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-hotel text-blue-600 text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-900" th:text="${totalHotels}">0</p>
+                            <p class="text-sm text-gray-500">Hotels</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-blue-600 h-2 rounded-full" th:style="'width: ' + ${totalHotels > 0 ? (totalHotels * 10 > 100 ? 100 : totalHotels * 10) : 0} + '%'"></div>
+                    </div>
+                </div>
+                
+                <!-- Total Bookings -->
+                <div class="stat-card rounded-2xl p-6 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-calendar-check text-green-600 text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-900" th:text="${totalBookings}">0</p>
+                            <p class="text-sm text-gray-500">Bookings</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-green-600 h-2 rounded-full" th:style="'width: ' + ${totalBookings > 0 ? (totalBookings > 100 ? 100 : totalBookings) : 0} + '%'"></div>
+                    </div>
+                </div>
+                
+                <!-- Total Revenue -->
+                <div class="stat-card rounded-2xl p-6 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-dollar-sign text-purple-600 text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-md font-bold text-gray-900" th:text="${'Rp ' + #numbers.formatDecimal(totalRevenue, 0, 'COMMA', 0, 'POINT')}">Rp 0</p>
+                            <p class="text-sm text-gray-500">Revenue</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-purple-600 h-2 rounded-full" th:style="'width: ' + ${totalRevenue > 0 ? (totalRevenue > 50000000 ? 100 : totalRevenue / 500000) : 0} + '%'"></div>
+                    </div>
+                </div>
+                
+                <!-- Total Rooms -->
+                <div class="stat-card rounded-2xl p-6 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-yellow-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-bed text-yellow-600 text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-900" th:text="${totalRooms}">0</p>
+                            <p class="text-sm text-gray-500">Rooms</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-yellow-600 h-2 rounded-full" th:style="'width: ' + ${totalRooms > 0 ? (totalRooms > 50 ? 100 : totalRooms * 2) : 0} + '%'"></div>
+                    </div>
+                </div>
+                
+                <!-- Occupancy Rate -->
+                <div class="stat-card rounded-2xl p-6 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-percentage text-red-600 text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatDecimal(occupancyRate, 1, 1)} + '%'">0.0%</p>
+                            <p class="text-sm text-gray-500">Occupancy</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-red-600 h-2 rounded-full" th:style="'width: ' + ${occupancyRate} + '%'"></div>
+                    </div>
+                </div>
+                
+                <!-- Average Rating -->
+                <div class="stat-card rounded-2xl p-6 hover-lift">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-star text-indigo-600 text-xl"></i>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-bold text-gray-900" th:text="${#numbers.formatDecimal(averageRating, 1, 1)}">0.0</p>
+                            <p class="text-sm text-gray-500">Rating</p>
+                        </div>
+                    </div>
+                    <div class="w-full bg-gray-200 rounded-full h-2">
+                        <div class="bg-indigo-600 h-2 rounded-full" th:style="'width: ' + ${averageRating * 20} + '%'"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Charts Section -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+                <!-- Revenue Chart -->
+                <div class="bg-white rounded-3xl card-shadow p-8">
+                    <h3 class="text-2xl font-bold mb-6 text-gradient">Revenue Overview</h3>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                
+                <!-- Bookings Chart -->
+                <div class="bg-white rounded-3xl card-shadow p-8">
+                    <h3 class="text-2xl font-bold mb-6 text-gradient">Booking Trends</h3>
+                    <div class="chart-container">
+                        <canvas id="bookingsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hotels Section -->
+            <div class="bg-white rounded-3xl card-shadow overflow-hidden">
+                <!-- Section Header -->
+                <div class="gradient-bg p-6 text-white">
+                    <div class="flex justify-between items-center">
+                        <h2 class="text-2xl font-bold">Your Hotels</h2>
+                        <a href="/vendor/hotels/add" class="bg-white text-purple-600 px-6 py-2 rounded-full font-medium hover:bg-gray-100 transition duration-300">
+                            <i class="fas fa-plus mr-2"></i> Add Hotel
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Empty State -->
+                <div th:if="${#lists.isEmpty(hotels)}" class="p-12 text-center">
+                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-hotel text-3xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">No hotels yet</h3>
+                    <p class="text-gray-500 mb-6">Get started by adding your first hotel to begin managing your business.</p>
+                    <a href="/vendor/hotels/add" class="btn-gradient text-white px-8 py-3 rounded-full font-medium">
+                        <i class="fas fa-plus mr-2"></i> Add Your First Hotel
+                    </a>
+                </div>
+                
+                <!-- Hotels List -->
+                <div th:unless="${#lists.isEmpty(hotels)}" class="p-6">
+                    <div class="grid gap-6">
+                        <div th:each="hotel : ${hotels}" class="bg-gray-50 rounded-2xl p-6 hover-lift">
+                            <div class="flex items-center justify-between">
+                                <!-- Hotel Info -->
+                                <div class="flex items-center">
+                                    <div class="mr-6">
+                                        <img th:if="${hotel.imageUrl}" th:src="@{'/images/hotels/' + ${hotel.imageUrl}}" th:alt="${hotel.name}" class="w-16 h-16 rounded-xl object-cover">
+                                        <div th:unless="${hotel.imageUrl}" class="w-16 h-16 rounded-xl bg-gray-200 flex items-center justify-center">
+                                            <i class="fas fa-hotel text-gray-400 text-xl"></i>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 class="text-lg font-bold text-gray-900 mb-1" th:text="${hotel.name}">Hotel Name</h3>
+                                        <p class="text-gray-600 mb-2">
+                                            <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>
+                                            <span th:text="${hotel.location}">Location</span>
+                                        </p>
+                                        <div class="flex items-center">
+                                            <div class="flex text-yellow-400 mr-3">
+                                                <th:block th:if="${hotel.averageRating > 0}" th:each="i : ${#numbers.sequence(1, hotel.averageRating)}">
+                                                    <i class="fas fa-star text-xl"></i>
+                                                </th:block>
+                                                <!-- Tampilkan bintang kosong jika rating 0 -->
+                                                <th:block th:if="${hotel.averageRating == 0}">
+                                                    <i class="far fa-star text-xl"></i>
+                                                    <i class="far fa-star text-xl"></i>
+                                                    <i class="far fa-star text-xl"></i>
+                                                    <i class="far fa-star text-xl"></i>
+                                                    <i class="far fa-star text-xl"></i>
+                                                </th:block>
+                                            </div>
+                                            <span class="text-sm text-gray-500 bg-white px-3 py-1 rounded-full">
+                                                <i class="fas fa-star text-yellow-400 mr-1"></i>
+                                                <span th:text="${#numbers.formatDecimal(hotel.averageRating, 1, 1)}">0.0</span>/5
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- Action Buttons -->
+                                <div class="flex space-x-3">
+                                    <a th:href="@{/vendor/hotels/view/{id}(id=${hotel.id})}" class="bg-blue-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-blue-700 transition duration-300">
+                                        <i class="fas fa-eye mr-1"></i> View
+                                    </a>
+                                    <a th:href="@{/vendor/hotels/{id}/rooms(id=${hotel.id})}" class="bg-purple-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-purple-700 transition duration-300">
+                                        <i class="fas fa-door-open mr-1"></i> Rooms
+                                    </a>
+                                    <a th:href="@{/vendor/hotels/edit/{id}(id=${hotel.id})}" class="bg-green-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-green-700 transition duration-300">
+                                        <i class="fas fa-edit mr-1"></i> Edit
+                                    </a>
+                                    <a th:href="@{/vendor/hotels/close/{id}(id=${hotel.id})}" 
+                                       onclick="return confirm('Are you sure you want to permanently close this hotel? This action cannot be undone.')" 
+                                       class="bg-red-600 text-white px-4 py-2 rounded-xl font-medium hover:bg-red-700 transition duration-300">
+                                        <i class="fas fa-door-closed mr-1"></i> Close
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chart.js Scripts with Real Data -->
+    <script th:inline="javascript">
+        // Get real data from Thymeleaf
+        const totalRevenue = /*[[${totalRevenue}]]*/ 0;
+        const totalBookings = /*[[${totalBookings}]]*/ 0;
+        const totalHotels = /*[[${totalHotels}]]*/ 0;
+        const occupancyRate = /*[[${occupancyRate}]]*/ 0;
+        const averageRating = /*[[${averageRating}]]*/ 0;
+        
+        // Get real monthly data from backend
+        const monthlyRevenueData = /*[[${monthlyRevenue}]]*/ [];
+        const monthlyBookingsData = /*[[${monthlyBookings}]]*/ [];
+        
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        
+        // Use real data instead of simulated data
+        const monthlyRevenue = monthlyRevenueData;
+        const monthlyBookings = monthlyBookingsData;
+    
+        // Revenue Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Revenue (Rp)',
+                    data: monthlyRevenue,
+                    borderColor: 'rgb(102, 126, 234)',
+                    backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                    tension: 0.4,
+                    fill: true
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Revenue: Rp ' + context.parsed.y.toLocaleString('id-ID');
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            callback: function(value) {
+                                return 'Rp ' + value.toLocaleString('id-ID');
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // Bookings Chart
+        const bookingsCtx = document.getElementById('bookingsChart').getContext('2d');
+        const bookingsChart = new Chart(bookingsCtx, {
+            type: 'bar',
+            data: {
+                labels: months,
+                datasets: [{
+                    label: 'Bookings',
+                    data: monthlyBookings,
+                    backgroundColor: 'rgba(118, 75, 162, 0.8)',
+                    borderColor: 'rgb(118, 75, 162)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Bookings: ' + context.parsed.y;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: 'rgba(0, 0, 0, 0.1)'
+                        },
+                        ticks: {
+                            stepSize: 1
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+        
+        // Add some visual feedback for empty data
+        if (totalRevenue === 0 && totalBookings === 0) {
+            // Show message for no data
+            document.querySelector('#revenueChart').style.display = 'none';
+            document.querySelector('#bookingsChart').style.display = 'none';
+            
+            const revenueContainer = document.querySelector('#revenueChart').parentElement;
+            const bookingsContainer = document.querySelector('#bookingsChart').parentElement;
+            
+            revenueContainer.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500"><div class="text-center"><i class="fas fa-chart-line text-4xl mb-4"></i><p>No revenue data available</p></div></div>';
+            bookingsContainer.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500"><div class="text-center"><i class="fas fa-chart-bar text-4xl mb-4"></i><p>No booking data available</p></div></div>';
+        }
+    </script>
+</body>
+</html>

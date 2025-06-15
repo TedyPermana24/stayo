@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Sign In - Stayo</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .modern-gradient {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .input-focus:focus {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.15);
+        }
+        .btn-modern {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            transition: all 0.3s ease;
+        }
+        .btn-modern:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+        }
+        .floating-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center p-4 overflow-hidden">
+    <div class="w-full max-w-md">
+        <!-- Main Card -->
+        <div class="glass-card rounded-2xl shadow-2xl p-8">
+            <!-- Header -->
+            <div class="text-center mb-8">
+                <div class="floating-icon inline-flex items-center justify-center w-16 h-16 modern-gradient rounded-2xl mb-4">
+                    <i class="fas fa-building text-white text-2xl"></i>
+                </div>
+                <h1 class="text-2xl font-bold text-gray-800 mb-2">Vendor Portal</h1>
+                <p class="text-gray-600">Manage your hotel business</p>
+            </div>
+
+            <!-- Alert Messages -->
+            <div th:if="${error}" class="bg-red-50 border-l-4 border-red-400 p-4 mb-6 rounded-r-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-exclamation-circle text-red-400 mr-3"></i>
+                    <span class="text-red-700 text-sm" th:text="${error}">Error message</span>
+                </div>
+            </div>
+            
+            <div th:if="${success}" class="bg-green-50 border-l-4 border-green-400 p-4 mb-6 rounded-r-lg">
+                <div class="flex items-center">
+                    <i class="fas fa-check-circle text-green-400 mr-3"></i>
+                    <span class="text-green-700 text-sm" th:text="${success}">Success message</span>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form action="/vendor/signin" method="POST" class="space-y-6">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
+                        Email Address
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-envelope text-gray-400"></i>
+                        </div>
+                        <input type="email" id="email" name="email" required
+                               class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                               placeholder="company@example.com">
+                    </div>
+                </div>
+
+                <div>
+                    <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                        Password
+                    </label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <i class="fas fa-lock text-gray-400"></i>
+                        </div>
+                        <input type="password" id="password" name="password" required
+                               class="input-focus block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-300"
+                               placeholder="Enter your password">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-modern w-full py-3 px-4 rounded-xl text-white font-medium focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    <i class="fas fa-sign-in-alt mr-2"></i>
+                    Sign In
+                </button>
+            </form>
+
+            <!-- Footer -->
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600">
+                    Need a vendor account? 
+                    <a href="/vendor/register" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                        Register here
+                    </a>
+                </p>
+                <p class="text-sm text-gray-600">
+                    <a href="/" class="font-medium text-indigo-600 hover:text-indigo-500 transition-colors">
+                        Click Here
+                    </a>
+                    To login as User 
+                </p>
+            </div>
+        </div>
+
+        <!-- Bottom Info -->
+        <div class="mt-6 text-center">
+            <p class="text-xs text-gray-500">
+                <i class="fas fa-shield-alt mr-1"></i>
+                Secure vendor access powered by Stayo
+            </p>
+        </div>
+    </div>
+</body>
+</html>

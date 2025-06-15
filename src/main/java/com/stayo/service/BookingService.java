@@ -22,14 +22,27 @@ public class BookingService {
     public List<Booking> getBookingsByStatus(String status) {
         return bookingRepository.findByStatus(status);
     }
-    
+
     public List<Booking> getAllBookings() {
         return bookingRepository.findAll();
     }
-    
+
     public Booking createBooking(Booking booking) {
-        // Set initial status as PENDING for admin approval
+        // Calculate total price based on room price and duration
+        Room room = booking.getRoom();
+        LocalDate checkIn = booking.getCheckInDate();
+        LocalDate checkOut = booking.getCheckOutDate();
+
+        // Calculate number of nights
+        long nights = ChronoUnit.DAYS.between(checkIn, checkOut);
+
+        // Calculate total price
+        BigDecimal pricePerNight = room.getPricePerNight();
+        BigDecimal totalPrice = pricePerNight.multiply(BigDecimal.valueOf(nights));
+        booking.setTotalPrice(totalPrice);
+        booking.setBookingDate(LocalDate.now());
         booking.setStatus("PENDING");
+
         return bookingRepository.save(booking);
     }
 
@@ -64,5 +77,9 @@ public class BookingService {
         } else {
             throw new RuntimeException("Booking not found");
         }
+    }
+    
+    public List<Object[]> getMonthlyBookingStatsByVendor(Long vendorId, int year) {
+        return bookingRepository.getMonthlyBookingStats(vendorId, year);
     }
 }

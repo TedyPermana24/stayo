@@ -3,7 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - Vendor Approval</title>
+    <title>Vendor Application Validation - Admin Stayo</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="icon" type="image/x-icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="/favicon.svg">
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
@@ -21,6 +25,13 @@
         .hover-lift:hover {
             transform: translateY(-4px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
         }
         .text-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -40,73 +51,246 @@
             transform: translateY(-2px);
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
         }
+        .stat-card {
+            background: linear-gradient(135deg, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.7) 100%);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.3);
+        }
+        .table-row-hover {
+            transition: all 0.3s ease;
+        }
+        .table-row-hover:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            transform: translateX(5px);
+        }
+        .status-pending {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: white;
+        }
+        .validation-badge {
+            animation: pulse 2s infinite;
+        }
     </style>
 </head>
-<body class="gradient-bg min-h-screen">
-    <!-- Navigation -->
-    <nav class="glass-effect sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center">
-                    <i class="fas fa-bed text-2xl text-purple-600 mr-2"></i>
-                    <span class="text-xl font-bold text-gradient">Stayo Admin</span>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="/admin/dashboard" class="text-gray-600 hover:text-purple-600 transition">Dashboard</a>
-                    <a href="/admin/vendors" class="text-purple-600 font-medium">Vendors</a>
-                    <a href="/admin/bookings/pending" class="text-gray-600 hover:text-purple-600 transition">Pending Bookings</a>
-                    <a href="/admin/bookings" class="text-gray-600 hover:text-purple-600 transition">All Bookings</a>
-                    <a href="/signout" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600 transition">Logout</a>
-                </div>
+<body class="bg-gradient-to-br from-gray-50 to-blue-50 overflow-x-hidden">
+
+<!-- Header/Navigation -->
+<header class="glass-effect fixed w-full top-0 z-50 shadow-lg">
+    <div class="container mx-auto px-6 py-4">
+        <div class="flex justify-between items-center">
+            <div>
+                <a href="/admin/dashboard" class="text-3xl font-bold text-gradient flex items-center">
+                    <i class="fas fa-shield-alt mr-2"></i>
+                    Stayo Admin
+                </a>
+            </div>
+            <div class="flex items-center space-x-6">
+                <a href="/admin/dashboard" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Dashboard</a>
+                <a href="/admin/vendors" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Vendors</a>
+                <a href="/admin/bookings" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Bookings</a>
+                <a href="/admin/users" class="text-gray-700 hover:text-purple-600 font-medium transition duration-300">Users</a>
+                <a href="/signout" class="btn-gradient text-white px-6 py-2 rounded-full font-medium">
+                    <i class="fas fa-sign-out-alt mr-1"></i> Logout
+                </a>
             </div>
         </div>
-    </nav>
+    </div>
+</header>
 
-    <!-- Main Content -->
-    <div class="max-w-7xl mx-auto py-8 px-4">
-        <h1 class="text-4xl font-bold text-white mb-8 text-center">Vendor Approval Management</h1>
-        
-        <div class="glass-effect rounded-lg card-shadow overflow-hidden">
-            <div class="p-6 border-b border-gray-200">
-                <h2 class="text-2xl font-bold text-gradient">Pending Vendor Applications</h2>
-            </div>
-            
-            <div th:if="${#lists.isEmpty(pendingVendors)}" class="p-12 text-center">
-                <i class="fas fa-check-circle text-8xl text-green-300 mb-6"></i>
-                <h3 class="text-2xl font-semibold text-gray-600 mb-4">No Pending Vendors</h3>
-                <p class="text-gray-500 text-lg">All vendor applications have been processed.</p>
-            </div>
-            
-            <div th:unless="${#lists.isEmpty(pendingVendors)}" class="divide-y divide-gray-200">
-                <div th:each="vendor : ${pendingVendors}" class="p-6 hover:bg-gray-50 transition hover-lift">
-                    <div class="flex items-center justify-between">
-                        <div class="space-y-2">
-                            <h3 class="text-xl font-semibold text-gradient" th:text="${vendor.companyName}">Company Name</h3>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-gray-600">
-                                <p><i class="fas fa-user mr-2 text-purple-500"></i><span th:text="${vendor.user.firstName + ' ' + vendor.user.lastName}">Contact Person</span></p>
-                                <p><i class="fas fa-envelope mr-2 text-purple-500"></i><span th:text="${vendor.user.email}">Email</span></p>
-                                <p><i class="fas fa-phone mr-2 text-purple-500"></i><span th:text="${vendor.phoneNumber}">Phone</span></p>
-                                <p><i class="fas fa-id-card mr-2 text-purple-500"></i><span th:text="${vendor.businessLicense}">License</span></p>
-                                <p><i class="fas fa-map-marker-alt mr-2 text-purple-500"></i><span th:text="${vendor.address}">Address</span></p>
-                                <p><i class="fas fa-clock mr-2 text-purple-500"></i>Applied on <span th:text="${#temporals.format(vendor.createdAt, 'dd MMM yyyy')}">Date</span></p>
-                            </div>
-                        </div>
-                        <div class="flex space-x-3">
-                            <form th:action="@{/admin/vendors/approve/{id}(id=${vendor.id})}" method="post">
-                                <button type="submit" class="bg-green-500 text-white px-6 py-3 rounded-lg hover:bg-green-600 transition hover-lift">
-                                    <i class="fas fa-check mr-2"></i> Approve
-                                </button>
-                            </form>
-                            <form th:action="@{/admin/vendors/reject/{id}(id=${vendor.id})}" method="post">
-                                <button type="submit" class="bg-red-500 text-white px-6 py-3 rounded-lg hover:bg-red-600 transition hover-lift">
-                                    <i class="fas fa-times mr-2"></i> Reject
-                                </button>
-                            </form>
-                        </div>
+<!-- Main Content -->
+<main class="pt-28 pb-12">
+    <div class="container mx-auto px-6">
+        <!-- Welcome Section -->
+        <div class="bg-white rounded-3xl card-shadow overflow-hidden mb-6">
+            <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-6 border-b">
+                <div class="flex items-center">
+                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mr-4">
+                        <i class="fas fa-user-check text-white text-xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold text-gray-800 mb-1">Vendor Application Validation</h1>
+                        <p class="text-gray-600">Review and validate pending vendor applications awaiting admin approval</p>
                     </div>
                 </div>
             </div>
         </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Pending Validation -->
+            <div class="stat-card rounded-xl p-4 hover-lift text-center">
+                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-hourglass-half text-orange-600 text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${pendingVendors != null ? pendingVendors.size() : 0}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Awaiting Validation</p>
+            </div>
+            
+            <!-- Today's Applications -->
+            <div class="stat-card rounded-xl p-4 hover-lift text-center">
+                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-calendar-day text-blue-600 text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${todayApplications != null ? todayApplications : 0}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Today's Applications</p>
+            </div>
+            
+            <!-- Approved Today -->
+            <div class="stat-card rounded-xl p-4 hover-lift text-center">
+                <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-check-circle text-green-600 text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${approvedToday != null ? approvedToday : 0}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Approved Today</p>
+            </div>
+            
+            <!-- Rejected Today -->
+            <div class="stat-card rounded-xl p-4 hover-lift text-center">
+                <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-times-circle text-red-600 text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${rejectedToday != null ? rejectedToday : 0}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Rejected Today</p>
+            </div>
+        </div>
+
+        <!-- Vendor Applications Validation Section -->
+        <div class="bg-white rounded-3xl card-shadow overflow-hidden">
+            <!-- Section Header -->
+            <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-6 border-b">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center">
+                        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mr-3">
+                            <i class="fas fa-clipboard-check text-white text-lg"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-1">Validation Actions</h2>
+                            <p class="text-gray-600">Review vendor applications and make approval decisions</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Flash Messages -->
+            <div th:if="${success}" class="bg-green-50 border border-green-200 text-green-700 px-6 py-3 mx-6 mt-6 rounded-lg">
+                <i class="fas fa-check-circle mr-2"></i>
+                <span th:text="${success}"></span>
+            </div>
+            <div th:if="${error}" class="bg-red-50 border border-red-200 text-red-700 px-6 py-3 mx-6 mt-6 rounded-lg">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                <span th:text="${error}"></span>
+            </div>
+            
+            <!-- Empty State -->
+            <div th:if="${pendingVendors == null or #lists.isEmpty(pendingVendors)}" class="p-12 text-center">
+                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-clipboard-check text-3xl text-green-500"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">All Applications Processed</h3>
+                <p class="text-gray-500 mb-6">No pending vendor applications require validation at this time.</p>
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 max-w-md mx-auto">
+                    <p class="text-blue-700 text-sm">
+                        <i class="fas fa-info-circle mr-2"></i>
+                        New vendor applications will appear here for your review and approval.
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Vendor Applications Validation Table -->
+            <div th:unless="${pendingVendors == null or #lists.isEmpty(pendingVendors)}" class="p-6">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full">
+                        <thead>
+                            <tr class="border-b-2 border-gray-100">
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-building mr-2 text-purple-600"></i>Vendor Details
+                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-user mr-2 text-purple-600"></i>Contact Person
+                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-envelope mr-2 text-purple-600"></i>Contact Info
+                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-certificate mr-2 text-purple-600"></i>Business License
+                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-map-marker-alt mr-2 text-purple-600"></i>Business Address
+                                </th>
+                                <th class="px-4 py-3 text-left text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-clock mr-2 text-purple-600"></i>Application Date
+                                </th>
+                                <th class="px-4 py-3 text-center text-xs font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-gavel mr-2 text-purple-600"></i>Validation Actions
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="vendor : ${pendingVendors}" class="table-row-hover border-b border-gray-50">
+                                <td class="px-4 py-4">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white font-bold mr-3">
+                                            <i class="fas fa-building text-sm"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-semibold text-gray-900 mb-1" th:text="${vendor.companyName}">Company Name</p>
+                                            <div class="flex items-center">
+                                                <span class="status-pending px-2 py-1 rounded-full text-xs font-medium validation-badge">
+                                                    <i class="fas fa-hourglass-half mr-1"></i>Pending Validation
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div>
+                                        <p class="text-gray-900 font-medium text-sm mb-1" th:text="${vendor.user != null ? vendor.user.firstName + ' ' + vendor.user.lastName : 'N/A'}">Contact Name</p>
+                                        <p class="text-xs text-gray-500">Primary Contact</p>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div>
+                                        <p class="text-gray-900 font-medium text-sm mb-1" th:text="${vendor.user != null ? vendor.user.email : 'N/A'}">email@example.com</p>
+                                        <p class="text-xs text-gray-500" th:text="${vendor.phoneNumber != null ? vendor.phoneNumber : 'N/A'}">Phone Number</p>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-certificate mr-2 text-purple-600"></i>
+                                        <span class="text-gray-900 font-medium text-sm" th:text="${vendor.businessLicense != null ? vendor.businessLicense : 'N/A'}">License Number</span>
+                                    </div>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <p class="text-gray-900 font-medium text-sm" th:text="${vendor.address != null ? vendor.address : 'N/A'}">Business Address</p>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <p class="text-gray-900 font-medium text-sm" th:text="${vendor.createdAt != null ? #temporals.format(vendor.createdAt, 'dd/MM/yyyy') : 'N/A'}">01/01/2025</p>
+                                    <p class="text-xs text-gray-500" th:text="${vendor.createdAt != null ? #temporals.format(vendor.createdAt, 'HH:mm') : 'N/A'}">10:00</p>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div class="flex justify-center space-x-2">
+                                        <form th:action="@{/admin/vendors/approve/{id}(id=${vendor.id})}" method="post" style="display: inline;">
+                                            <button type="submit" class="bg-green-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-green-700 transition duration-300 flex items-center text-xs" 
+                                                    onclick="return confirm('Apakah Anda yakin ingin menyetujui aplikasi vendor ini?')">
+                                                <i class="fas fa-check mr-1"></i> Approve
+                                            </button>
+                                        </form>
+                                        <form th:action="@{/admin/vendors/reject/{id}(id=${vendor.id})}" method="post" style="display: inline;">
+                                            <button type="submit" class="bg-red-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-red-700 transition duration-300 flex items-center text-xs" 
+                                                    onclick="return confirm('Apakah Anda yakin ingin menolak aplikasi vendor ini?')">
+                                                <i class="fas fa-times mr-1"></i> Reject
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
+</main>
+
 </body>
 </html>
