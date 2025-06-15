@@ -1,15 +1,16 @@
 package com.stayo.service;
 
+import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONObject;
+import org.springframework.stereotype.Service;
+
 import com.midtrans.httpclient.SnapApi;
 import com.midtrans.httpclient.error.MidtransError;
 import com.stayo.model.Booking;
 import com.stayo.model.PaymentResponse;
-import org.json.JSONObject;
-import org.springframework.stereotype.Service;
-
-import java.time.temporal.ChronoUnit;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class PaymentService {
@@ -50,7 +51,7 @@ public class PaymentService {
 
         // Untuk notifikasi, gunakan URL ngrok Anda
         // Contoh: https://abcd-123-456-789-10.ngrok.io/payments/notification
-        callbackUrls.put("notification", "https://5a7e-103-139-10-14.ngrok-free.app/payments/notification");
+        callbackUrls.put("notification", " https://c906-114-122-110-106.ngrok-free.app/payments/notification");
 
         params.put("transaction_details", transactionDetails);
         params.put("credit_card", creditCard);

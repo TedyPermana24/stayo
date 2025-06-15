@@ -62,7 +62,10 @@ public class UserService {
             user.setFirstName(updatedUser.getFirstName());
             user.setLastName(updatedUser.getLastName());
             user.setEmail(updatedUser.getEmail());
-            user.setPassword(updatedUser.getPassword());
+            // Hanya update password jika tidak null
+            if (updatedUser.getPassword() != null && !updatedUser.getPassword().isEmpty()) {
+                user.setPassword(updatedUser.getPassword());
+            }
             user.setRole(updatedUser.getRole());
             return userRepository.save(user);
         }).orElseThrow(() -> new IllegalArgumentException("User not found"));

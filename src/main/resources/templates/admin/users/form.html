@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Form - Stayo Admin</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #e0e7ff;
+            --success-color: #10b981;
+            --bg-light: #f8fafc;
+            --bg-white: #ffffff;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --border-color: #e2e8f0;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            color: var(--text-primary);
+        }
+
+        .main-container {
+            padding: 2rem 0;
+            min-height: 100vh;
+        }
+
+        .form-card {
+            background: var(--bg-white);
+            border-radius: 20px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            padding: 2rem;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header-custom::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E") repeat;
+            opacity: 0.1;
+        }
+
+        .card-header-custom h4 {
+            color: white;
+            margin: 0;
+            font-weight: 600;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-body-custom {
+            padding: 2.5rem;
+        }
+
+        .form-group-custom {
+            margin-bottom: 1.75rem;
+        }
+
+        .form-label-custom {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .form-control-custom {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+            color: var(--text-primary);
+        }
+
+        .form-control-custom:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: var(--bg-white);
+            outline: none;
+        }
+
+        .form-select-custom {
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.875rem 1rem;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            background: var(--bg-light);
+            color: var(--text-primary);
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='m6 8 4 4 4-4'/%3e%3c/svg%3e");
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em 1.5em;
+            padding-right: 2.5rem;
+        }
+
+        .form-select-custom:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            background: var(--bg-white);
+            outline: none;
+        }
+
+        .btn-primary-custom {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 12px;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-sm);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-primary-custom:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, #3730a3 100%);
+        }
+
+        .btn-secondary-custom {
+            background: transparent;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.875rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .btn-secondary-custom:hover {
+            background: var(--border-color);
+            color: var(--text-primary);
+            transform: translateY(-1px);
+            text-decoration: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .input-icon {
+            color: var(--primary-color);
+            font-size: 0.85rem;
+        }
+
+        .password-note {
+            background: var(--secondary-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            border-left: 4px solid var(--primary-color);
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+            
+            .card-body-custom {
+                padding: 1.5rem;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .btn-primary-custom,
+            .btn-secondary-custom {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Animation */
+        .form-card {
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container main-container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-6">
+                <div class="form-card">
+                    <div class="card-header-custom">
+                        <h4>
+                            <div class="header-icon">
+                                <i class="fas fa-user-plus" th:if="${user.id == null}"></i>
+                                <i class="fas fa-user-edit" th:if="${user.id != null}"></i>
+                            </div>
+                            <span th:text="${user.id != null ? 'Edit User' : 'Create New User'}"></span>
+                        </h4>
+                    </div>
+                    
+                    <div class="card-body-custom">
+                        <form th:action="${user.id != null ? '/admin/users/update/' + user.id : '/admin/users/save'}" 
+                              th:object="${user}" method="post">
+                            
+                            <div class="form-group-custom">
+                                <label for="firstName" class="form-label-custom">
+                                    <i class="fas fa-user input-icon"></i>
+                                    First Name
+                                </label>
+                                <input type="text" 
+                                       class="form-control form-control-custom" 
+                                       id="firstName" 
+                                       th:field="*{firstName}" 
+                                       required
+                                       placeholder="Enter first name">
+                            </div>
+                            
+                            <div class="form-group-custom">
+                                <label for="lastName" class="form-label-custom">
+                                    <i class="fas fa-user input-icon"></i>
+                                    Last Name
+                                </label>
+                                <input type="text" 
+                                       class="form-control form-control-custom" 
+                                       id="lastName" 
+                                       th:field="*{lastName}" 
+                                       required
+                                       placeholder="Enter last name">
+                            </div>
+                            
+                            <div class="form-group-custom">
+                                <label for="email" class="form-label-custom">
+                                    <i class="fas fa-envelope input-icon"></i>
+                                    Email Address
+                                </label>
+                                <input type="email" 
+                                       class="form-control form-control-custom" 
+                                       id="email" 
+                                       th:field="*{email}" 
+                                       required
+                                       placeholder="Enter email address">
+                            </div>
+                            
+                            <div class="form-group-custom" th:if="${user.id == null}">
+                                <label for="password" class="form-label-custom">
+                                    <i class="fas fa-lock input-icon"></i>
+                                    Password
+                                </label>
+                                <input type="password" 
+                                       class="form-control form-control-custom" 
+                                       id="password" 
+                                       th:field="*{password}" 
+                                       required
+                                       placeholder="Enter secure password">
+                                <div class="password-note">
+                                    <i class="fas fa-info-circle"></i>
+                                    Password should be at least 8 characters long and contain a mix of letters, numbers, and symbols.
+                                </div>
+                            </div>
+                            
+                            <div class="form-group-custom">
+                                <label for="role" class="form-label-custom">
+                                    <i class="fas fa-user-tag input-icon"></i>
+                                    User Role
+                                </label>
+                                <select class="form-select form-select-custom" 
+                                        id="role" 
+                                        th:field="*{role}" 
+                                        required>
+                                    <option value="">Select user role</option>
+                                    <option th:each="role : ${roles}" 
+                                            th:value="${role}" 
+                                            th:text="${role}"></option>
+                                </select>
+                            </div>
+                            
+                            <div class="button-group">
+                                <button type="submit" class="btn btn-primary-custom">
+                                    <i class="fas fa-save"></i>
+                                    <span th:text="${user.id != null ? 'Update User' : 'Create User'}"></span>
+                                </button>
+                                <a href="/admin/users" class="btn btn-secondary-custom">
+                                    <i class="fas fa-arrow-left"></i>
+                                    Back to Users
+                                </a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Add smooth focus transitions
+        document.querySelectorAll('.form-control-custom, .form-select-custom').forEach(element => {
+            element.addEventListener('focus', function() {
+                this.parentElement.style.transform = 'translateY(-2px)';
+            });
+            
+            element.addEventListener('blur', function() {
+                this.parentElement.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Form validation feedback
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const submitBtn = document.querySelector('.btn-primary-custom');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            submitBtn.disabled = true;
+        });
+    </script>
+</body>
+</html>
