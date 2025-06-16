@@ -102,7 +102,7 @@
         </div>
         
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div class="stat-card rounded-xl p-6 hover-lift text-center">
                 <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
                     <i class="fas fa-users text-blue-600 text-xl"></i>
@@ -126,14 +126,6 @@
                 <h3 class="text-2xl font-bold text-gray-900 mb-2" th:text="${totalBookings != null ? totalBookings : 0}">0</h3>
                 <p class="text-gray-600 font-medium">Total Bookings</p>
             </div>
-            
-            <div class="stat-card rounded-xl p-6 hover-lift text-center">
-                <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <i class="fas fa-dollar-sign text-purple-600 text-xl"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-gray-900 mb-2" th:text="${totalRevenueTax != null ? 'Rp ' + #numbers.formatDecimal(totalRevenueTax, 0, 'COMMA', 0, 'POINT') : 'Rp 0'}">Rp 0</h3>
-                <p class="text-gray-600 font-medium">Total Tax Revenue</p>
-            </div>
         </div>
         
         <!-- Quick Actions -->
@@ -150,15 +142,19 @@
                 </div>
             </div>
             <div class="p-6">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                     <a href="/admin/vendors" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift flex items-center justify-center">
-                        <i class="fas fa-store mr-2"></i> Manage Vendors
+                        <i class="fas fa-store mr-2"></i> Approve Vendors
                     </a>
                     <a href="/admin/bookings" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift flex items-center justify-center">
                         <i class="fas fa-list mr-2"></i> All Bookings
                     </a>
                     <a href="/admin/users" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift flex items-center justify-center">
                         <i class="fas fa-users mr-2"></i> User Management
+                    </a>
+                    <!-- Tambahkan link baru untuk Vendor Management -->
+                    <a href="/admin/vendors/management" class="btn-gradient text-white px-6 py-3 rounded-lg text-center hover-lift flex items-center justify-center">
+                        <i class="fas fa-building mr-2"></i> Vendor Management
                     </a>
                 </div>
             </div>
