@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Management - Stayo</title>
+    <title>Vendor Management - Stayo</title>
     <!-- Favicon -->
     <link rel="icon" type="image/svg+xml" href="/favicon.svg">
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
@@ -98,63 +98,69 @@
             <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-6 border-b">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mr-4">
-                        <i class="fas fa-users text-white text-xl"></i>
+                        <i class="fas fa-store text-white text-xl"></i>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-800 mb-1">User Management</h1>
-                        <p class="text-gray-600">Manage all users in your system efficiently</p>
+                        <h1 class="text-2xl font-bold text-gray-800 mb-1">Vendor Management</h1>
+                        <p class="text-gray-600">Manage all vendors in your system efficiently</p>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-            <!-- Total Users -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <!-- Total Vendors -->
             <div class="stat-card rounded-xl p-4 hover-lift text-center">
                 <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <i class="fas fa-users text-blue-600 text-lg"></i>
+                    <i class="fas fa-store text-blue-600 text-lg"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${users.size()}">0</h3>
-                <p class="text-gray-600 font-medium text-xs">Total Users</p>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${totalVendors}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Total Vendors</p>
             </div>
             
-            <!-- Vendor Users -->
+            <!-- Pending Vendors -->
+            <div class="stat-card rounded-xl p-4 hover-lift text-center">
+                <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-hourglass-half text-orange-600 text-lg"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${pendingVendors}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Pending Vendors</p>
+            </div>
+            
+            <!-- Approved Vendors -->
             <div class="stat-card rounded-xl p-4 hover-lift text-center">
                 <div class="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <i class="fas fa-user-check text-green-600 text-lg"></i>
+                    <i class="fas fa-check-circle text-green-600 text-lg"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${vendorUsers != null ? vendorUsers.size() : 0}">0</h3>
-                <p class="text-gray-600 font-medium text-xs">Vendor Users</p>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${approvedVendors}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Approved Vendors</p>
             </div>
             
-            <!-- Admin Users -->
+            <!-- Rejected Vendors -->
             <div class="stat-card rounded-xl p-4 hover-lift text-center">
-                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
-                    <i class="fas fa-user-shield text-purple-600 text-lg"></i>
+                <div class="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                    <i class="fas fa-times-circle text-red-600 text-lg"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-1">2</h3>
-                <p class="text-gray-600 font-medium text-xs">Admin Users</p>
+                <h3 class="text-xl font-bold text-gray-900 mb-1" th:text="${rejectedVendors}">0</h3>
+                <p class="text-gray-600 font-medium text-xs">Rejected Vendors</p>
             </div>
         </div>
 
-        <!-- Users Table Section -->
+        <!-- Vendors Table Section -->
         <div class="bg-white rounded-3xl card-shadow overflow-hidden">
             <!-- Section Header -->
             <div class="bg-gradient-to-r from-purple-50 to-blue-50 p-6 border-b">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center">
                         <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mr-3">
-                            <i class="fas fa-users-cog text-white text-lg"></i>
+                            <i class="fas fa-store-alt text-white text-lg"></i>
                         </div>
                         <div>
-                            <h2 class="text-2xl font-bold text-gray-800 mb-1">All Users</h2>
-                            <p class="text-gray-600">Manage user accounts and permissions</p>
+                            <h2 class="text-2xl font-bold text-gray-800 mb-1">All Vendors</h2>
+                            <p class="text-gray-600">Manage vendor accounts and status</p>
                         </div>
                     </div>
-                    <a href="/admin/users/create" class="bg-white text-purple-600 px-6 py-3 rounded-full font-medium hover:bg-gray-100 transition duration-300 flex items-center">
-                        <i class="fas fa-plus mr-2"></i> Add New User
-                    </a>
                 </div>
             </div>
             
@@ -164,7 +170,7 @@
                     <!-- Search Filter -->
                     <div class="flex-1 min-w-64">
                         <div class="relative">
-                            <input type="text" id="searchFilter" placeholder="Search by name or email..." 
+                            <input type="text" id="searchFilter" placeholder="Search by company name or email..." 
                                    class="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <i class="fas fa-search text-purple-500"></i>
@@ -172,22 +178,13 @@
                         </div>
                     </div>
                     
-                    <!-- Role Filter -->
-                    <div class="min-w-40">
-                        <select id="roleFilter" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm bg-white">
-                            <option value="">All Roles</option>
-                            <option value="USER">User</option>
-                            <option value="ADMIN">Admin</option>
-                            <option value="VENDOR">Vendor</option>
-                        </select>
-                    </div>
-                    
                     <!-- Status Filter -->
                     <div class="min-w-40">
                         <select id="statusFilter" class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent shadow-sm bg-white">
                             <option value="">All Status</option>
-                            <option value="active">Active</option>
-                            <option value="inactive">Inactive</option>
+                            <option value="PENDING">Pending</option>
+                            <option value="APPROVED">Approved</option>
+                            <option value="REJECTED">Rejected</option>
                         </select>
                     </div>
                     
@@ -199,77 +196,69 @@
             </div>
             
             <!-- Empty State -->
-            <div th:if="${#lists.isEmpty(users)}" class="p-12 text-center">
+            <div th:if="${#lists.isEmpty(vendors)}" class="p-12 text-center">
                 <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <i class="fas fa-users text-3xl text-gray-400"></i>
+                    <i class="fas fa-store text-3xl text-gray-400"></i>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 mb-2">No users found</h3>
-                <p class="text-gray-500 mb-6">Get started by adding your first user to the system.</p>
-                <a href="/admin/users/create" class="btn-gradient text-white px-8 py-3 rounded-full font-medium">
-                    <i class="fas fa-plus mr-2"></i> Add Your First User
-                </a>
+                <h3 class="text-xl font-bold text-gray-900 mb-2">No vendors found</h3>
+                <p class="text-gray-500 mb-6">There are no vendors registered in the system yet.</p>
             </div>
             
-            <!-- Users Table -->
-            <div th:unless="${#lists.isEmpty(users)}" class="p-6">
+            <!-- Vendors Table -->
+            <div th:unless="${#lists.isEmpty(vendors)}" class="p-6">
                 <div class="overflow-x-auto">
                     <table class="min-w-full">
                         <thead>
-                            <tr class="border-b-2 border-gray-100">
+                            <tr>
                                 <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
-                                    <i class="fas fa-user mr-2 text-purple-600"></i>User Information
+                                    <i class="fas fa-building mr-2 text-purple-600"></i>Company Info
                                 </th>
                                 <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
                                     <i class="fas fa-envelope mr-2 text-purple-600"></i>Contact
                                 </th>
                                 <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
-                                    <i class="fas fa-tag mr-2 text-purple-600"></i>Role & Status
+                                    <i class="fas fa-certificate mr-2 text-purple-600"></i>Business License
                                 </th>
-                                <th class="px-6 py-4 text-center text-sm font-bold text-gray-700 uppercase tracking-wider">
-                                    <i class="fas fa-cogs mr-2 text-purple-600"></i>Actions
+                                <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-tag mr-2 text-purple-600"></i>Status
+                                </th>
+                                <th class="px-6 py-4 text-left text-sm font-bold text-gray-700 uppercase tracking-wider">
+                                    <i class="fas fa-calendar mr-2 text-purple-600"></i>Registered
                                 </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="user : ${users}" class="table-row-hover border-b border-gray-50">
+                            <tr th:each="vendor : ${vendors}" class="table-row-hover border-b border-gray-50">
                                 <td class="px-6 py-4">
                                     <div class="flex items-center">
-                                        <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-indigo-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
-                                            <span th:text="${#strings.substring(user.firstName, 0, 1) + #strings.substring(user.lastName, 0, 1)}">JD</span>
+                                        <div class="w-10 h-10 bg-gradient-to-r from-orange-400 to-red-500 rounded-full flex items-center justify-center text-white font-bold mr-4">
+                                            <i class="fas fa-building text-sm"></i>
                                         </div>
                                         <div>
-                                            <p class="text-lg font-semibold text-gray-900 mb-1" th:text="${user.firstName + ' ' + user.lastName}">John Doe</p>
-                                            <p class="text-sm text-gray-500">Member since 2024</p>
+                                            <p class="text-lg font-semibold text-gray-900 mb-1" th:text="${vendor.companyName}">Company Name</p>
+                                            <p class="text-sm text-gray-500" th:text="${vendor.address}">Company Address</p>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div>
-                                        <p class="text-gray-900 font-medium mb-1" th:text="${user.email}">email@example.com</p>
-                                        <p class="text-sm text-green-600 flex items-center">
-                                            <i class="fas fa-check-circle mr-1"></i>Verified account
-                                        </p>
+                                        <p class="text-gray-900 font-medium mb-1" th:text="${vendor.user != null ? vendor.user.email : 'N/A'}">email@example.com</p>
+                                        <p class="text-sm text-gray-600" th:text="${vendor.phoneNumber}">Phone Number</p>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <i class="fas fa-certificate mr-2 text-purple-600"></i>
+                                        <span class="text-gray-900 font-medium text-sm" th:text="${vendor.businessLicense}">License Number</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
                                     <div>
-                                        <span th:class="${user.role == 'ADMIN' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'} + ' px-3 py-1 rounded-full text-sm font-medium capitalize mb-2 inline-block'" th:text="${user.role}">USER</span>
-                                        <p class="text-sm text-green-600 flex items-center">
-                                            <i class="fas fa-circle text-xs mr-2"></i>Active
-                                        </p>
+                                        <span th:class="${vendor.status.name() == 'APPROVED' ? 'bg-green-100 text-green-800' : (vendor.status.name() == 'PENDING' ? 'bg-orange-100 text-orange-800' : 'bg-red-100 text-red-800')} + ' px-3 py-1 rounded-full text-sm font-medium capitalize inline-block'" th:text="${vendor.status}">STATUS</span>
                                     </div>
                                 </td>
                                 <td class="px-6 py-4">
-                                    <div class="flex justify-center space-x-2">
-                                        <a th:href="@{'/admin/users/edit/' + ${user.id}}" class="bg-blue-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-blue-700 transition duration-300 flex items-center text-sm">
-                                            <i class="fas fa-edit mr-1"></i> Edit
-                                        </a>
-                                        <a th:href="@{'/admin/users/delete/' + ${user.id}}"
-                                           onclick="return confirm('Yakin ingin menghapus user ini?')"
-                                           class="bg-red-600 text-white px-3 py-2 rounded-lg font-medium hover:bg-red-700 transition duration-300 flex items-center text-sm">
-                                            <i class="fas fa-trash-alt mr-1"></i> Delete
-                                        </a>
-                                    </div>
+                                    <p class="text-gray-900 font-medium text-sm" th:text="${vendor.createdAt != null ? #temporals.format(vendor.createdAt, 'dd/MM/yyyy') : 'N/A'}">01/01/2024</p>
                                 </td>
                             </tr>
                         </tbody>
@@ -280,63 +269,48 @@
     </div>
 </main>
 
+<!-- JavaScript for Filtering -->
 <script>
-// Filter functionality
-document.addEventListener('DOMContentLoaded', function() {
-    const searchFilter = document.getElementById('searchFilter');
-    const roleFilter = document.getElementById('roleFilter');
-    const statusFilter = document.getElementById('statusFilter');
-    const clearFilters = document.getElementById('clearFilters');
-    const tableRows = document.querySelectorAll('tbody tr');
-    
-    function filterTable() {
-        const searchTerm = searchFilter.value.toLowerCase();
-        const selectedRole = roleFilter.value.toLowerCase();
-        const selectedStatus = statusFilter.value.toLowerCase();
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchFilter = document.getElementById('searchFilter');
+        const statusFilter = document.getElementById('statusFilter');
+        const clearFilters = document.getElementById('clearFilters');
+        const tableRows = document.querySelectorAll('tbody tr');
         
-        tableRows.forEach(row => {
-            const name = row.querySelector('td:first-child p').textContent.toLowerCase();
-            const email = row.querySelector('td:nth-child(2) p').textContent.toLowerCase();
-            const role = row.querySelector('td:nth-child(3) span').textContent.toLowerCase();
-            const status = row.querySelector('td:nth-child(3) p').textContent.toLowerCase();
+        function filterTable() {
+            const searchTerm = searchFilter.value.toLowerCase();
+            const statusTerm = statusFilter.value.toUpperCase();
             
-            const matchesSearch = name.includes(searchTerm) || email.includes(searchTerm);
-            const matchesRole = selectedRole === '' || role.includes(selectedRole);
-            const matchesStatus = selectedStatus === '' || status.includes(selectedStatus);
+            let visibleCount = 0;
             
-            if (matchesSearch && matchesRole && matchesStatus) {
-                row.style.display = '';
-            } else {
-                row.style.display = 'none';
-            }
-        });
-        
-        // Update visible count
-        updateVisibleCount();
-    }
-    
-    function updateVisibleCount() {
-        const visibleRows = Array.from(tableRows).filter(row => row.style.display !== 'none');
-        const totalCount = document.querySelector('.stat-card h3');
-        if (totalCount) {
-            totalCount.textContent = visibleRows.length;
+            tableRows.forEach(row => {
+                const companyName = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                const email = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+                const status = row.querySelector('td:nth-child(4)').textContent.toUpperCase();
+                
+                const matchesSearch = searchTerm === '' || companyName.includes(searchTerm) || email.includes(searchTerm);
+                const matchesStatus = statusTerm === '' || status.includes(statusTerm);
+                
+                if (matchesSearch && matchesStatus) {
+                    row.style.display = '';
+                    visibleCount++;
+                } else {
+                    row.style.display = 'none';
+                }
+            });
         }
-    }
-    
-    function clearAllFilters() {
-        searchFilter.value = '';
-        roleFilter.value = '';
-        statusFilter.value = '';
-        filterTable();
-    }
-    
-    // Event listeners
-    searchFilter.addEventListener('input', filterTable);
-    roleFilter.addEventListener('change', filterTable);
-    statusFilter.addEventListener('change', filterTable);
-    clearFilters.addEventListener('click', clearAllFilters);
-});
+        
+        searchFilter.addEventListener('input', filterTable);
+        statusFilter.addEventListener('change', filterTable);
+        
+        clearFilters.addEventListener('click', function() {
+            searchFilter.value = '';
+            statusFilter.value = '';
+            tableRows.forEach(row => {
+                row.style.display = '';
+            });
+        });
+    });
 </script>
-
 </body>
 </html>

@@ -1,31 +1,42 @@
 package com.stayo.controller;
 
+import java.io.IOException;
+import java.math.BigDecimal;
+import java.nio.file.Files;
+import java.nio.file.Path; //
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+
 import com.stayo.model.Booking;
 import com.stayo.model.Hotel;
+import com.stayo.model.Room;
+import com.stayo.model.User;
+import com.stayo.model.User.Role;
 import com.stayo.model.VendorHotel;
-import com.stayo.model.User.Role; // 
-import com.stayo.model.*;
+import com.stayo.model.VendorRegistrationForm;
+import com.stayo.model.VendorStatus;
 import com.stayo.service.BookingService;
 import com.stayo.service.HotelService;
 import com.stayo.service.RoomService;
 import com.stayo.service.UserService;
 import com.stayo.service.VendorHotelService;
+
 import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.IOException;
-import java.math.BigDecimal;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.UUID;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.List;
-import java.util.Optional;
 
 @Controller
 @RequestMapping("/vendor")
@@ -130,7 +141,6 @@ public class VendorHotelController {
         List<Hotel> hotels = hotelService.getHotelsByVendorId(vendor.getId());
         model.addAttribute("hotels", hotels);
 
-        // Get booking statistics
         int totalBookings = 0;
         double totalRevenue = 0.0;
         int totalRooms = 0;
@@ -145,17 +155,18 @@ public class VendorHotelController {
                     totalRevenue += booking.getTotalPrice().doubleValue();
                 }
             }
-
             // Count total rooms
             List<Room> hotelRooms = roomService.getRoomsByHotelId(hotel.getId());
             totalRooms += hotelRooms.size();
-
             // Calculate average rating
             if (hotel.getAverageRating() != null && hotel.getAverageRating() > 0) {
                 totalRating += hotel.getAverageRating();
                 hotelWithRatings++;
             }
         }
+
+        // Potong admin fee 7% untuk revenue yang ditampilkan di dashboard
+        double netRevenue = totalRevenue * 0.93;
 
         // Calculate occupancy rate
         double occupancyRate = 0.0;
@@ -178,24 +189,25 @@ public class VendorHotelController {
         // Prepare monthly data arrays
         int[] monthlyBookings = new int[12];
         double[] monthlyRevenue = new double[12];
+        double[] monthlyNetRevenue = new double[12];
 
         for (Object[] stat : monthlyStats) {
             int month = (Integer) stat[0] - 1;
             long bookingCount = (Long) stat[1];
             BigDecimal revenue = (BigDecimal) stat[2];
-
             monthlyBookings[month] = (int) bookingCount;
             monthlyRevenue[month] = revenue.doubleValue();
+            monthlyNetRevenue[month] = revenue.doubleValue() * 0.93;
         }
 
         model.addAttribute("totalHotels", hotels.size());
         model.addAttribute("totalBookings", totalBookings);
-        model.addAttribute("totalRevenue", totalRevenue);
+        model.addAttribute("totalRevenue", netRevenue); // Sudah dipotong admin
         model.addAttribute("totalRooms", totalRooms);
         model.addAttribute("occupancyRate", occupancyRate);
         model.addAttribute("averageRating", averageRating);
         model.addAttribute("monthlyBookings", monthlyBookings);
-        model.addAttribute("monthlyRevenue", monthlyRevenue);
+        model.addAttribute("monthlyRevenue", monthlyNetRevenue); // Sudah dipotong admin
         model.addAttribute("vendor", vendor);
 
         return "vendor/vendor-dashboard";
@@ -362,18 +374,24 @@ public class VendorHotelController {
                         occupancyRate = 100.0; // Cap at 100%
                 }
 
-                // Calculate total revenue for this hotel - only CONFIRMED bookings
+                // Calculate total revenue dan admin fee untuk hotel ini
                 double totalRevenue = 0.0;
+                double adminFee = 0.0;
+                double netRevenue = 0.0;
                 for (Booking booking : hotelBookings) {
                     if ("COMPLETED".equals(booking.getStatus())) {
                         totalRevenue += booking.getTotalPrice().doubleValue();
                     }
                 }
+                adminFee = totalRevenue * 0.07;
+                netRevenue = totalRevenue - adminFee;
 
                 model.addAttribute("hotel", hotel);
                 model.addAttribute("bookings", hotelBookings);
                 model.addAttribute("occupancyRate", occupancyRate);
                 model.addAttribute("totalRevenue", totalRevenue);
+                model.addAttribute("adminFee", adminFee);
+                model.addAttribute("netRevenue", netRevenue);
                 model.addAttribute("vendor", vendor);
                 return "vendor/vendor-hotel-details";
             } else {

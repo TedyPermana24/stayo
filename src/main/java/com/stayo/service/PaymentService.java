@@ -41,7 +41,7 @@ public class PaymentService {
         itemDetails.put("price", booking.getRoom().getPricePerNight().toString());
         itemDetails.put("quantity",
                 String.valueOf(ChronoUnit.DAYS.between(booking.getCheckInDate(), booking.getCheckOutDate())));
-        itemDetails.put("name", booking.getRoom().getType() + " at " + booking.getHotel().getName());
+        itemDetails.put("name", booking.getRoom().getType() + " at " + booking.getHotel().getName().trim().split("\\s+")[0]);
 
         // Tambahkan callback URL
         Map<String, String> callbackUrls = new HashMap<>();

@@ -279,4 +279,35 @@ public class AdminController {
 
         return "redirect:/admin/bookings/pending";
     }
+
+    @GetMapping("/vendors/management")
+    public String showVendorManagement(HttpSession session, Model model) {
+        User admin = (User) session.getAttribute("user");
+        if (admin == null || !admin.isAdmin()) {
+            return "redirect:/signin";
+        }
+    
+        // Get all vendors
+        List<VendorHotel> allVendors = vendorHotelService.getAllVendors();
+        
+        // Menghitung statistik untuk vendor management
+        long totalVendors = allVendors.size();
+        long pendingVendors = allVendors.stream()
+                .filter(v -> v.getStatus() == VendorStatus.PENDING)
+                .count();
+        long approvedVendors = allVendors.stream()
+                .filter(v -> v.getStatus() == VendorStatus.APPROVED)
+                .count();
+        long rejectedVendors = allVendors.stream()
+                .filter(v -> v.getStatus() == VendorStatus.REJECTED)
+                .count();
+    
+        model.addAttribute("vendors", allVendors);
+        model.addAttribute("totalVendors", totalVendors);
+        model.addAttribute("pendingVendors", pendingVendors);
+        model.addAttribute("approvedVendors", approvedVendors);
+        model.addAttribute("rejectedVendors", rejectedVendors);
+        
+        return "admin/vendors/management";
+    }
 }
